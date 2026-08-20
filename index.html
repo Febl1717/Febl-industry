@@ -2,11 +2,10 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Febl Chat – Groq KI</title>
+<title>Febl Chat – DeepSeek KI</title>
 
 <style>
     * { box-sizing: border-box; }
-
     body {
         margin: 0;
         padding: 0;
@@ -19,7 +18,7 @@
         align-items: center;
     }
 
-    /* LOADING SCREEN */
+    /* Loader */
     .loader-screen {
         position: absolute;
         inset: 0;
@@ -32,7 +31,6 @@
         animation: fadeOut 0.8s ease forwards;
         animation-delay: 2.2s;
     }
-
     .loader-circle {
         width: 70px;
         height: 70px;
@@ -42,26 +40,16 @@
         animation: spin 1s linear infinite;
         margin-bottom: 20px;
     }
-
     @keyframes spin { to { transform: rotate(360deg); } }
     @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
-    .loader-text {
-        font-size: 18px;
-        letter-spacing: 1px;
-        color: #cbd5e1;
-        animation: fadeIn 1s ease;
-    }
-
-    /* MAIN APP */
+    /* App */
     .app {
         width: 900px;
-        max-width: 95vw;
         height: 85vh;
         background: #0f1a33;
         border-radius: 18px;
         border: 1px solid rgba(148,163,184,0.25);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         display: grid;
         grid-template-rows: auto 1fr auto;
         overflow: hidden;
@@ -69,7 +57,6 @@
         animation: appFadeIn 1s ease forwards;
         animation-delay: 2.3s;
     }
-
     @keyframes appFadeIn { to { opacity: 1; } }
 
     .header {
@@ -92,7 +79,6 @@
         transform: translateY(10px);
         animation: msgEnter 0.35s ease forwards;
     }
-
     @keyframes msgEnter {
         to { opacity: 1; transform: translateY(0); }
     }
@@ -109,7 +95,6 @@
         white-space: pre-wrap;
         animation: bubblePop 0.25s ease;
     }
-
     @keyframes bubblePop {
         0% { transform: scale(0.9); }
         100% { transform: scale(1); }
@@ -119,14 +104,13 @@
         background: #1e3a8a;
         color: #e5e7eb;
     }
-
     .msg-bubble.ai {
         background: #162447;
         color: #e5e7eb;
         border: 1px solid rgba(255,255,255,0.08);
     }
 
-    /* TYPING ANIMATION */
+    /* Typing */
     .typing {
         display: flex;
         gap: 6px;
@@ -139,7 +123,6 @@
         opacity: 0;
         animation: msgEnter 0.35s ease forwards;
     }
-
     .dot {
         width: 8px;
         height: 8px;
@@ -147,23 +130,20 @@
         border-radius: 50%;
         animation: blink 1.4s infinite;
     }
-
     .dot:nth-child(2) { animation-delay: 0.2s; }
     .dot:nth-child(3) { animation-delay: 0.4s; }
-
     @keyframes blink {
         0% { opacity: 0.2; }
         50% { opacity: 1; }
         100% { opacity: 0.2; }
     }
 
-    /* FOOTER */
+    /* Footer */
     .footer {
         padding: 16px 20px;
         background: #0d1730;
         border-top: 1px solid rgba(255,255,255,0.08);
     }
-
     .input-wrapper {
         display: flex;
         gap: 12px;
@@ -172,7 +152,6 @@
         border: 1px solid rgba(255,255,255,0.15);
         padding: 12px 16px;
     }
-
     #userInput {
         flex: 1;
         background: transparent;
@@ -180,7 +159,6 @@
         color: #e5e7eb;
         font-size: 16px;
     }
-
     .send-btn {
         padding: 10px 18px;
         background: #1e3a8a;
@@ -189,7 +167,6 @@
         color: #e5e7eb;
         cursor: pointer;
     }
-
     .send-btn:disabled {
         background: #0f1a33;
         color: #6b7280;
@@ -201,15 +178,15 @@
 
 <body>
 
-<!-- LOADER -->
+<!-- Loader -->
 <div class="loader-screen">
     <div class="loader-circle"></div>
     <div class="loader-text">Febl Chat wird geladen…</div>
 </div>
 
-<!-- APP -->
+<!-- App -->
 <div class="app">
-    <div class="header">Febl Chat – Groq KI</div>
+    <div class="header">Febl Chat – DeepSeek KI</div>
 
     <div class="chat" id="chat"></div>
 
@@ -227,9 +204,10 @@ const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 
 const cooldown = 1000;
+const DEEPSEEK_KEY = "sk-414b10fa84044209825045ae6822cba2"; // <-- WICHTIG
 
 setTimeout(() => {
-    addAI("Hey Felix! Ich bin jetzt mit echter Groq‑KI verbunden.");
+    addAI("Hey Felix! Ich bin jetzt mit echter DeepSeek‑KI verbunden – ohne Proxy, ohne Server.");
 }, 2600);
 
 input.addEventListener("keydown", e => {
@@ -294,7 +272,7 @@ function typingAnimation() {
 
     setTimeout(async () => {
         typing.remove();
-        await callGroq(userText);
+        await callDeepSeek(userText);
     }, 1200);
 }
 
@@ -303,12 +281,27 @@ function lastUserMessage() {
     return bubbles[bubbles.length - 1].textContent;
 }
 
-async function callGroq(prompt) {
+/* DeepSeek Browser‑Bridge */
+async function callDeepSeek(prompt) {
+    if (!DEEPSEEK_KEY || DEEPSEEK_KEY === "sk-414b10fa84044209825045ae6822cba2") {
+        addAI("Bitte trage deinen DeepSeek API‑Key ein.");
+        return;
+    }
+
     try {
-        const res = await fetch("http://localhost:3000/api/groq", {
+        const res = await fetch("https://api.deepseek.com/chat/completions", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message: prompt })
+            headers: {
+                "Content-Type": "application/json",
+                "X-API-Key": DEEPSEEK_KEY
+            },
+            body: JSON.stringify({
+                model: "deepseek-chat",
+                messages: [
+                    { role: "system", content: "Du bist eine hilfreiche KI für Felix." },
+                    { role: "user", content: prompt }
+                ]
+            })
         });
 
         const data = await res.json();
