@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>Febl Chat – Local KI</title>
 
-<!-- WebLLM: KI direkt im Browser -->
 <script src="https://cdn.jsdelivr.net/npm/webllm/dist/webllm.min.js"></script>
 
 <style>
@@ -31,8 +30,6 @@
         justify-content: center;
         align-items: center;
         z-index: 999;
-        animation: fadeOut 0.8s ease forwards;
-        animation-delay: 2.2s;
     }
     .loader-circle {
         width: 70px;
@@ -44,12 +41,13 @@
         margin-bottom: 20px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-    @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
     .loader-text {
         font-size: 18px;
         letter-spacing: 1px;
         color: #cbd5e1;
+        text-align: center;
+        max-width: 300px;
     }
 
     /* App */
@@ -59,15 +57,10 @@
         background: #0f1a33;
         border-radius: 18px;
         border: 1px solid rgba(148,163,184,0.25);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        display: grid;
+        display: none;
         grid-template-rows: auto 1fr auto;
         overflow: hidden;
-        opacity: 0;
-        animation: appFadeIn 1s ease forwards;
-        animation-delay: 2.3s;
     }
-    @keyframes appFadeIn { to { opacity: 1; } }
 
     .header {
         padding: 14px 20px;
@@ -177,25 +170,23 @@
         color: #e5e7eb;
         cursor: pointer;
     }
-    .send-btn:disabled {
-        background: #0f1a33;
-        color: #6b7280;
-        cursor: not-allowed;
-        opacity: 0.6;
-    }
 </style>
 </head>
 
 <body>
 
 <!-- Loader -->
-<div class="loader-screen">
+<div class="loader-screen" id="loader">
     <div class="loader-circle"></div>
-    <div class="loader-text">Febl Chat wird geladen…</div>
+    <div class="loader-text" id="loaderText">
+        KI wird geladen…<br><br>
+        Das dauert beim ersten Start 20–60 Sekunden.<br>
+        Bitte warte kurz.
+    </div>
 </div>
 
 <!-- App -->
-<div class="app">
+<div class="app" id="app">
     <div class="header">Febl Chat – Local KI</div>
 
     <div class="chat" id="chat"></div>
@@ -209,66 +200,61 @@
 </div>
 
 <script>
-const chat = document.getElementById("chat");
-const input = document.getElementById("userInput");
-const sendBtn = document.getElementById("sendBtn");
-const cooldown = 1000;
-
 let engine = null;
 let modelReady = false;
 
-/* KI im Browser initialisieren */
+const loader = document.getElementById("loader");
+const loaderText = document.getElementById("loaderText");
+const app = document.getElementById("app");
+const chat = document.getElementById("chat");
+const input = document.getElementById("userInput");
+const sendBtn = document.getElementById("sendBtn");
+
+/* KI laden */
 (async () => {
     try {
-        addSystemInfo("Modell wird geladen… erster Start kann etwas dauern.");
+        loaderText.innerHTML = "KI wird geladen…<br><br>Bitte warte.";
         engine = await webllm.createEngine("Llama-3.2-3B-Instruct");
         modelReady = true;
-        addSystemInfo("Modell bereit. Du kannst jetzt Fragen stellen.");
+
+        loader.style.display = "none";
+        app.style.display = "grid";
+
+        addAI("Hey Felix! Ich bin jetzt bereit. Frag mich einfach etwas.");
     } catch (e) {
-        addSystemInfo("Fehler beim Laden der lokalen KI: " + e);
+        loaderText.innerHTML = "Fehler beim Laden der KI:<br>" + e;
     }
 })();
 
-/* Begrüßung nach Loader */
-setTimeout(() => {
-    addAI("Hey Felix! Ich bin eine KI, die komplett im Browser läuft – ohne Server und ohne API‑Key.");
-}, 2600);
-
-/* Events */
+/* Senden */
+sendBtn.addEventListener("click", send);
 input.addEventListener("keydown", e => {
     if (e.key === "Enter") send();
 });
-sendBtn.addEventListener("click", send);
 
-/* Senden */
 function send() {
-    if (sendBtn.disabled) return;
-
     const text = input.value.trim();
     if (!text) return;
+
+    if (!modelReady) {
+        addAI("Die KI lädt noch. Warte bitte einen Moment.");
+        return;
+    }
 
     input.value = "";
     addUser(text);
     typingAnimation();
 
-    sendBtn.disabled = true;
-    input.disabled = true;
-
     setTimeout(() => {
-        sendBtn.disabled = false;
-        input.disabled = false;
-        input.focus();
-    }, cooldown);
+        callLocalAI(text);
+    }, 1200);
 }
 
-/* Nachrichten */
+/* Chat Funktionen */
 function addUser(text) {
     const row = document.createElement("div");
     row.className = "msg-row user";
-    const bubble = document.createElement("div");
-    bubble.className = "msg-bubble user";
-    bubble.textContent = text;
-    row.appendChild(bubble);
+    row.innerHTML = `<div class="msg-bubble user">${text}</div>`;
     chat.appendChild(row);
     chat.scrollTop = chat.scrollHeight;
 }
@@ -276,28 +262,11 @@ function addUser(text) {
 function addAI(text) {
     const row = document.createElement("div");
     row.className = "msg-row ai";
-    const bubble = document.createElement("div");
-    bubble.className = "msg-bubble ai";
-    bubble.textContent = text;
-    row.appendChild(bubble);
+    row.innerHTML = `<div class="msg-bubble ai">${text}</div>`;
     chat.appendChild(row);
     chat.scrollTop = chat.scrollHeight;
 }
 
-function addSystemInfo(text) {
-    const row = document.createElement("div");
-    row.className = "msg-row ai";
-    const bubble = document.createElement("div");
-    bubble.className = "msg-bubble ai";
-    bubble.style.opacity = "0.7";
-    bubble.style.fontSize = "13px";
-    bubble.textContent = text;
-    row.appendChild(bubble);
-    chat.appendChild(row);
-    chat.scrollTop = chat.scrollHeight;
-}
-
-/* Typing */
 function typingAnimation() {
     const typing = document.createElement("div");
     typing.className = "typing";
@@ -309,38 +278,22 @@ function typingAnimation() {
     chat.appendChild(typing);
     chat.scrollTop = chat.scrollHeight;
 
-    const userText = lastUserMessage();
-
-    setTimeout(async () => {
-        typing.remove();
-        await callLocalAI(userText);
-    }, 1200);
+    setTimeout(() => typing.remove(), 1200);
 }
 
-function lastUserMessage() {
-    const bubbles = chat.querySelectorAll(".msg-bubble.user");
-    return bubbles[bubbles.length - 1].textContent;
-}
-
-/* Lokale KI */
+/* KI Antwort */
 async function callLocalAI(prompt) {
-    if (!modelReady || !engine) {
-        addAI("Die KI lädt noch. Warte ein paar Sekunden und versuch es nochmal.");
-        return;
-    }
-
     try {
         const result = await engine.chat.completions.create({
             messages: [
-                { role: "system", content: "Du bist eine hilfreiche, freundliche KI für Felix. Antworte klar und auf die Frage bezogen." },
+                { role: "system", content: "Du bist eine freundliche KI für Felix." },
                 { role: "user", content: prompt }
             ]
         });
 
-        const answer = result.choices[0].message.content;
-        addAI(answer);
+        addAI(result.choices[0].message.content);
     } catch (e) {
-        addAI("Fehler bei der lokalen KI: " + e);
+        addAI("Fehler: " + e);
     }
 }
 </script>
