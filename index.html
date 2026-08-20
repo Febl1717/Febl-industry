@@ -470,7 +470,7 @@ function generateDemoAnswer(cmd) {
 
 /* Optionale echte API-Anbindung */
 async function callAI(question) {
-    const url = "https://api.openai.com/v1/chat/completions";
+    const url = "https://api.groq.com/openai/v1/chat/completions";
 
     const body = {
         model: "gpt-4o-mini",
