@@ -48,7 +48,7 @@ button {
 async function senden() {
     let frage = document.getElementById("frage").value;
 
-    let res = await fetch("https://DEINE-RENDER-URL.onrender.com/ask", {
+    let res = await fetch("https://febl-industry.onrender.com/ask", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ frage })
