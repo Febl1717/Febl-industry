@@ -2,14 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Febl Chat – Local KI</title>
-
-<!-- Neuer funktionierender WebLLM Loader -->
-<script type="module">
-    import * as webllm from "https://esm.run/webllm";
-
-    window.webllm = webllm; // global verfügbar machen
-</script>
+<title>Febl Chat – Offline KI</title>
 
 <style>
     * { box-sizing: border-box; }
@@ -25,42 +18,13 @@
         align-items: center;
     }
 
-    .loader-screen {
-        position: absolute;
-        inset: 0;
-        background: #0a1224;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        z-index: 999;
-    }
-    .loader-circle {
-        width: 70px;
-        height: 70px;
-        border-radius: 50%;
-        border: 6px solid rgba(255,255,255,0.1);
-        border-top-color: #3b82f6;
-        animation: spin 1s linear infinite;
-        margin-bottom: 20px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .loader-text {
-        font-size: 18px;
-        letter-spacing: 1px;
-        color: #cbd5e1;
-        text-align: center;
-        max-width: 300px;
-    }
-
     .app {
         width: 900px;
         height: 85vh;
         background: #0f1a33;
         border-radius: 18px;
         border: 1px solid rgba(148,163,184,0.25);
-        display: none;
+        display: grid;
         grid-template-rows: auto 1fr auto;
         overflow: hidden;
     }
@@ -176,17 +140,8 @@
 
 <body>
 
-<div class="loader-screen" id="loader">
-    <div class="loader-circle"></div>
-    <div class="loader-text" id="loaderText">
-        KI wird geladen…<br><br>
-        Das dauert beim ersten Start 20–60 Sekunden.<br>
-        Bitte warte kurz.
-    </div>
-</div>
-
-<div class="app" id="app">
-    <div class="header">Febl Chat – Local KI</div>
+<div class="app">
+    <div class="header">Febl Chat – Offline KI</div>
 
     <div class="chat" id="chat"></div>
 
@@ -198,55 +153,27 @@
     </div>
 </div>
 
-<script type="module">
-let engine = null;
-let modelReady = false;
-
-const loader = document.getElementById("loader");
-const loaderText = document.getElementById("loaderText");
-const app = document.getElementById("app");
+<script>
 const chat = document.getElementById("chat");
 const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 
-/* KI laden */
-(async () => {
-    try {
-        loaderText.innerHTML = "KI wird geladen…<br><br>Bitte warte.";
-        engine = await window.webllm.createEngine("Llama-3.2-3B-Instruct");
-        modelReady = true;
+/* Offline-KI: einfache Logik */
+function offlineAI(prompt) {
+    prompt = prompt.toLowerCase();
 
-        loader.style.display = "none";
-        app.style.display = "grid";
+    if (prompt.includes("wie geht")) return "Mir geht’s gut, Felix! Ich bin deine Offline‑KI.";
+    if (prompt.includes("wer bist")) return "Ich bin eine kleine Offline‑KI, die komplett im Browser läuft.";
+    if (prompt.includes("hilfe")) return "Klar! Sag mir einfach, wobei du Hilfe brauchst.";
+    if (prompt.includes("idee")) return "Hier eine Idee: Bau dir ein eigenes KI‑Dashboard im Dark‑Blue‑Style!";
+    if (prompt.includes("was ist")) return "Das kann ich dir erklären! Schreib einfach: erklär + Thema.";
 
-        addAI("Hey Felix! Ich bin jetzt bereit. Frag mich einfach etwas.");
-    } catch (e) {
-        loaderText.innerHTML = "Fehler beim Laden der KI:<br>" + e;
-    }
-})();
-
-/* Senden */
-sendBtn.addEventListener("click", send);
-input.addEventListener("keydown", e => {
-    if (e.key === "Enter") send();
-});
-
-function send() {
-    const text = input.value.trim();
-    if (!text) return;
-
-    if (!modelReady) {
-        addAI("Die KI lädt noch. Warte bitte einen Moment.");
-        return;
+    if (prompt.startsWith("erklär")) {
+        const topic = prompt.replace("erklär", "").trim();
+        return "Okay, ich erklär dir: " + topic + "\n\nIch bin zwar offline, aber ich kann einfache Erklärungen geben.";
     }
 
-    input.value = "";
-    addUser(text);
-    typingAnimation();
-
-    setTimeout(() => {
-        callLocalAI(text);
-    }, 1200);
+    return "Interessant! Erzähl mir mehr darüber.";
 }
 
 /* Chat Funktionen */
@@ -280,20 +207,24 @@ function typingAnimation() {
     setTimeout(() => typing.remove(), 1200);
 }
 
-/* KI Antwort */
-async function callLocalAI(prompt) {
-    try {
-        const result = await engine.chat.completions.create({
-            messages: [
-                { role: "system", content: "Du bist eine freundliche KI für Felix." },
-                { role: "user", content: prompt }
-            ]
-        });
+/* Senden */
+sendBtn.addEventListener("click", send);
+input.addEventListener("keydown", e => {
+    if (e.key === "Enter") send();
+});
 
-        addAI(result.choices[0].message.content);
-    } catch (e) {
-        addAI("Fehler: " + e);
-    }
+function send() {
+    const text = input.value.trim();
+    if (!text) return;
+
+    input.value = "";
+    addUser(text);
+    typingAnimation();
+
+    setTimeout(() => {
+        const answer = offlineAI(text);
+        addAI(answer);
+    }, 1200);
 }
 </script>
 
