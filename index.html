@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Febl Chat – Febl‑Core v2</title>
+<title>Febl‑Core v2 – Offline Super‑KI</title>
 
 <style>
     * { box-sizing: border-box; }
@@ -10,7 +10,7 @@
         margin: 0;
         padding: 0;
         height: 100vh;
-        background: #0a1224;
+        background: radial-gradient(circle at top, #1e293b 0, #020617 55%);
         font-family: system-ui, sans-serif;
         color: #e5e7eb;
         display: flex;
@@ -19,22 +19,59 @@
     }
 
     .app {
-        width: 900px;
-        height: 85vh;
-        background: #0f1a33;
-        border-radius: 18px;
-        border: 1px solid rgba(148,163,184,0.25);
+        width: 950px;
+        height: 88vh;
+        background: linear-gradient(145deg, #020617 0%, #0b1220 40%, #020617 100%);
+        border-radius: 22px;
+        border: 1px solid rgba(148,163,184,0.35);
+        box-shadow:
+            0 25px 60px rgba(0,0,0,0.7),
+            0 0 40px rgba(37,99,235,0.25);
         display: grid;
         grid-template-rows: auto 1fr auto;
         overflow: hidden;
+        position: relative;
     }
 
     .header {
-        padding: 14px 20px;
-        background: #0d1730;
-        border-bottom: 1px solid rgba(255,255,255,0.08);
+        padding: 16px 22px;
+        background: linear-gradient(90deg, #020617, #0b1120);
+        border-bottom: 1px solid rgba(148,163,184,0.35);
         font-size: 16px;
         font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .header-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .header-pill {
+        font-size: 11px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: rgba(37,99,235,0.18);
+        border: 1px solid rgba(59,130,246,0.6);
+        color: #bfdbfe;
+    }
+
+    .status-indicator {
+        font-size: 12px;
+        color: #9ca3af;
+    }
+
+    .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #22c55e;
+        box-shadow: 0 0 10px rgba(34,197,94,0.8);
+        display: inline-block;
+        margin-right: 6px;
     }
 
     .chat {
@@ -62,6 +99,8 @@
         height: 38px;
         border-radius: 50%;
         flex-shrink: 0;
+        border: 1px solid rgba(148,163,184,0.6);
+        background: radial-gradient(circle at top, #1f2937, #020617);
     }
 
     .msg-bubble {
@@ -72,6 +111,7 @@
         line-height: 1.5;
         white-space: pre-wrap;
         animation: bubblePop 0.25s ease;
+        position: relative;
     }
     @keyframes bubblePop {
         0% { transform: scale(0.9); }
@@ -79,26 +119,38 @@
     }
 
     .msg-bubble.user {
-        background: #1e3a8a;
+        background: radial-gradient(circle at top, #1d4ed8, #1e3a8a);
         color: #e5e7eb;
+        box-shadow: 0 0 18px rgba(37,99,235,0.35);
     }
     .msg-bubble.ai {
-        background: #162447;
+        background: radial-gradient(circle at top, #020617, #111827);
         color: #e5e7eb;
-        border: 1px solid rgba(255,255,255,0.08);
+        border: 1px solid rgba(148,163,184,0.45);
+        box-shadow: 0 0 18px rgba(15,23,42,0.8);
+    }
+
+    .emotion-tag {
+        position: absolute;
+        bottom: -18px;
+        right: 8px;
+        font-size: 10px;
+        color: #9ca3af;
+        opacity: 0.8;
     }
 
     .typing {
         display: flex;
         gap: 6px;
         padding: 10px 16px;
-        background: #162447;
+        background: radial-gradient(circle at top, #020617, #111827);
         border-radius: 14px;
         width: fit-content;
         margin-bottom: 14px;
-        border: 1px solid rgba(255,255,255,0.08);
+        border: 1px solid rgba(148,163,184,0.45);
         opacity: 0;
         animation: msgEnter 0.35s ease forwards;
+        box-shadow: 0 0 18px rgba(15,23,42,0.8);
     }
     .dot {
         width: 8px;
@@ -117,16 +169,17 @@
 
     .footer {
         padding: 16px 20px;
-        background: #0d1730;
-        border-top: 1px solid rgba(255,255,255,0.08);
+        background: linear-gradient(90deg, #020617, #0b1120);
+        border-top: 1px solid rgba(148,163,184,0.35);
     }
     .input-wrapper {
         display: flex;
         gap: 12px;
-        background: #0a1224;
+        background: rgba(15,23,42,0.9);
         border-radius: 14px;
-        border: 1px solid rgba(255,255,255,0.15);
+        border: 1px solid rgba(148,163,184,0.45);
         padding: 12px 16px;
+        box-shadow: inset 0 0 12px rgba(15,23,42,0.9);
     }
     #userInput {
         flex: 1;
@@ -135,13 +188,43 @@
         color: #e5e7eb;
         font-size: 16px;
     }
+    #userInput::placeholder {
+        color: #6b7280;
+    }
     .send-btn {
         padding: 10px 18px;
-        background: #1e3a8a;
+        background: radial-gradient(circle at top, #2563eb, #1d4ed8);
         border-radius: 10px;
         border: none;
         color: #e5e7eb;
         cursor: pointer;
+        font-size: 14px;
+        box-shadow: 0 0 18px rgba(37,99,235,0.6);
+        transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+    .send-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 0 24px rgba(59,130,246,0.8);
+    }
+
+    .quick-bar {
+        margin-top: 10px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    .quick-btn {
+        font-size: 11px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(148,163,184,0.6);
+        background: rgba(15,23,42,0.9);
+        color: #9ca3af;
+        cursor: pointer;
+    }
+    .quick-btn:hover {
+        border-color: rgba(59,130,246,0.8);
+        color: #bfdbfe;
     }
 </style>
 </head>
@@ -149,19 +232,38 @@
 <body>
 
 <div class="app">
-    <div class="header">Febl‑Core v2 – Offline Super‑KI</div>
+    <div class="header">
+        <div class="header-title">
+            <span>Febl‑Core v2 – Offline Super‑KI</span>
+            <span class="header-pill">Offline · Dark‑Blue · Persönlich</span>
+        </div>
+        <div class="status-indicator">
+            <span class="status-dot"></span>
+            bereit
+        </div>
+    </div>
 
     <div class="chat" id="chat"></div>
 
     <div class="footer">
         <div class="input-wrapper">
-            <input id="userInput" type="text" placeholder="Schreib etwas …">
+            <input id="userInput" type="text" placeholder="Schreib etwas … z. B. „erklär KI“ oder „mach mir eine Liste“">
             <button class="send-btn" id="sendBtn">Senden</button>
+        </div>
+        <div class="quick-bar">
+            <button class="quick-btn" data-text="wie gehts">Wie geht’s?</button>
+            <button class="quick-btn" data-text="erklär künstliche intelligenz">Erklär: KI</button>
+            <button class="quick-btn" data-text="mach mir eine liste mit ideen">Liste: Ideen</button>
+            <button class="quick-btn" data-text="ich bin traurig">Ich bin traurig</button>
+            <button class="quick-btn" data-text="ich bin wütend">Ich bin wütend</button>
         </div>
     </div>
 </div>
 
 <script>
+/* Nutzername */
+const USER_NAME = "Felix";
+
 /* Profilbilder */
 const avatarUser = "https://api.iconify.design/mdi:account-circle.svg?color=white";
 const avatarAI   = "https://api.iconify.design/mdi:robot.svg?color=white";
@@ -191,31 +293,39 @@ function detectEmotion(text) {
     return "neutral";
 }
 
+/* Emotion-Label */
+function emotionLabel(emotion) {
+    if (emotion === "sad") return "Emotion: traurig";
+    if (emotion === "angry") return "Emotion: wütend";
+    if (emotion === "happy") return "Emotion: positiv";
+    return "Emotion: neutral";
+}
+
 /* Antwort-Varianten */
 const tones = {
     neutral: [
-        "Okay Felix, lass uns das anschauen:",
+        "Okay, lass uns das anschauen:",
         "Alles klar, ich erklär dir das:",
         "Verstanden, hier ist meine Antwort:",
-        "Gute Frage, Felix:",
+        "Gute Frage:",
         "Ich sag’s dir direkt:"
     ],
     happy: [
         "Nice! Das klingt gut:",
-        "Geile Energie, Felix:",
+        "Geile Energie:",
         "Love it! Hier:",
         "Mega Stimmung, also:",
         "Okay, mit guter Laune geht’s leichter:"
     ],
     sad: [
-        "Hey Felix… klingt nicht so gut. Ich helf dir:",
+        "Hey… klingt nicht so gut. Ich helf dir:",
         "Ich bin bei dir, lass uns das klären:",
         "Klingt schwer… aber wir schaffen das:",
         "Ich hör dir zu:",
         "Okay… Schritt für Schritt:"
     ],
     angry: [
-        "Okay, Felix… ruhig bleiben. Ich helf dir:",
+        "Okay… ruhig bleiben. Ich helf dir:",
         "Ich versteh den Frust. Lass uns das lösen:",
         "Alles klar, wir fixen das:",
         "Okay, direkt zur Sache:",
@@ -241,59 +351,78 @@ function feblCore(text) {
     memory.conversationHistory.push(text);
 
     const tone = tones[emotion][Math.floor(Math.random() * tones[emotion].length)];
-
     const intent = matchIntent(text);
 
     /* Intent-Handling */
     if (intent === "wie geht") {
-        return `${tone} Mir geht’s gut, Felix — ich bin bereit!`;
+        return `${tone} Mir geht’s gut, ${USER_NAME} — ich bin bereit für alles, was du vorhast.`;
     }
 
     if (intent === "hilfe") {
-        return `${tone} Klar, sag einfach, wobei du Hilfe brauchst.`;
+        return `${tone} Klar ${USER_NAME}, sag einfach, wobei du Hilfe brauchst. Ich bin voll bei dir.`;
     }
 
     if (intent === "idee") {
-        return `${tone} Hier eine Idee: Bau dir ein KI‑Dashboard mit animierten Panels und Live‑Status.`;
+        return `${tone} ${USER_NAME}, hier eine Idee: Bau dir ein KI‑Dashboard mit Panels für Status, Emotion, Befehle und Verlauf.`;
     }
 
     if (intent === "liste") {
-        return `${tone} Okay, hier ist deine Liste:\n\n• Punkt 1\n• Punkt 2\n• Punkt 3\n\nSag mir, was rein soll, dann mach ich sie personalisiert.`;
+        return `${tone} Alles klar ${USER_NAME}, hier ist eine Beispiel‑Liste:\n\n• Idee 1: KI‑Dashboard\n• Idee 2: Sprach‑Assistent\n• Idee 3: Animierter Start‑Screen\n\nSag mir, was du konkret brauchst, dann mach ich sie passend für dich.`;
     }
 
     if (intent === "erklär") {
         const topic = text.replace(/erklär|erklaere|erkläre|erklär mal/i, "").trim();
         memory.lastTopic = topic;
-        return `${tone} Ich erklär dir **${topic}**:\n\n${topic} ist ein Thema, das man gut versteht, wenn man es in kleine Teile zerlegt.`;
+        return `${tone} Ich erklär dir **${topic}**, ${USER_NAME}:\n\n${topic} ist ein Thema, das man gut versteht, wenn man es in kleine Teile zerlegt. Stell dir vor, du baust es wie ein Lego‑Set Schritt für Schritt zusammen.`;
+    }
+
+    /* Name lernen */
+    if (text.toLowerCase().includes("ich heiße")) {
+        const parts = text.split("ich heiße");
+        const name = parts[1]?.trim() || USER_NAME;
+        return `${tone} Nice, ${name}! Ich merk mir das. Ab jetzt sprech ich dich so an. (Im Code kannst du USER_NAME ändern.)`;
     }
 
     /* Standard */
-    return `${tone} Interessant! Erzähl mir mehr darüber.`;
+    return `${tone} Klingt interessant, ${USER_NAME}. Erzähl mir mehr darüber oder sag mir konkret, was du brauchst.`;
 }
 
 /* Chat UI */
 const chat = document.getElementById("chat");
 const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
+const quickButtons = document.querySelectorAll(".quick-btn");
 
 function addUser(text) {
     const row = document.createElement("div");
     row.className = "msg-row user";
     row.innerHTML = `
-        <img class="avatar" src="${avatarUser}">
         <div class="msg-bubble user">${text}</div>
+        <img class="avatar" src="${avatarUser}">
     `;
     chat.appendChild(row);
     chat.scrollTop = chat.scrollHeight;
 }
 
-function addAI(text) {
+function addAI(text, emotion = null) {
     const row = document.createElement("div");
     row.className = "msg-row ai";
+    const bubble = document.createElement("div");
+    bubble.className = "msg-bubble ai";
+    bubble.textContent = text;
+
+    if (emotion) {
+        const tag = document.createElement("div");
+        tag.className = "emotion-tag";
+        tag.textContent = emotionLabel(emotion);
+        bubble.appendChild(tag);
+    }
+
     row.innerHTML = `
         <img class="avatar" src="${avatarAI}">
-        <div class="msg-bubble ai">${text}</div>
     `;
+    row.appendChild(bubble);
+
     chat.appendChild(row);
     chat.scrollTop = chat.scrollHeight;
 }
@@ -318,6 +447,13 @@ input.addEventListener("keydown", e => {
     if (e.key === "Enter") send();
 });
 
+quickButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+        input.value = btn.dataset.text;
+        send();
+    });
+});
+
 function send() {
     const text = input.value.trim();
     if (!text) return;
@@ -327,10 +463,14 @@ function send() {
     typingAnimation();
 
     setTimeout(() => {
+        const emotion = detectEmotion(text);
         const answer = feblCore(text);
-        addAI(answer);
+        addAI(answer, emotion);
     }, 1200);
 }
+
+/* Begrüßung */
+addAI(`Hey ${USER_NAME}! Ich bin Febl‑Core v2 – deine Offline‑KI im Dark‑Blue‑Style. Frag mich etwas oder nutz die Buttons unten.`, "happy");
 </script>
 
 </body>
