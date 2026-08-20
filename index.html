@@ -2,83 +2,41 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Febl Industry KI – Hologram OS</title>
+<title>Febl Industry KI – Lite Hologram</title>
 
 <style>
-    * {
-        box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
         margin: 0;
         padding: 0;
         height: 100vh;
-        background: radial-gradient(circle at top, #050816 0%, #000 65%);
+        background: radial-gradient(circle at top, #020b14 0%, #000 70%);
         font-family: "JetBrains Mono", "Consolas", monospace;
         color: #c8f7ff;
-        overflow: hidden;
         display: flex;
         justify-content: center;
         align-items: center;
-    }
-
-    /* Neon-Particle-Background */
-    .bg-particles {
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        background-image:
-            radial-gradient(circle at 10% 20%, rgba(0,255,255,0.15) 0, transparent 40%),
-            radial-gradient(circle at 80% 10%, rgba(255,0,255,0.12) 0, transparent 45%),
-            radial-gradient(circle at 20% 80%, rgba(0,255,128,0.12) 0, transparent 40%);
-        filter: blur(4px);
-        opacity: 0.8;
-        animation: bgShift 20s infinite alternate;
-        z-index: 0;
-    }
-
-    @keyframes bgShift {
-        0% { transform: translate3d(0,0,0); }
-        100% { transform: translate3d(20px,-20px,0); }
-    }
-
-    /* Dark-Matter Shader Effekt (Fake) */
-    .shader-layer {
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        background-image: repeating-linear-gradient(
-            135deg,
-            rgba(0,0,0,0.4) 0px,
-            rgba(0,0,0,0.4) 2px,
-            transparent 3px,
-            transparent 6px
-        );
-        mix-blend-mode: soft-light;
-        opacity: 0.4;
-        z-index: 1;
+        overflow: hidden;
     }
 
     .shell {
-        position: relative;
-        width: 1000px;
+        width: 900px;
         max-width: 95vw;
         height: 80vh;
         max-height: 90vh;
         display: grid;
-        grid-template-columns: 2fr 1.2fr;
-        gap: 18px;
-        padding: 20px;
-        z-index: 2;
+        grid-template-columns: 2fr 1fr;
+        gap: 16px;
+        padding: 16px;
     }
 
     .panel {
         background: rgba(3, 20, 35, 0.7);
-        border-radius: 16px;
-        border: 1px solid rgba(0,255,255,0.4);
-        box-shadow: 0 0 30px rgba(0,255,255,0.35);
-        backdrop-filter: blur(14px);
-        padding: 16px;
+        border-radius: 14px;
+        border: 1px solid rgba(0,255,255,0.35);
+        box-shadow: 0 0 18px rgba(0,255,255,0.3);
+        padding: 14px;
         position: relative;
         overflow: hidden;
     }
@@ -88,12 +46,11 @@
         position: absolute;
         inset: -40%;
         background: radial-gradient(circle at 0 0, rgba(0,255,255,0.18) 0, transparent 55%);
-        opacity: 0.6;
-        mix-blend-mode: screen;
+        opacity: 0.4;
         pointer-events: none;
     }
 
-    /* Boot-Sequenz / Terminal */
+    /* Terminal */
     .terminal {
         display: flex;
         flex-direction: column;
@@ -105,7 +62,7 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 8px;
-        font-size: 13px;
+        font-size: 12px;
         letter-spacing: 0.12em;
         text-transform: uppercase;
         color: #7ee7ff;
@@ -118,8 +75,8 @@
     }
 
     .dot {
-        width: 10px;
-        height: 10px;
+        width: 9px;
+        height: 9px;
         border-radius: 50%;
     }
     .dot.red { background: #ff5f57; }
@@ -138,8 +95,8 @@
     .line {
         margin: 6px 0;
         opacity: 0;
-        transform: translateY(8px);
-        animation: lineAppear 0.3s forwards;
+        transform: translateY(6px);
+        animation: lineAppear 0.25s forwards;
         white-space: pre-wrap;
     }
 
@@ -152,13 +109,7 @@
 
     .line.ai {
         color: #7ee7ff;
-        text-shadow: 0 0 8px #00eaff;
-        animation: hologram 1.4s infinite alternate;
-    }
-
-    @keyframes hologram {
-        0% { opacity: 0.85; }
-        100% { opacity: 1; }
+        text-shadow: 0 0 6px #00eaff;
     }
 
     .input-line {
@@ -166,7 +117,7 @@
         align-items: center;
         margin-top: 10px;
         padding-top: 8px;
-        border-top: 1px solid rgba(0,255,255,0.4);
+        border-top: 1px solid rgba(0,255,255,0.35);
     }
 
     #userInput {
@@ -186,8 +137,8 @@
     }
 
     .cursor {
-        width: 12px;
-        height: 18px;
+        width: 10px;
+        height: 16px;
         background: #00f2ff;
         margin-left: 6px;
         animation: blink 0.7s infinite;
@@ -201,15 +152,15 @@
     /* Autocomplete */
     .autocomplete {
         position: absolute;
-        bottom: 42px;
+        bottom: 40px;
         left: 60px;
         background: rgba(0, 20, 30, 0.95);
         border-radius: 8px;
-        border: 1px solid rgba(0,255,255,0.5);
-        box-shadow: 0 0 18px rgba(0,255,255,0.4);
+        border: 1px solid rgba(0,255,255,0.4);
+        box-shadow: 0 0 12px rgba(0,255,255,0.3);
         padding: 6px 8px;
         font-size: 12px;
-        min-width: 180px;
+        min-width: 160px;
         z-index: 5;
     }
 
@@ -222,7 +173,7 @@
         background: rgba(0,255,255,0.12);
     }
 
-    /* AI-Avatar Panel */
+    /* Avatar (leicht) */
     .avatar-panel {
         display: flex;
         flex-direction: column;
@@ -231,7 +182,7 @@
 
     .avatar-header {
         font-size: 12px;
-        letter-spacing: 0.16em;
+        letter-spacing: 0.14em;
         text-transform: uppercase;
         color: #7ee7ff;
         margin-bottom: 8px;
@@ -239,30 +190,27 @@
 
     .avatar-wrapper {
         flex: 1;
-        position: relative;
         display: flex;
         justify-content: center;
         align-items: center;
-        overflow: hidden;
     }
 
     .avatar-circle {
-        width: 180px;
-        height: 180px;
+        width: 140px;
+        height: 140px;
         border-radius: 50%;
-        border: 2px solid rgba(0,255,255,0.7);
-        box-shadow: 0 0 30px rgba(0,255,255,0.7);
-        position: relative;
+        border: 2px solid rgba(0,255,255,0.6);
+        box-shadow: 0 0 18px rgba(0,255,255,0.5);
+        background: radial-gradient(circle at 30% 30%, #00f2ff 0, #041018 65%);
         display: flex;
         justify-content: center;
         align-items: center;
-        background: radial-gradient(circle at 30% 20%, #00f2ff 0, #020b14 55%);
         animation: avatarFloat 4s infinite alternate;
     }
 
     @keyframes avatarFloat {
-        0% { transform: translateY(0) rotate3d(0,1,0,0deg); }
-        100% { transform: translateY(-8px) rotate3d(0,1,0,8deg); }
+        0% { transform: translateY(0); }
+        100% { transform: translateY(-6px); }
     }
 
     .avatar-face {
@@ -281,11 +229,11 @@
         height: 12%;
         border-radius: 50%;
         background: #000;
-        box-shadow: 0 0 8px #00f2ff;
+        box-shadow: 0 0 6px #00f2ff;
     }
 
-    .eye.left { left: 25%; }
-    .eye.right { right: 25%; }
+    .eye.left { left: 24%; }
+    .eye.right { right: 24%; }
 
     .eye::after {
         content: "";
@@ -293,13 +241,7 @@
         inset: 20%;
         border-radius: 50%;
         background: #00f2ff;
-        box-shadow: 0 0 10px #00f2ff;
-        animation: eyeGlow 1.6s infinite alternate;
-    }
-
-    @keyframes eyeGlow {
-        0% { opacity: 0.7; }
-        100% { opacity: 1; }
+        box-shadow: 0 0 8px #00f2ff;
     }
 
     .mouth {
@@ -307,23 +249,11 @@
         bottom: 22%;
         left: 50%;
         width: 26%;
-        height: 8%;
+        height: 6%;
         transform: translateX(-50%);
         border-radius: 0 0 50% 50%;
         border-bottom: 2px solid #00f2ff;
         opacity: 0.8;
-    }
-
-    .avatar-ring {
-        position: absolute;
-        inset: -10px;
-        border-radius: 50%;
-        border: 1px dashed rgba(0,255,255,0.5);
-        animation: ringSpin 10s linear infinite;
-    }
-
-    @keyframes ringSpin {
-        to { transform: rotate(360deg); }
     }
 
     .avatar-stats {
@@ -342,52 +272,44 @@
 
 <body>
 
-<div class="bg-particles"></div>
-<div class="shader-layer"></div>
-
 <div class="shell">
-    <!-- Terminal / Boot / Commands -->
+    <!-- Terminal -->
     <div class="panel terminal">
         <div class="terminal-header">
             <div class="terminal-header-left">
                 <div class="dot red"></div>
                 <div class="dot yellow"></div>
                 <div class="dot green"></div>
-                <span>[ FEBL INDUSTRY KI v3.0 ]</span>
+                <span>[ FEBL INDUSTRY KI vLite ]</span>
             </div>
-            <span>STATUS: ONLINE • MODE: HOLOGRAM OS</span>
+            <span>STATUS: ONLINE</span>
         </div>
 
         <div class="terminal-body" id="terminalBody">
-            <div class="line ai">Boot sequence initiated...</div>
-            <div class="line ai">Checking core systems... OK</div>
-            <div class="line ai">Loading personality module... Success</div>
-            <div class="line ai">Initializing holographic interface...</div>
-            <div class="line ai">Welcome, Operator Felix.</div>
-            <div class="line ai">Holo-Interface ready. Awaiting commands.</div>
+            <!-- Boot-Sequenz wird per JS ergänzt -->
         </div>
 
         <div class="input-line">
             <span>>>> </span>
-            <input id="userInput" type="text" autocomplete="off" placeholder="z.B. analyze_data, tell_joke, system_status">
+            <input id="userInput" type="text" autocomplete="off"
+                   placeholder="z.B. analyze_data, system_status, explain_python">
             <div class="cursor"></div>
         </div>
 
         <div class="autocomplete" id="autocomplete" style="display:none;">
             <div class="autocomplete-item">analyze_data</div>
-            <div class="autocomplete-item">tell_joke</div>
             <div class="autocomplete-item">system_status</div>
+            <div class="autocomplete-item">tell_joke</div>
             <div class="autocomplete-item">explain_python</div>
             <div class="autocomplete-item">future_tech_idea</div>
         </div>
     </div>
 
-    <!-- AI Avatar / Stats / Dark-Matter UI -->
+    <!-- Avatar -->
     <div class="panel avatar-panel">
-        <div class="avatar-header">AI-CORE: FEBL INDUSTRY KI • HOLOGRAPHIC AVATAR</div>
+        <div class="avatar-header">AI-CORE: FEBL INDUSTRY KI</div>
         <div class="avatar-wrapper">
             <div class="avatar-circle">
-                <div class="avatar-ring"></div>
                 <div class="avatar-face">
                     <div class="eye left"></div>
                     <div class="eye right"></div>
@@ -400,10 +322,7 @@
                 <span>AI-CORE</span><span>98.7%</span>
             </div>
             <div class="avatar-stat-line">
-                <span>NET LINK</span><span>ACTIVE</span>
-            </div>
-            <div class="avatar-stat-line">
-                <span>QUANTUM PROCESS</span><span>READY</span>
+                <span>NET LINK</span><span>READY</span>
             </div>
             <div class="avatar-stat-line">
                 <span>PERSONALITY</span><span>Futuristic • Analytical • Slightly Sarcastic</span>
@@ -420,8 +339,8 @@
 </audio>
 
 <script>
-const API_KEY = "HIER_DEIN_API_KEY"; 
-const USE_DEMO_MODE = true;
+const API_KEY = "HIER_DEIN_API_KEY";   // optional: echten Key eintragen
+const USE_DEMO_MODE = true;            // true = Demo-Antworten, false = echte API
 
 const terminalBody = document.getElementById("terminalBody");
 const input = document.getElementById("userInput");
@@ -429,6 +348,21 @@ const sndSend = document.getElementById("sndSend");
 const sndReply = document.getElementById("sndReply");
 const autocomplete = document.getElementById("autocomplete");
 
+/* Boot-Sequenz */
+const bootLines = [
+    "Initializing Febl Industry KI Lite...",
+    "Checking core systems... OK",
+    "Loading personality module... Success",
+    "Interface mode: Neon Terminal (Lite)",
+    "Welcome, Operator Felix.",
+    "System ready. Awaiting commands."
+];
+
+bootLines.forEach((line, i) => {
+    setTimeout(() => addLine(line, false, true), i * 500);
+});
+
+/* Eingabe & Autocomplete */
 input.addEventListener("input", handleAutocomplete);
 input.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
@@ -455,13 +389,14 @@ function handleAutocomplete() {
     autocomplete.style.display = "block";
 }
 
+/* Command Handling */
 function handleCommand(cmd) {
     if (!cmd) return;
 
     playSound(sndSend);
     addLine(">>> " + cmd);
 
-    const typing = addLine("[FeblIndustryKI] Synchronizing AI matrix...", true);
+    const typing = addLine("[FeblIndustryKI] Processing...", true, true);
 
     if (USE_DEMO_MODE) {
         setTimeout(() => {
@@ -469,7 +404,7 @@ function handleCommand(cmd) {
             const answer = generateDemoAnswer(cmd);
             addLine("[FeblIndustryKI]: " + answer, false, true);
             playSound(sndReply);
-        }, 900);
+        }, 800);
     } else {
         callAI(cmd).then(answer => {
             typing.remove();
@@ -482,6 +417,7 @@ function handleCommand(cmd) {
     }
 }
 
+/* Terminal-Ausgabe */
 function addLine(text, noAnim = false, ai = false) {
     const div = document.createElement("div");
     div.className = "line";
@@ -493,11 +429,13 @@ function addLine(text, noAnim = false, ai = false) {
     return div;
 }
 
+/* Sounds */
 function playSound(el) {
     el.currentTime = 0;
     el.play().catch(() => {});
 }
 
+/* Demo-Antworten */
 function pick(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
@@ -505,38 +443,39 @@ function pick(arr) {
 function generateDemoAnswer(cmd) {
     const intros = [
         "Analyse gestartet.",
-        "Neural‑Matrix aktiviert.",
-        "Datenströme synchronisiert.",
+        "Neural‑Routine aktiviert.",
+        "Command erkannt.",
         "Futuristische Logik angewendet.",
-        "Felix, das ist ein guter Input."
+        "Interessanter Input, Felix."
     ];
 
     const cores = [
-        "Ich laufe aktuell im Demo‑Modus, aber mein Interface ist bereit für echte KI‑Power.",
-        "Dieses Hologram‑OS ist designt, um sich wie ein Sci‑Fi‑Labor anzufühlen.",
-        "Wenn du einen API‑Key einträgst, kann ich echte Antworten aus einem KI‑Modell holen.",
-        "Meine Persönlichkeit ist bewusst leicht sarkastisch, aber immer hilfreich.",
-        "Ich kann dir Ideen für Python‑Projekte, Future‑Tech und KI‑Experimente geben."
+        "Ich laufe aktuell im Lite‑Modus, optimiert für flüssige Performance.",
+        "Dieses Interface ist bewusst leicht gehalten, ohne schwere 3D‑Effekte.",
+        "Wenn du einen API‑Key einträgst, kann ich echte KI‑Antworten liefern.",
+        "Ich kann dir Ideen für Python‑Projekte, Future‑Tech und KI‑Experimente geben.",
+        "Meine Persönlichkeit ist futuristisch, analytisch und leicht sarkastisch."
     ];
 
     const outros = [
         "Bereit für den nächsten Befehl.",
         ">>> listening...",
         "System idle – aber aufmerksam.",
-        "Neural‑Interface wartet auf weitere Kommandos.",
+        "Neon‑Terminal wartet auf weitere Kommandos.",
         "Frag weiter, Operator."
     ];
 
     return pick(intros) + " " + pick(cores) + " " + pick(outros);
 }
 
+/* Optionale echte API-Anbindung */
 async function callAI(question) {
     const url = "https://api.openai.com/v1/chat/completions";
 
     const body = {
         model: "gpt-4o-mini",
         messages: [
-            { role: "system", content: "Du bist die futuristische FeblIndustryKI im Hologram‑OS‑Style, gebaut von Felix." },
+            { role: "system", content: "Du bist die futuristische FeblIndustryKI im Lite-Neon-Terminal-Style, gebaut von Felix." },
             { role: "user", content: question }
         ]
     };
