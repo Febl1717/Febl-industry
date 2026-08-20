@@ -6,7 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const GROQ_API_KEY = "DEIN_GROQ_KEY_HIER";
+const GROQ_API_KEY = ""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;
 
 app.post("/api/groq", async (req, res) => {
     const userMessage = req.body.message;
