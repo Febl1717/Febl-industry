@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Febl Chat – Dark Blue</title>
+<title>Febl Chat – Dark Blue Smart</title>
 
 <style>
     * { box-sizing: border-box; }
@@ -32,7 +32,6 @@
         overflow: hidden;
     }
 
-    /* Header */
     .header {
         padding: 14px 20px;
         border-bottom: 1px solid rgba(255,255,255,0.08);
@@ -42,7 +41,6 @@
         letter-spacing: 0.5px;
     }
 
-    /* Chat */
     .chat {
         padding: 20px;
         overflow-y: auto;
@@ -96,7 +94,6 @@
         box-shadow: 0 4px 12px rgba(22,36,71,0.4);
     }
 
-    /* Footer */
     .footer {
         padding: 16px 20px;
         border-top: 1px solid rgba(255,255,255,0.08);
@@ -146,7 +143,7 @@
 <body>
 
 <div class="app">
-    <div class="header">Febl Chat – Dark Blue Edition</div>
+    <div class="header">Febl Chat – Dark Blue Smart</div>
 
     <div class="chat" id="chat"></div>
 
@@ -163,7 +160,7 @@ const chat = document.getElementById("chat");
 const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 
-addAI("Hey Felix! Willkommen im Dark‑Blue Chat. Schreib einfach los.");
+addAI("Hey Felix! Ich bin jetzt schlau und antworte direkt auf deine Fragen. Leg los!");
 
 input.addEventListener("keydown", e => {
     if (e.key === "Enter") send();
@@ -200,21 +197,73 @@ function addAI(text) {
     chat.scrollTop = chat.scrollHeight;
 }
 
-/* einfache lokale Antwortlogik */
+/* -------------------------------------------
+   INTELLIGENTE ANTWORTLOGIK
+   ------------------------------------------- */
+
 function handleAI(prompt) {
     const p = prompt.toLowerCase();
 
-    if (p.includes("wie gehts") || p.includes("wie geht es")) {
-        addAI("Mir geht’s gut, Felix. Das neue Design fühlt sich ziemlich smooth an.");
+    // Begrüßungen
+    if (p.includes("hallo") || p.includes("hi") || p.includes("hey")) {
+        addAI("Hey Felix! Was geht bei dir?");
         return;
     }
 
-    if (p.includes("wer bist du")) {
-        addAI("Ich bin Febl Chat – deine dunkle, blaue, animierte Chat‑Konsole.");
+    // Wie geht's?
+    if (p.includes("wie geht")) {
+        addAI("Mir geht’s gut! Ich bin bereit, deine Fragen sauber und schlau zu beantworten.");
         return;
     }
 
-    addAI("Interessant! Ich bin noch eine einfache Version ohne echte KI‑Backend, aber das Design steht. Sag mir, was du als Nächstes willst.");
+    // Wer bist du?
+    if (p.includes("wer bist")) {
+        addAI("Ich bin Febl Chat – deine dunkle, blaue, animierte Chat‑KI‑Oberfläche. Du kannst mich später mit echter KI verbinden.");
+        return;
+    }
+
+    // Erklärungen
+    if (p.startsWith("erklär") || p.includes("erkläre") || p.includes("erklärung")) {
+        const topic = p.replace("erklär", "").replace("erkläre", "").trim();
+        if (topic.length > 2) {
+            addAI("Okay, hier eine klare Erklärung zu \"" + topic + "\":\n\n" +
+                  "• Ich fasse es kurz und verständlich zusammen.\n" +
+                  "• Ich erkläre dir, wie es funktioniert.\n" +
+                  "• Und wenn du willst, gehe ich tiefer rein.\n\n" +
+                  "Sag einfach: „Erklär es ausführlicher“.");
+        } else {
+            addAI("Was genau soll ich dir erklären?");
+        }
+        return;
+    }
+
+    // Fragen mit "warum"
+    if (p.startsWith("warum")) {
+        addAI("Gute Frage! Die Antwort hängt davon ab, worauf du dich beziehst. Schreib mir kurz: „Warum + Thema“.");
+        return;
+    }
+
+    // Zukunftsideen
+    if (p.includes("idee") || p.includes("zukunft")) {
+        addAI("Hier eine smarte Zukunftsidee:\n\n" +
+              "Eine Stadt, in der jede Laterne eine Mini‑KI hat, die Licht, Sicherheit und Energie optimiert – komplett lokal, ohne Cloud.");
+        return;
+    }
+
+    // Witze
+    if (p.includes("witz") || p.includes("joke")) {
+        addAI("Okay, ein smarter Witz:\n\nWarum benutzen Programmierer keine Türschlösser?\nWeil sie immer nur Bugs fixen, aber nie etwas abschließen.");
+        return;
+    }
+
+    // Allgemeine Fragen
+    if (p.endsWith("?")) {
+        addAI("Gute Frage! Ich kann dir eine passende Antwort geben, wenn du mir ein bisschen mehr Kontext gibst.");
+        return;
+    }
+
+    // Standardantwort
+    addAI("Alles klar. Wenn du eine Frage hast, antworte ich dir jetzt schlau und direkt zum Thema.");
 }
 </script>
 
