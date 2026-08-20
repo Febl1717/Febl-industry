@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Febl Chat – Dark Blue Smart</title>
+<title>Febl Chat – Dark Blue Smart + Loader</title>
 
 <style>
     * { box-sizing: border-box; }
@@ -19,6 +19,46 @@
         align-items: center;
     }
 
+    /* ---------------- LOADING SCREEN ---------------- */
+    .loader-screen {
+        position: absolute;
+        inset: 0;
+        background: #0a1224;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 999;
+        animation: fadeOut 0.8s ease forwards;
+        animation-delay: 2.2s;
+    }
+
+    .loader-circle {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        border: 6px solid rgba(255,255,255,0.1);
+        border-top-color: #3b82f6;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .loader-text {
+        font-size: 18px;
+        letter-spacing: 1px;
+        color: #cbd5e1;
+        animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeOut {
+        to { opacity: 0; visibility: hidden; }
+    }
+
+    /* ---------------- MAIN APP ---------------- */
     .app {
         width: 900px;
         max-width: 95vw;
@@ -30,6 +70,13 @@
         display: grid;
         grid-template-rows: auto 1fr auto;
         overflow: hidden;
+        opacity: 0;
+        animation: appFadeIn 1s ease forwards;
+        animation-delay: 2.3s;
+    }
+
+    @keyframes appFadeIn {
+        to { opacity: 1; }
     }
 
     .header {
@@ -134,7 +181,14 @@
         transition: 0.2s;
     }
 
-    .send-btn:hover {
+    .send-btn:disabled {
+        background: #0f1a33;
+        color: #6b7280;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    .send-btn:hover:not(:disabled) {
         background: #2a4bb8;
     }
 </style>
@@ -142,6 +196,13 @@
 
 <body>
 
+<!-- LOADING SCREEN -->
+<div class="loader-screen">
+    <div class="loader-circle"></div>
+    <div class="loader-text">Febl Chat wird geladen…</div>
+</div>
+
+<!-- MAIN APP -->
 <div class="app">
     <div class="header">Febl Chat – Dark Blue Smart</div>
 
@@ -160,7 +221,12 @@ const chat = document.getElementById("chat");
 const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 
-addAI("Hey Felix! Ich bin jetzt schlau und antworte direkt auf deine Fragen. Leg los!");
+const cooldown = 1000; // 1 Sekunde Cooldown
+
+// Startnachricht nach Loader
+setTimeout(() => {
+    addAI("Hey Felix! Ich bin jetzt mit Ladeanimation, Cooldown und smarten Antworten bereit.");
+}, 2600);
 
 input.addEventListener("keydown", e => {
     if (e.key === "Enter") send();
@@ -168,11 +234,23 @@ input.addEventListener("keydown", e => {
 sendBtn.addEventListener("click", send);
 
 function send() {
+    if (sendBtn.disabled) return;
+
     const text = input.value.trim();
     if (!text) return;
+
     input.value = "";
     addUser(text);
     handleAI(text);
+
+    sendBtn.disabled = true;
+    input.disabled = true;
+
+    setTimeout(() => {
+        sendBtn.disabled = false;
+        input.disabled = false;
+        input.focus();
+    }, cooldown);
 }
 
 function addUser(text) {
@@ -197,73 +275,31 @@ function addAI(text) {
     chat.scrollTop = chat.scrollHeight;
 }
 
-/* -------------------------------------------
-   INTELLIGENTE ANTWORTLOGIK
-   ------------------------------------------- */
-
+/* ---------------- SMART ANSWERS ---------------- */
 function handleAI(prompt) {
     const p = prompt.toLowerCase();
 
-    // Begrüßungen
-    if (p.includes("hallo") || p.includes("hi") || p.includes("hey")) {
-        addAI("Hey Felix! Was geht bei dir?");
-        return;
-    }
-
-    // Wie geht's?
     if (p.includes("wie geht")) {
-        addAI("Mir geht’s gut! Ich bin bereit, deine Fragen sauber und schlau zu beantworten.");
+        addAI("Mir geht’s gut, Felix. Die neue Ladeanimation fühlt sich richtig smooth an.");
         return;
     }
 
-    // Wer bist du?
     if (p.includes("wer bist")) {
-        addAI("Ich bin Febl Chat – deine dunkle, blaue, animierte Chat‑KI‑Oberfläche. Du kannst mich später mit echter KI verbinden.");
+        addAI("Ich bin Febl Chat – jetzt mit Loader, Cooldown und smarter Logik.");
         return;
     }
 
-    // Erklärungen
-    if (p.startsWith("erklär") || p.includes("erkläre") || p.includes("erklärung")) {
-        const topic = p.replace("erklär", "").replace("erkläre", "").trim();
-        if (topic.length > 2) {
-            addAI("Okay, hier eine klare Erklärung zu \"" + topic + "\":\n\n" +
-                  "• Ich fasse es kurz und verständlich zusammen.\n" +
-                  "• Ich erkläre dir, wie es funktioniert.\n" +
-                  "• Und wenn du willst, gehe ich tiefer rein.\n\n" +
-                  "Sag einfach: „Erklär es ausführlicher“.");
-        } else {
-            addAI("Was genau soll ich dir erklären?");
-        }
+    if (p.startsWith("erklär")) {
+        addAI("Sag mir einfach, was ich erklären soll – ich mach’s klar und verständlich.");
         return;
     }
 
-    // Fragen mit "warum"
-    if (p.startsWith("warum")) {
-        addAI("Gute Frage! Die Antwort hängt davon ab, worauf du dich beziehst. Schreib mir kurz: „Warum + Thema“.");
+    if (p.includes("idee")) {
+        addAI("Hier eine Idee: Eine KI‑Lampe, die erkennt, wie du dich fühlst, und das Licht automatisch anpasst.");
         return;
     }
 
-    // Zukunftsideen
-    if (p.includes("idee") || p.includes("zukunft")) {
-        addAI("Hier eine smarte Zukunftsidee:\n\n" +
-              "Eine Stadt, in der jede Laterne eine Mini‑KI hat, die Licht, Sicherheit und Energie optimiert – komplett lokal, ohne Cloud.");
-        return;
-    }
-
-    // Witze
-    if (p.includes("witz") || p.includes("joke")) {
-        addAI("Okay, ein smarter Witz:\n\nWarum benutzen Programmierer keine Türschlösser?\nWeil sie immer nur Bugs fixen, aber nie etwas abschließen.");
-        return;
-    }
-
-    // Allgemeine Fragen
-    if (p.endsWith("?")) {
-        addAI("Gute Frage! Ich kann dir eine passende Antwort geben, wenn du mir ein bisschen mehr Kontext gibst.");
-        return;
-    }
-
-    // Standardantwort
-    addAI("Alles klar. Wenn du eine Frage hast, antworte ich dir jetzt schlau und direkt zum Thema.");
+    addAI("Alles klar. Frag mich einfach etwas – ich antworte jetzt schlau und smooth.");
 }
 </script>
 
