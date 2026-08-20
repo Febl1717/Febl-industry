@@ -12,7 +12,7 @@
         padding: 0;
         height: 100vh;
         background: #0a1224;
-        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        font-family: system-ui, sans-serif;
         color: #e5e7eb;
         display: flex;
         justify-content: center;
@@ -44,6 +44,7 @@
     }
 
     @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
     .loader-text {
         font-size: 18px;
@@ -51,8 +52,6 @@
         color: #cbd5e1;
         animation: fadeIn 1s ease;
     }
-
-    @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
     /* MAIN APP */
     .app {
@@ -75,11 +74,10 @@
 
     .header {
         padding: 14px 20px;
-        border-bottom: 1px solid rgba(255,255,255,0.08);
         background: #0d1730;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
         font-size: 16px;
         font-weight: 600;
-        letter-spacing: 0.5px;
     }
 
     .chat {
@@ -120,28 +118,23 @@
     .msg-bubble.user {
         background: #1e3a8a;
         color: #e5e7eb;
-        border-bottom-right-radius: 4px;
-        box-shadow: 0 4px 12px rgba(30,58,138,0.4);
     }
 
     .msg-bubble.ai {
         background: #162447;
         color: #e5e7eb;
-        border-bottom-left-radius: 4px;
         border: 1px solid rgba(255,255,255,0.08);
-        box-shadow: 0 4px 12px rgba(22,36,71,0.4);
     }
 
     /* TYPING ANIMATION */
     .typing {
         display: flex;
-        align-items: center;
         gap: 6px;
         padding: 10px 16px;
-        margin-bottom: 14px;
         background: #162447;
         border-radius: 14px;
         width: fit-content;
+        margin-bottom: 14px;
         border: 1px solid rgba(255,255,255,0.08);
         opacity: 0;
         animation: msgEnter 0.35s ease forwards;
@@ -167,14 +160,13 @@
     /* FOOTER */
     .footer {
         padding: 16px 20px;
-        border-top: 1px solid rgba(255,255,255,0.08);
         background: #0d1730;
+        border-top: 1px solid rgba(255,255,255,0.08);
     }
 
     .input-wrapper {
         display: flex;
         gap: 12px;
-        align-items: center;
         background: #0a1224;
         border-radius: 14px;
         border: 1px solid rgba(255,255,255,0.15);
@@ -187,20 +179,15 @@
         border: none;
         color: #e5e7eb;
         font-size: 16px;
-        outline: none;
     }
-
-    #userInput::placeholder { color: #94a3b8; }
 
     .send-btn {
         padding: 10px 18px;
+        background: #1e3a8a;
         border-radius: 10px;
         border: none;
-        background: #1e3a8a;
         color: #e5e7eb;
-        font-size: 15px;
         cursor: pointer;
-        transition: 0.2s;
     }
 
     .send-btn:disabled {
@@ -209,22 +196,18 @@
         cursor: not-allowed;
         opacity: 0.6;
     }
-
-    .send-btn:hover:not(:disabled) {
-        background: #2a4bb8;
-    }
 </style>
 </head>
 
 <body>
 
-<!-- LOADING SCREEN -->
+<!-- LOADER -->
 <div class="loader-screen">
     <div class="loader-circle"></div>
     <div class="loader-text">Febl Chat wird geladen…</div>
 </div>
 
-<!-- MAIN APP -->
+<!-- APP -->
 <div class="app">
     <div class="header">Febl Chat – Groq KI</div>
 
@@ -232,7 +215,7 @@
 
     <div class="footer">
         <div class="input-wrapper">
-            <input id="userInput" type="text" autocomplete="off" placeholder="Schreib etwas …">
+            <input id="userInput" type="text" placeholder="Schreib etwas …">
             <button class="send-btn" id="sendBtn">Senden</button>
         </div>
     </div>
@@ -243,13 +226,10 @@ const chat = document.getElementById("chat");
 const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 
-const cooldown = 1000; // 1 Sekunde
-const GROQ_API_KEY = "DEIN_KEY_HIER"; // <-- hier deinen Groq-Key eintragen
-const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
-const GROQ_MODEL = "llama-3.1-70b-versatile";
+const cooldown = 1000;
 
 setTimeout(() => {
-    addAI("Hey Felix! Ich bin jetzt mit echter Groq‑KI verbunden. Frag mich einfach etwas.");
+    addAI("Hey Felix! Ich bin jetzt mit echter Groq‑KI verbunden.");
 }, 2600);
 
 input.addEventListener("keydown", e => {
@@ -299,7 +279,6 @@ function addAI(text) {
     chat.scrollTop = chat.scrollHeight;
 }
 
-/* Typing-Animation */
 function typingAnimation() {
     const typing = document.createElement("div");
     typing.className = "typing";
@@ -324,7 +303,6 @@ function lastUserMessage() {
     return bubbles[bubbles.length - 1].textContent;
 }
 
-/* Groq API Call */
 async function callGroq(prompt) {
     try {
         const res = await fetch("http://localhost:3000/api/groq", {
@@ -341,7 +319,6 @@ async function callGroq(prompt) {
         addAI("Fehler: " + err);
     }
 }
-
 </script>
 
 </body>
