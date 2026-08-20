@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Febl Industry KI – Copilot Chat + SerpAPI ohne Server</title>
+<title>Febl Chat</title>
 
 <style>
     * { box-sizing: border-box; }
@@ -11,9 +11,9 @@
         margin: 0;
         padding: 0;
         height: 100vh;
-        background: #0b1120;
-        font-family: system-ui, sans-serif;
-        color: #e5e7eb;
+        background: #f3f4f6;
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        color: #111827;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -21,31 +21,48 @@
 
     .app {
         width: 900px;
-        height: 85vh;
-        background: #111827;
-        border-radius: 18px;
-        border: 1px solid rgba(148,163,184,0.4);
+        max-width: 95vw;
+        height: 80vh;
+        max-height: 95vh;
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 20px 40px rgba(15,23,42,0.08);
         display: grid;
         grid-template-rows: auto 1fr auto;
         overflow: hidden;
     }
 
+    /* Header */
     .header {
-        padding: 14px 20px;
-        border-bottom: 1px solid rgba(30,64,175,0.6);
-        background: #1e293b;
+        padding: 12px 16px;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #f9fafb;
+    }
+
+    .header-title {
         font-size: 15px;
         font-weight: 600;
     }
 
+    .header-sub {
+        font-size: 12px;
+        color: #6b7280;
+    }
+
+    /* Chat */
     .chat {
-        padding: 16px 20px;
+        padding: 16px;
         overflow-y: auto;
+        background: #f9fafb;
     }
 
     .msg-row {
         display: flex;
-        margin-bottom: 12px;
+        margin-bottom: 10px;
     }
 
     .msg-row.user { justify-content: flex-end; }
@@ -53,8 +70,8 @@
 
     .msg-bubble {
         max-width: 70%;
-        padding: 10px 12px;
-        border-radius: 16px;
+        padding: 8px 12px;
+        border-radius: 12px;
         font-size: 14px;
         line-height: 1.4;
         white-space: pre-wrap;
@@ -62,50 +79,56 @@
 
     .msg-bubble.user {
         background: #2563eb;
-        color: #e5e7eb;
+        color: #f9fafb;
         border-bottom-right-radius: 4px;
     }
 
     .msg-bubble.ai {
-        background: #1e293b;
-        color: #e5e7eb;
-        border: 1px solid rgba(148,163,184,0.5);
+        background: #e5e7eb;
+        color: #111827;
         border-bottom-left-radius: 4px;
     }
 
+    /* Footer / Input */
     .footer {
-        padding: 12px 20px;
-        border-top: 1px solid rgba(31,41,55,0.9);
-        background: #1e293b;
+        padding: 12px 16px;
+        border-top: 1px solid #e5e7eb;
+        background: #f9fafb;
     }
 
     .input-wrapper {
         display: flex;
-        gap: 10px;
+        gap: 8px;
         align-items: center;
-        background: #0f172a;
-        border-radius: 999px;
-        border: 1px solid rgba(55,65,81,0.9);
-        padding: 6px 10px;
     }
 
     #userInput {
         flex: 1;
-        background: transparent;
-        border: none;
-        color: #e5e7eb;
+        background: #ffffff;
+        border-radius: 999px;
+        border: 1px solid #d1d5db;
+        padding: 8px 12px;
         font-size: 14px;
         outline: none;
     }
 
+    #userInput:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 1px rgba(37,99,235,0.3);
+    }
+
     .send-btn {
-        padding: 6px 14px;
+        padding: 8px 14px;
         border-radius: 999px;
         border: none;
         background: #2563eb;
-        color: #e5e7eb;
+        color: #f9fafb;
         font-size: 13px;
         cursor: pointer;
+    }
+
+    .send-btn:hover {
+        background: #1d4ed8;
     }
 </style>
 </head>
@@ -113,28 +136,37 @@
 <body>
 
 <div class="app">
-    <div class="header">Febl Industry KI – Copilot Style + Google Suche</div>
+    <!-- Header -->
+    <div class="header">
+        <div>
+            <div class="header-title">Febl Chat</div>
+            <div class="header-sub">Clean · simpel · bereit für KI</div>
+        </div>
+        <div class="header-sub">Operator: Felix</div>
+    </div>
 
+    <!-- Chat -->
     <div class="chat" id="chat"></div>
 
+    <!-- Footer -->
     <div class="footer">
         <div class="input-wrapper">
-            <input id="userInput" type="text" autocomplete="off" placeholder="Frag deine KI etwas …">
+            <input id="userInput" type="text" autocomplete="off" placeholder="Schreib etwas …">
             <button class="send-btn" id="sendBtn">Senden</button>
         </div>
     </div>
 </div>
 
 <script>
-const SERP_API_KEY = "06ed74f1cece99fa0eb7f01951cdb7d8ba7a7bb700e5715848ee74ae2ac78c6f";  // <-- WICHTIG
-
 const chat = document.getElementById("chat");
 const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 
-addAI("Hey Felix! Ich bin deine Febl‑KI mit Google‑Suche – ohne Server, ohne WebGPU, ohne Fehler.");
+addAI("Hey Felix, das ist dein cleanes Chat‑Interface. Du kannst hier schreiben, und ich antworte simpel lokal.");
 
-input.addEventListener("keydown", e => { if (e.key === "Enter") send(); });
+input.addEventListener("keydown", e => {
+    if (e.key === "Enter") send();
+});
 sendBtn.addEventListener("click", send);
 
 function send() {
@@ -167,39 +199,22 @@ function addAI(text) {
     chat.scrollTop = chat.scrollHeight;
 }
 
-async function handleAI(prompt) {
-    addAI("Suche…");
+/* einfache lokale „Antwortlogik“ */
+function handleAI(prompt) {
+    const p = prompt.toLowerCase();
 
-    try {
-        // Öffentlicher Proxy, der CORS erlaubt
-        const proxy = "https://corsproxy.io/?";
-
-        const url = proxy + encodeURIComponent(
-            `https://serpapi.com/search.json?engine=google&q=${encodeURIComponent(prompt)}&hl=de&gl=de&api_key=${SERP_API_KEY}`
-        );
-
-        const res = await fetch(url);
-        const data = await res.json();
-
-        let answer = "";
-
-        if (data.answer_box?.answer) {
-            answer = data.answer_box.answer;
-        } else if (data.answer_box?.snippet) {
-            answer = data.answer_box.snippet;
-        } else if (data.organic_results?.length > 0) {
-            answer = data.organic_results[0].snippet || data.organic_results[0].title;
-        } else {
-            answer = "Ich habe etwas gefunden, aber Google hat mir keine klare Antwort gegeben.";
-        }
-
-        addAI(answer);
-
-    } catch (err) {
-        addAI("Fehler: " + err);
+    if (p.includes("wie gehts") || p.includes("wie geht es")) {
+        addAI("Mir geht’s gut – ich bin dein cleanes Chat‑Interface und warte auf deine Ideen.");
+        return;
     }
+
+    if (p.includes("wer bist du")) {
+        addAI("Ich bin Febl Chat – eine einfache Oberfläche, die du später mit echter KI verbinden kannst.");
+        return;
+    }
+
+    addAI("Spannend. Ich bin noch eine simple Version ohne echte Online‑KI, aber du kannst mich als Basis für deine eigene KI‑Logik nutzen.");
 }
 </script>
 
 </body>
-</html>
