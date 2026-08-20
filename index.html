@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Febl Industry KI – Lite Hologram</title>
+<title>Febl Industry KI – Neon Minimal</title>
 
 <style>
     * { box-sizing: border-box; }
@@ -11,43 +11,31 @@
         margin: 0;
         padding: 0;
         height: 100vh;
-        background: radial-gradient(circle at top, #020b14 0%, #000 70%);
-        font-family: "JetBrains Mono", "Consolas", monospace;
+        background: #020b14;
+        font-family: "JetBrains Mono", monospace;
         color: #c8f7ff;
         display: flex;
         justify-content: center;
         align-items: center;
-        overflow: hidden;
     }
 
     .shell {
         width: 900px;
         max-width: 95vw;
         height: 80vh;
-        max-height: 90vh;
         display: grid;
         grid-template-columns: 2fr 1fr;
         gap: 16px;
         padding: 16px;
     }
 
+    /* Minimal Panels */
     .panel {
-        background: rgba(3, 20, 35, 0.7);
-        border-radius: 14px;
-        border: 1px solid rgba(0,255,255,0.35);
-        box-shadow: 0 0 18px rgba(0,255,255,0.3);
+        background: rgba(0, 20, 40, 0.6);
+        border: 1px solid rgba(0,255,255,0.25);
+        border-radius: 10px;
         padding: 14px;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .panel::before {
-        content: "";
-        position: absolute;
-        inset: -40%;
-        background: radial-gradient(circle at 0 0, rgba(0,255,255,0.18) 0, transparent 55%);
-        opacity: 0.4;
-        pointer-events: none;
+        backdrop-filter: blur(4px);
     }
 
     /* Terminal */
@@ -58,53 +46,32 @@
     }
 
     .terminal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 8px;
         font-size: 12px;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
+        letter-spacing: 0.1em;
         color: #7ee7ff;
+        margin-bottom: 8px;
     }
-
-    .terminal-header-left {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .dot {
-        width: 9px;
-        height: 9px;
-        border-radius: 50%;
-    }
-    .dot.red { background: #ff5f57; }
-    .dot.yellow { background: #ffbd2e; }
-    .dot.green { background: #28c840; }
 
     .terminal-body {
         flex: 1;
-        border-radius: 10px;
-        background: rgba(0, 10, 20, 0.9);
+        background: rgba(0, 10, 20, 0.7);
+        border-radius: 8px;
         padding: 10px;
         overflow-y: auto;
         font-size: 13px;
+        border: 1px solid rgba(0,255,255,0.15);
     }
 
     .line {
         margin: 6px 0;
-        opacity: 0;
-        transform: translateY(6px);
-        animation: lineAppear 0.25s forwards;
         white-space: pre-wrap;
+        opacity: 0;
+        transform: translateY(4px);
+        animation: fadeIn 0.2s forwards;
     }
 
-    @keyframes lineAppear {
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    @keyframes fadeIn {
+        to { opacity: 1; transform: translateY(0); }
     }
 
     .line.ai {
@@ -112,160 +79,52 @@
         text-shadow: 0 0 6px #00eaff;
     }
 
+    /* Input */
     .input-line {
         display: flex;
         align-items: center;
         margin-top: 10px;
         padding-top: 8px;
-        border-top: 1px solid rgba(0,255,255,0.35);
+        border-top: 1px solid rgba(0,255,255,0.25);
     }
 
     #userInput {
         flex: 1;
         background: transparent;
         border: none;
-        border-bottom: 1px solid rgba(0,255,255,0.7);
+        border-bottom: 1px solid rgba(0,255,255,0.5);
         color: #c8f7ff;
-        font-family: inherit;
         font-size: 14px;
         padding: 4px;
         outline: none;
     }
 
-    #userInput::placeholder {
-        color: #4aaac0;
+    #userInput:focus {
+        border-bottom-color: #00f2ff;
     }
 
-    .cursor {
-        width: 10px;
-        height: 16px;
-        background: #00f2ff;
-        margin-left: 6px;
-        animation: blink 0.7s infinite;
-    }
-
-    @keyframes blink {
-        0%, 100% { opacity: 0; }
-        50% { opacity: 1; }
-    }
-
-    /* Autocomplete */
-    .autocomplete {
-        position: absolute;
-        bottom: 40px;
-        left: 60px;
-        background: rgba(0, 20, 30, 0.95);
-        border-radius: 8px;
-        border: 1px solid rgba(0,255,255,0.4);
-        box-shadow: 0 0 12px rgba(0,255,255,0.3);
-        padding: 6px 8px;
-        font-size: 12px;
-        min-width: 160px;
-        z-index: 5;
-    }
-
-    .autocomplete-item {
-        padding: 4px 2px;
-        cursor: pointer;
-    }
-
-    .autocomplete-item:hover {
-        background: rgba(0,255,255,0.12);
-    }
-
-    /* Avatar (leicht) */
+    /* Avatar */
     .avatar-panel {
         display: flex;
         flex-direction: column;
         height: 100%;
+        align-items: center;
     }
 
     .avatar-header {
         font-size: 12px;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
+        letter-spacing: 0.1em;
         color: #7ee7ff;
-        margin-bottom: 8px;
-    }
-
-    .avatar-wrapper {
-        flex: 1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        margin-bottom: 10px;
     }
 
     .avatar-circle {
-        width: 140px;
-        height: 140px;
+        width: 120px;
+        height: 120px;
         border-radius: 50%;
-        border: 2px solid rgba(0,255,255,0.6);
-        box-shadow: 0 0 18px rgba(0,255,255,0.5);
-        background: radial-gradient(circle at 30% 30%, #00f2ff 0, #041018 65%);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        animation: avatarFloat 4s infinite alternate;
-    }
-
-    @keyframes avatarFloat {
-        0% { transform: translateY(0); }
-        100% { transform: translateY(-6px); }
-    }
-
-    .avatar-face {
-        width: 70%;
-        height: 70%;
-        border-radius: 50%;
-        background: radial-gradient(circle at 30% 30%, #ffffff 0, #c8f7ff 30%, #041018 70%);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .eye {
-        position: absolute;
-        top: 40%;
-        width: 18%;
-        height: 12%;
-        border-radius: 50%;
-        background: #000;
-        box-shadow: 0 0 6px #00f2ff;
-    }
-
-    .eye.left { left: 24%; }
-    .eye.right { right: 24%; }
-
-    .eye::after {
-        content: "";
-        position: absolute;
-        inset: 20%;
-        border-radius: 50%;
-        background: #00f2ff;
-        box-shadow: 0 0 8px #00f2ff;
-    }
-
-    .mouth {
-        position: absolute;
-        bottom: 22%;
-        left: 50%;
-        width: 26%;
-        height: 6%;
-        transform: translateX(-50%);
-        border-radius: 0 0 50% 50%;
-        border-bottom: 2px solid #00f2ff;
-        opacity: 0.8;
-    }
-
-    .avatar-stats {
-        margin-top: 10px;
-        font-size: 12px;
-        color: #9be9ff;
-    }
-
-    .avatar-stat-line {
-        display: flex;
-        justify-content: space-between;
-        margin: 2px 0;
+        border: 2px solid rgba(0,255,255,0.4);
+        background: radial-gradient(circle, #00eaff 0%, #001018 70%);
+        box-shadow: 0 0 20px rgba(0,255,255,0.3);
     }
 </style>
 </head>
@@ -275,146 +134,85 @@
 <div class="shell">
     <!-- Terminal -->
     <div class="panel terminal">
-        <div class="terminal-header">
-            <div class="terminal-header-left">
-                <div class="dot red"></div>
-                <div class="dot yellow"></div>
-                <div class="dot green"></div>
-                <span>[ FEBL INDUSTRY KI vLite ]</span>
-            </div>
-            <span>STATUS: ONLINE</span>
-        </div>
+        <div class="terminal-header">[ FEBL INDUSTRY KI – MINIMAL MODE ]</div>
 
-        <div class="terminal-body" id="terminalBody">
-            <!-- Boot-Sequenz wird per JS ergänzt -->
-        </div>
+        <div class="terminal-body" id="terminalBody"></div>
 
         <div class="input-line">
             <span>>>> </span>
-            <input id="userInput" type="text" autocomplete="off"
-                   placeholder="z.B. analyze_data, system_status, explain_python">
-            <div class="cursor"></div>
-        </div>
-
-        <div class="autocomplete" id="autocomplete" style="display:none;">
-            <div class="autocomplete-item">analyze_data</div>
-            <div class="autocomplete-item">system_status</div>
-            <div class="autocomplete-item">tell_joke</div>
-            <div class="autocomplete-item">explain_python</div>
-            <div class="autocomplete-item">future_tech_idea</div>
+            <input id="userInput" type="text" autocomplete="off" placeholder="Befehl eingeben...">
         </div>
     </div>
 
     <!-- Avatar -->
     <div class="panel avatar-panel">
-        <div class="avatar-header">AI-CORE: FEBL INDUSTRY KI</div>
-        <div class="avatar-wrapper">
-            <div class="avatar-circle">
-                <div class="avatar-face">
-                    <div class="eye left"></div>
-                    <div class="eye right"></div>
-                    <div class="mouth"></div>
-                </div>
-            </div>
-        </div>
-        <div class="avatar-stats">
-            <div class="avatar-stat-line">
-                <span>AI-CORE</span><span>98.7%</span>
-            </div>
-            <div class="avatar-stat-line">
-                <span>NET LINK</span><span>READY</span>
-            </div>
-            <div class="avatar-stat-line">
-                <span>PERSONALITY</span><span>Futuristic • Analytical • Slightly Sarcastic</span>
-            </div>
-        </div>
+        <div class="avatar-header">AI CORE</div>
+        <div class="avatar-circle"></div>
     </div>
 </div>
 
-<audio id="sndSend">
-    <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=">
-</audio>
-<audio id="sndReply">
-    <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=">
-</audio>
-
-<script>
-const API_KEY = "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";   // optional: echten Key eintragen
-const USE_DEMO_MODE = false;            // true = Demo-Antworten, false = echte API
+<!-- WebLLM -->
+<script type="module">
+import * as webllm from "https://esm.run/@mlc-ai/web-llm";
 
 const terminalBody = document.getElementById("terminalBody");
 const input = document.getElementById("userInput");
-const sndSend = document.getElementById("sndSend");
-const sndReply = document.getElementById("sndReply");
-const autocomplete = document.getElementById("autocomplete");
 
-/* Boot-Sequenz */
+let engine = null;
+
+/* Boot */
 const bootLines = [
-    "Initializing Febl Industry KI Lite...",
-    "Checking core systems... OK",
-    "Loading personality module... Success",
-    "Interface mode: Neon Terminal (Lite)",
-    "Welcome, Operator Felix.",
-    "System ready. Awaiting commands."
+    "Systemstart...",
+    "WebGPU prüfen... OK",
+    "Lade lokales KI-Modell...",
+    "Modell: Llama-3.1-8B-Instruct",
+    "Febl Industry KI Minimal Mode aktiv."
 ];
 
 bootLines.forEach((line, i) => {
-    setTimeout(() => addLine(line, false, true), i * 500);
+    setTimeout(() => addLine(line, false, true), i * 400);
 });
 
-/* Eingabe & Autocomplete */
-input.addEventListener("input", handleAutocomplete);
+/* Engine laden */
+(async () => {
+    try {
+        engine = await webllm.CreateMLCEngine("Llama-3.1-8B-Instruct");
+        addLine("[KI] Modell geladen.", false, true);
+    } catch (e) {
+        addLine("[KI] Fehler beim Laden: " + e, false, true);
+    }
+})();
+
+/* Eingabe */
 input.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
-        handleCommand(input.value.trim());
+        const cmd = input.value.trim();
         input.value = "";
-        autocomplete.style.display = "none";
+        handleCommand(cmd);
     }
 });
-
-autocomplete.addEventListener("click", (e) => {
-    if (e.target.classList.contains("autocomplete-item")) {
-        input.value = e.target.textContent;
-        autocomplete.style.display = "none";
-        input.focus();
-    }
-});
-
-function handleAutocomplete() {
-    const val = input.value.trim();
-    if (!val) {
-        autocomplete.style.display = "none";
-        return;
-    }
-    autocomplete.style.display = "block";
-}
 
 /* Command Handling */
 function handleCommand(cmd) {
     if (!cmd) return;
 
-    playSound(sndSend);
     addLine(">>> " + cmd);
 
-    const typing = addLine("[FeblIndustryKI] Processing...", true, true);
+    const loading = addLine("[KI] Verarbeite...", true, true);
 
-    if (USE_DEMO_MODE) {
-        setTimeout(() => {
-            typing.remove();
-            const answer = generateDemoAnswer(cmd);
-            addLine("[FeblIndustryKI]: " + answer, false, true);
-            playSound(sndReply);
-        }, 800);
-    } else {
-        callAI(cmd).then(answer => {
-            typing.remove();
-            addLine("[FeblIndustryKI]: " + answer, false, true);
-            playSound(sndReply);
-        }).catch(err => {
-            typing.remove();
-            addLine("[FeblIndustryKI]: Fehler bei KI-Anfrage: " + err, false, true);
-        });
+    if (!engine) {
+        loading.remove();
+        addLine("[KI] Modell lädt noch...", false, true);
+        return;
     }
+
+    callAI(cmd).then(answer => {
+        loading.remove();
+        addLine("[KI] " + answer, false, true);
+    }).catch(err => {
+        loading.remove();
+        addLine("[KI] Fehler: " + err, false, true);
+    });
 }
 
 /* Terminal-Ausgabe */
@@ -429,73 +227,18 @@ function addLine(text, noAnim = false, ai = false) {
     return div;
 }
 
-/* Sounds */
-function playSound(el) {
-    el.currentTime = 0;
-    el.play().catch(() => {});
-}
-
-/* Demo-Antworten */
-function pick(arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
-}
-
-function generateDemoAnswer(cmd) {
-    const intros = [
-        "Analyse gestartet.",
-        "Neural‑Routine aktiviert.",
-        "Command erkannt.",
-        "Futuristische Logik angewendet.",
-        "Interessanter Input, Felix."
-    ];
-
-    const cores = [
-        "Ich laufe aktuell im Lite‑Modus, optimiert für flüssige Performance.",
-        "Dieses Interface ist bewusst leicht gehalten, ohne schwere 3D‑Effekte.",
-        "Wenn du einen API‑Key einträgst, kann ich echte KI‑Antworten liefern.",
-        "Ich kann dir Ideen für Python‑Projekte, Future‑Tech und KI‑Experimente geben.",
-        "Meine Persönlichkeit ist futuristisch, analytisch und leicht sarkastisch."
-    ];
-
-    const outros = [
-        "Bereit für den nächsten Befehl.",
-        ">>> listening...",
-        "System idle – aber aufmerksam.",
-        "Neon‑Terminal wartet auf weitere Kommandos.",
-        "Frag weiter, Operator."
-    ];
-
-    return pick(intros) + " " + pick(cores) + " " + pick(outros);
-}
-
-/* Optionale echte API-Anbindung */
+/* KI */
 async function callAI(question) {
-    const url = "https://api.groq.com/openai/v1/chat/completions";
-
-    const body = {
-        model: "gpt-4o-mini",
+    const reply = await engine.chat.completions.create({
         messages: [
-            { role: "system", content: "Du bist die futuristische FeblIndustryKI im Lite-Neon-Terminal-Style, gebaut von Felix." },
+            { role: "system", content: "Du bist die Febl Industry KI im Minimal Mode. Antworte klar, direkt und futuristisch." },
             { role: "user", content: question }
         ]
-    };
-
-    const res = await fetch(url, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${API_KEY}`
-        },
-        body: JSON.stringify(body)
     });
 
-    if (!res.ok) {
-        throw new Error("HTTP " + res.status);
-    }
-
-    const data = await res.json();
-    return data.choices?.[0]?.message?.content || "Keine Antwort.";
+    return reply.choices[0].message.content;
 }
 </script>
 
 </body>
+</html>
