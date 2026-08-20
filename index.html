@@ -1,83 +1,120 @@
 <!DOCTYPE html>
-<html><div class="ai-box">
-    <h1>Febl Industry KI</h1>
-    <p>System online. Awaiting input...</p>
-</div>
+<html lang="de">
 <head>
-<title>Febl Industry KI  (open beta )</title>
-<style>.ai-box {
-    background: #111;
-    color: #0ff;
-    padding: 20px;
-    border-radius: 10px;
-    border: 2px solid #0ff;
-    box-shadow: 0 0 20px #0ff;
-    animation: pulse 2s infinite;
-}
+    <meta charset="UTF-8">
+    <title>Febl Industry KI</title>
+    <style>
+        body {
+            background: #0a0a0a;
+            color: #0ff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 50px;
+        }
 
-@keyframes pulse {
-    0% { box-shadow: 0 0 10px #0ff; }
-    50% { box-shadow: 0 0 25px #0ff; }
-    100% { box-shadow: 0 0 10px #0ff; }
-}
-body {
-    background: #111;
-    color: #eee;
-    font-family: Arial;
-}
-#chat {
-    width: 400px;
-    margin: auto;
-    padding-top: 50px;
-}
-input {
-    width: 300px;
-    padding: 10px;
-    border-radius: 5px;
-    border: none;
-}
-button {
-    padding: 10px;
-    margin-left: 10px;
-    border-radius: 5px;
-    border: none;
-    background: #444;
-    color: #fff;
-}
-#antwort {
-    margin-top: 20px;
-    padding: 10px;
-    background: #222;
-    border-radius: 5px;
-}
-</style>
+        .ai-box {
+            width: 400px;
+            margin: auto;
+            padding: 20px;
+            border: 2px solid #0ff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px #0ff;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 10px #0ff; }
+            50% { box-shadow: 0 0 25px #0ff; }
+            100% { box-shadow: 0 0 10px #0ff; }
+        }
+
+        #userInput {
+            width: 80%;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+        }
+
+        #sendBtn {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background: #0ff;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #sendBtn:hover {
+            background: #00cccc;
+        }
+
+        #output {
+            margin-top: 20px;
+            text-align: left;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .answer {
+            background: #111;
+            padding: 10px;
+            margin-top: 10px;
+            border-left: 3px solid #0ff;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: appear 0.4s forwards;
+        }
+
+        @keyframes appear {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
-<body><input id="userInput" type="text" placeholder="Frage eingeben...">
-<button id="sendBtn">Senden</button>
 
-<div id="output"></div>
+<body>
 
-<div id="chat">
-    <h2>Febl Industry KI  (open beta )</h2>
-    <input id="frage" placeholder="Frage eingeben">
-    <button onclick="senden()">Senden</button>
-    <p id="antwort"></p>
-</div>
+    <div class="ai-box">
+        <h1>Febl Industry KI</h1>
 
-<script>
-async function senden() {
-    let frage = document.getElementById("frage").value;
+        <input id="userInput" type="text" placeholder="Frage eingeben...">
+        <button id="sendBtn">Senden</button>
 
-    let res = await fetch("https://febl-industry.onrender.com/ask", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ frage })
-    });
+        <div id="output"></div>
+    </div>
 
-    let data = await res.json();
-    document.getElementById("antwort").innerText = data.antwort;
-}
-</script>
+    <script>
+        document.getElementById("sendBtn").addEventListener("click", () => {
+            const input = document.getElementById("userInput").value.trim();
+
+            if (input === "") {
+                printAnswer("Bitte eine Frage eingeben.");
+                return;
+            }
+
+            reply(input);
+            document.getElementById("userInput").value = "";
+        });
+
+        function reply(question) {
+            printAnswer("Verarbeite: " + question);
+        }
+
+        function printAnswer(text) {
+            const box = document.getElementById("output");
+            const div = document.createElement("div");
+            div.className = "answer";
+            div.innerText = text;
+            box.appendChild(div);
+        }
+    </script>
 
 </body>
 </html>
