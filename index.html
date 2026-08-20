@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Felix KI</title>
+<style>
+body {
+    background: #111;
+    color: #eee;
+    font-family: Arial;
+}
+#chat {
+    width: 400px;
+    margin: auto;
+    padding-top: 50px;
+}
+input {
+    width: 300px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+}
+button {
+    padding: 10px;
+    margin-left: 10px;
+    border-radius: 5px;
+    border: none;
+    background: #444;
+    color: #fff;
+}
+#antwort {
+    margin-top: 20px;
+    padding: 10px;
+    background: #222;
+    border-radius: 5px;
+}
+</style>
+</head>
+<body>
+
+<div id="chat">
+    <h2>Felix KI</h2>
+    <input id="frage" placeholder="Frage eingeben">
+    <button onclick="senden()">Senden</button>
+    <p id="antwort"></p>
+</div>
+
+<script>
+async function senden() {
+    let frage = document.getElementById("frage").value;
+
+    let res = await fetch("https://DEINE-RENDER-URL.onrender.com/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ frage })
+    });
+
+    let data = await res.json();
+    document.getElementById("antwort").innerText = data.antwort;
+}
+</script>
+
+</body>
+</html>
