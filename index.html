@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Febl Chat – Dark Blue Smart + Loader + Typing</title>
+<title>Febl Chat – Groq KI</title>
 
 <style>
     * { box-sizing: border-box; }
@@ -19,7 +19,7 @@
         align-items: center;
     }
 
-    /* ---------------- LOADING SCREEN ---------------- */
+    /* LOADING SCREEN */
     .loader-screen {
         position: absolute;
         inset: 0;
@@ -54,7 +54,7 @@
 
     @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
-    /* ---------------- MAIN APP ---------------- */
+    /* MAIN APP */
     .app {
         width: 900px;
         max-width: 95vw;
@@ -132,7 +132,7 @@
         box-shadow: 0 4px 12px rgba(22,36,71,0.4);
     }
 
-    /* ---------------- TYPING ANIMATION ---------------- */
+    /* TYPING ANIMATION */
     .typing {
         display: flex;
         align-items: center;
@@ -164,7 +164,7 @@
         100% { opacity: 0.2; }
     }
 
-    /* ---------------- FOOTER ---------------- */
+    /* FOOTER */
     .footer {
         padding: 16px 20px;
         border-top: 1px solid rgba(255,255,255,0.08);
@@ -226,7 +226,7 @@
 
 <!-- MAIN APP -->
 <div class="app">
-    <div class="header">Febl Chat – Dark Blue Smart</div>
+    <div class="header">Febl Chat – Groq KI</div>
 
     <div class="chat" id="chat"></div>
 
@@ -243,10 +243,13 @@ const chat = document.getElementById("chat");
 const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 
-const cooldown = 1000; // 1 Sekunde Cooldown
+const cooldown = 1000; // 1 Sekunde
+const GROQ_API_KEY = "DEIN_KEY_HIER"; // <-- hier deinen Groq-Key eintragen
+const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
+const GROQ_MODEL = "llama-3.1-70b-versatile";
 
 setTimeout(() => {
-    addAI("Hey Felix! Jetzt mit Ladeanimation, Cooldown und Typing‑Animation.");
+    addAI("Hey Felix! Ich bin jetzt mit echter Groq‑KI verbunden. Frag mich einfach etwas.");
 }, 2600);
 
 input.addEventListener("keydown", e => {
@@ -296,7 +299,7 @@ function addAI(text) {
     chat.scrollTop = chat.scrollHeight;
 }
 
-/* ---------------- TYPING ANIMATION ---------------- */
+/* Typing-Animation */
 function typingAnimation() {
     const typing = document.createElement("div");
     typing.className = "typing";
@@ -308,9 +311,11 @@ function typingAnimation() {
     chat.appendChild(typing);
     chat.scrollTop = chat.scrollHeight;
 
-    setTimeout(() => {
+    const userText = lastUserMessage();
+
+    setTimeout(async () => {
         typing.remove();
-        smartAI(lastUserMessage());
+        await callGroq(userText);
     }, 1200);
 }
 
@@ -319,31 +324,48 @@ function lastUserMessage() {
     return bubbles[bubbles.length - 1].textContent;
 }
 
-/* ---------------- SMART ANSWERS ---------------- */
-function smartAI(prompt) {
-    const p = prompt.toLowerCase();
-
-    if (p.includes("wie geht")) {
-        addAI("Mir geht’s gut, Felix. Die neue Typing‑Animation fühlt sich richtig smooth an.");
+/* Groq API Call */
+async function callGroq(prompt) {
+    if (!GROQ_API_KEY || GROQ_API_KEY === "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") {
+        addAI("Bitte trage deinen Groq API‑Key im Code bei GROQ_API_KEY ein.");
         return;
     }
 
-    if (p.includes("wer bist")) {
-        addAI("Ich bin Febl Chat – jetzt mit Loader, Cooldown und Typing‑Animation.");
-        return;
-    }
+    try {
+        const res = await fetch(GROQ_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${GROQ_API_KEY}`
+            },
+            body: JSON.stringify({
+                model: GROQ_MODEL,
+                messages: [
+                    {
+                        role: "system",
+                        content: "Du bist ein hilfreicher, freundlicher Assistent für Felix. Antworte klar, kurz und auf die Frage bezogen. Keine aktuellen News, einfach Standardwissen und Erklärungen."
+                    },
+                    {
+                        role: "user",
+                        content: prompt
+                    }
+                ]
+            })
+        });
 
-    if (p.startsWith("erklär")) {
-        addAI("Sag mir einfach, was ich erklären soll – ich mach’s klar und verständlich.");
-        return;
-    }
+        if (!res.ok) {
+            const errText = await res.text();
+            addAI("Fehler von Groq: " + errText);
+            return;
+        }
 
-    if (p.includes("idee")) {
-        addAI("Hier eine Idee: Eine KI‑Lampe, die erkennt, wie du dich fühlst, und das Licht automatisch anpasst.");
-        return;
-    }
+        const data = await res.json();
+        const answer = data.choices?.[0]?.message?.content || "Die KI hat keine Antwort zurückgegeben.";
+        addAI(answer);
 
-    addAI("Alles klar. Frag mich einfach etwas – ich antworte jetzt standardmäßig und sauber.");
+    } catch (err) {
+        addAI("Fehler beim Aufruf der Groq‑API: " + err);
+    }
 }
 </script>
 
