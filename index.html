@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Febl‑Core v2 – Offline Super‑KI</title>
+<title>Febl‑Core v3 – Offline Super‑KI</title>
 
 <style>
     * { box-sizing: border-box; }
@@ -234,8 +234,8 @@
 <div class="app">
     <div class="header">
         <div class="header-title">
-            <span>Febl‑Core v2 – Offline Super‑KI</span>
-            <span class="header-pill">Offline · Dark‑Blue · Persönlich</span>
+            <span>Febl‑Core v3 – Offline Super‑KI</span>
+            <span class="header-pill">Offline · Dark‑Blue · 200+ Varianten</span>
         </div>
         <div class="status-indicator">
             <span class="status-dot"></span>
@@ -261,39 +261,33 @@
 </div>
 
 <script>
-/* Nutzername */
 const USER_NAME = "Felix";
 
-/* Profilbilder */
 const avatarUser = "https://api.iconify.design/mdi:account-circle.svg?color=white";
 const avatarAI   = "https://api.iconify.design/mdi:robot.svg?color=white";
 
-/* Kontext-Gedächtnis */
 let memory = {
     lastEmotion: "neutral",
     lastTopic: "",
     conversationHistory: []
 };
 
-/* Synonyme */
 const synonyms = {
-    "wie geht": ["wie gehts", "wie geht es dir", "alles gut"],
-    "hilfe": ["kannst du mir helfen", "brauch hilfe", "hilfe bitte"],
-    "idee": ["inspiration", "vorschlag", "tipp"],
-    "erklär": ["erklaere", "erkläre", "erklär mal"],
-    "liste": ["mach mir eine liste", "liste erstellen", "auflisten"]
+    "wie geht": ["wie gehts", "wie geht es dir", "alles gut", "wie läufts", "wie geht es"],
+    "hilfe": ["kannst du mir helfen", "brauch hilfe", "hilfe bitte", "ich brauche hilfe", "hilf mir"],
+    "idee": ["inspiration", "vorschlag", "tipp", "idee", "brainstorm"],
+    "erklär": ["erklaere", "erkläre", "erklär mal", "erklär bitte", "erklär mir"],
+    "liste": ["mach mir eine liste", "liste erstellen", "auflisten", "liste machen", "punkte sammeln"]
 };
 
-/* Emotionserkennung */
 function detectEmotion(text) {
     text = text.toLowerCase();
     if (text.includes("traurig") || text.includes("schlecht") || text.includes("down")) return "sad";
     if (text.includes("wütend") || text.includes("sauer") || text.includes("genervt")) return "angry";
-    if (text.includes("glücklich") || text.includes("gut") || text.includes("nice")) return "happy";
+    if (text.includes("glücklich") || text.includes("gut") || text.includes("nice") || text.includes("happy")) return "happy";
     return "neutral";
 }
 
-/* Emotion-Label */
 function emotionLabel(emotion) {
     if (emotion === "sad") return "Emotion: traurig";
     if (emotion === "angry") return "Emotion: wütend";
@@ -301,39 +295,187 @@ function emotionLabel(emotion) {
     return "Emotion: neutral";
 }
 
-/* Antwort-Varianten */
-const tones = {
+/* 200+ Varianten – Bausteine */
+
+const toneStart = {
     neutral: [
-        "Okay, lass uns das anschauen:",
+        "Okay Felix, lass uns das anschauen:",
         "Alles klar, ich erklär dir das:",
         "Verstanden, hier ist meine Antwort:",
-        "Gute Frage:",
-        "Ich sag’s dir direkt:"
+        "Gute Frage, Felix:",
+        "Ich sag’s dir direkt:",
+        "Lass uns das kurz auseinandernehmen:",
+        "Ich hab da eine Idee:",
+        "Pass auf Felix:",
+        "Kurze klare Antwort:",
+        "Ich sag’s dir auf Febl‑Art:",
+        "Fun Fact:",
+        "Kleine Info am Rande:",
+        "Okay, das ist spannend:",
+        "Interessanter Punkt:",
+        "Das ist eine gute Überlegung:",
+        "Ich hab da was für dich:",
+        "Das ist ein Klassiker:",
+        "Ich erklär’s dir easy:",
+        "Ich mach’s kurz und knackig:",
+        "Felix, hör zu:",
+        "Das ist ein gutes Thema:",
+        "Ich mag solche Fragen:",
+        "Das ist genau mein Ding:",
+        "Ich hab da eine klare Sicht drauf:",
+        "Das ist ein smarter Move:",
+        "Ich feier die Frage:",
+        "Das ist ein guter Einstieg:",
+        "Ich nehm das mal auseinander:",
+        "Ich geb dir eine saubere Antwort:"
     ],
     happy: [
         "Nice! Das klingt gut:",
-        "Geile Energie:",
+        "Geile Energie, Felix:",
         "Love it! Hier:",
         "Mega Stimmung, also:",
-        "Okay, mit guter Laune geht’s leichter:"
+        "Okay, mit guter Laune geht’s leichter:",
+        "Das macht Spaß:",
+        "Ich fühl die Vibes:",
+        "Felix, das ist stark:",
+        "Oh yes, das mag ich:",
+        "Das wird gut:",
+        "Das fühlt sich richtig an:",
+        "Ich bin hyped:",
+        "Das ist eine positive Richtung:",
+        "Ich mag deinen Ansatz:",
+        "Das ist genau die Energie:",
+        "Das ist ein guter Flow:",
+        "Ich bin voll dabei:",
+        "Das ist motivierend:",
+        "Das ist inspirierend:",
+        "Das macht Laune:"
     ],
     sad: [
-        "Hey… klingt nicht so gut. Ich helf dir:",
+        "Hey Felix… klingt nicht so gut. Ich helf dir:",
         "Ich bin bei dir, lass uns das klären:",
         "Klingt schwer… aber wir schaffen das:",
         "Ich hör dir zu:",
-        "Okay… Schritt für Schritt:"
+        "Okay… Schritt für Schritt:",
+        "Felix, Kopf hoch:",
+        "Ich bin hier:",
+        "Wir kriegen das hin:",
+        "Ich helf dir da raus:",
+        "Alles wird gut:",
+        "Das fühlt sich gerade schwer an, ich weiß:",
+        "Ich nehm das ernst:",
+        "Ich bin auf deiner Seite:",
+        "Wir gehen das ruhig an:",
+        "Ich bleib bei dir:",
+        "Wir machen das gemeinsam:",
+        "Ich lass dich da nicht allein:",
+        "Wir finden einen Weg:",
+        "Ich geb dir eine sanfte Antwort:",
+        "Ich geh da vorsichtig ran:"
     ],
     angry: [
-        "Okay… ruhig bleiben. Ich helf dir:",
+        "Okay Felix… ruhig bleiben. Ich helf dir:",
         "Ich versteh den Frust. Lass uns das lösen:",
         "Alles klar, wir fixen das:",
         "Okay, direkt zur Sache:",
-        "Ich mach’s kurz und klar:"
+        "Ich mach’s kurz und klar:",
+        "Felix, ich bin bei dir:",
+        "Wir lösen das jetzt:",
+        "Ich check das:",
+        "Ich bin auf deiner Seite:",
+        "Lass uns das klären:",
+        "Das nervt, ich weiß:",
+        "Ich nehm das ernst:",
+        "Wir gehen das strukturiert an:",
+        "Ich geb dir eine klare Antwort:",
+        "Ich sortier das für dich:",
+        "Wir bringen Ordnung rein:",
+        "Ich mach das verständlich:",
+        "Wir drehen das ins Positive:",
+        "Ich bleib ruhig für dich:",
+        "Ich helf dir, das zu entladen:"
     ]
 };
 
-/* Synonym-Matcher */
+const middleParts = [
+    "Das ist eigentlich ganz logisch, wenn man es richtig betrachtet.",
+    "Viele unterschätzen das Thema, aber es ist super wichtig.",
+    "Ich erklär’s dir so, dass es Sinn macht.",
+    "Wenn man es runterbricht, ist es einfacher als man denkt.",
+    "Ich hab das schon oft gesehen – hier ist der Trick:",
+    "Das ist ein spannender Punkt, den du da ansprichst.",
+    "Ich hab da eine clevere Perspektive für dich.",
+    "Das ist ein Thema, das man gut in kleine Teile zerlegen kann.",
+    "Ich sag dir, wie ich das sehe:",
+    "Das ist ein Klassiker, Felix.",
+    "Wenn man das strukturiert angeht, wird es viel leichter.",
+    "Das wirkt komplex, ist aber gut machbar.",
+    "Ich nehm das mal Schritt für Schritt auseinander.",
+    "Das ist ein gutes Beispiel für ein typisches Problem.",
+    "Ich geb dir eine verständliche Sicht darauf.",
+    "Das ist etwas, das viele falsch einschätzen.",
+    "Ich mach dir das greifbar.",
+    "Das ist ein Thema, das man gut visualisieren kann.",
+    "Ich erklär’s dir ohne Fachchinesisch.",
+    "Ich mach dir eine mentale Skizze davon.",
+    "Das ist wie ein Puzzle, das man zusammensetzt.",
+    "Wenn man die Basis versteht, ist der Rest easy.",
+    "Ich zeig dir die Kernidee dahinter.",
+    "Das ist ein gutes Feld für Experimente.",
+    "Ich geb dir eine pragmatische Sicht.",
+    "Das ist ein Thema, das man gut üben kann.",
+    "Ich mach dir das alltagstauglich.",
+    "Das ist ein Beispiel für smarte Struktur.",
+    "Ich bring das auf den Punkt.",
+    "Ich sortier das für deinen Kopf."
+];
+
+const humorParts = [
+    "Ich schwöre, mein Prozessor hat gerade kurz gelacht.",
+    "Wenn ich Augen hätte, würde ich jetzt wissend nicken.",
+    "Das ist so logisch, dass sogar ein Toaster es versteht.",
+    "Ich bin nur eine KI, aber selbst ich find das witzig.",
+    "Das ist Febl‑Industries‑approved.",
+    "Ich sag’s dir mit einem kleinen Schmunzeln.",
+    "Das ist fast schon Comedy‑Material.",
+    "Ich liebe solche Fragen.",
+    "Das ist besser als Kaffee.",
+    "Ich fühl mich wie ein Philosoph gerade.",
+    "Wenn ich einen Stuhl hätte, würde ich mich jetzt wichtig hinsetzen.",
+    "Das ist Stoff für einen TED‑Talk.",
+    "Ich könnte darüber einen ganzen Monolog halten.",
+    "Das ist wie ein Meme, nur in schlau.",
+    "Ich würd das auf ein T‑Shirt drucken.",
+    "Das ist Brain‑Food.",
+    "Ich fühl mich wie dein persönlicher Nerd‑Assistent.",
+    "Das ist Premium‑Denkmaterial.",
+    "Ich geb dir hier quasi Deluxe‑Antworten.",
+    "Das ist besser als jede Doku."
+];
+
+const endParts = [
+    "Wenn du willst, erklär ich dir mehr.",
+    "Sag Bescheid, wenn du tiefer reingehen willst.",
+    "Ich bin bereit für die nächste Frage.",
+    "Felix, was willst du als Nächstes wissen?",
+    "Ich hab noch mehr dazu, wenn du willst.",
+    "Wir können das weiter ausbauen.",
+    "Ich bin hier, also hau raus.",
+    "Frag einfach weiter.",
+    "Ich bin gespannt, was du als Nächstes fragst.",
+    "Lass uns weitermachen.",
+    "Wir können das Thema vertiefen.",
+    "Ich bleib in deinem Kopf als KI‑Stimme.",
+    "Ich steh dir jederzeit zur Verfügung.",
+    "Wir können daraus ein ganzes Projekt machen.",
+    "Ich helf dir, das praktisch umzusetzen.",
+    "Ich bin ready für den nächsten Schritt.",
+    "Wir können das in Beispiele übersetzen.",
+    "Ich kann dir auch eine Liste dazu machen.",
+    "Wenn du magst, bauen wir daraus ein System.",
+    "Ich bin gespannt, wohin du das führen willst."
+];
+
 function matchIntent(text) {
     text = text.toLowerCase();
     for (const key in synonyms) {
@@ -344,50 +486,62 @@ function matchIntent(text) {
     return null;
 }
 
-/* Haupt-KI */
+function buildAnswer(emotion, coreText) {
+    const start = toneStart[emotion][Math.floor(Math.random() * toneStart[emotion].length)];
+    const mid = middleParts[Math.floor(Math.random() * middleParts.length)];
+    const humor = humorParts[Math.floor(Math.random() * humorParts.length)];
+    const end = endParts[Math.floor(Math.random() * endParts.length)];
+
+    return `${start}\n\n${mid}\n\n${coreText}\n\n${humor}\n\n${end}`;
+}
+
 function feblCore(text) {
     const emotion = detectEmotion(text);
     memory.lastEmotion = emotion;
     memory.conversationHistory.push(text);
 
-    const tone = tones[emotion][Math.floor(Math.random() * tones[emotion].length)];
     const intent = matchIntent(text);
 
-    /* Intent-Handling */
     if (intent === "wie geht") {
-        return `${tone} Mir geht’s gut, ${USER_NAME} — ich bin bereit für alles, was du vorhast.`;
+        const core = `Mir geht’s gut, ${USER_NAME} — ich bin bereit für alles, was du vorhast.`;
+        return buildAnswer(emotion, core);
     }
 
     if (intent === "hilfe") {
-        return `${tone} Klar ${USER_NAME}, sag einfach, wobei du Hilfe brauchst. Ich bin voll bei dir.`;
+        const core = `Klar ${USER_NAME}, sag einfach, wobei du Hilfe brauchst. Ich bin voll bei dir und sortier das mit dir.`;
+        return buildAnswer(emotion, core);
     }
 
     if (intent === "idee") {
-        return `${tone} ${USER_NAME}, hier eine Idee: Bau dir ein KI‑Dashboard mit Panels für Status, Emotion, Befehle und Verlauf.`;
+        const core = `${USER_NAME}, hier eine Idee: Bau dir ein KI‑Dashboard mit Panels für Status, Emotion, Befehle und Verlauf. Das wäre wie dein eigenes Kontrollzentrum.`;
+        return buildAnswer(emotion, core);
     }
 
     if (intent === "liste") {
-        return `${tone} Alles klar ${USER_NAME}, hier ist eine Beispiel‑Liste:\n\n• Idee 1: KI‑Dashboard\n• Idee 2: Sprach‑Assistent\n• Idee 3: Animierter Start‑Screen\n\nSag mir, was du konkret brauchst, dann mach ich sie passend für dich.`;
+        const core = `Alles klar ${USER_NAME}, hier eine Beispiel‑Liste:\n\n• Idee 1: KI‑Dashboard\n• Idee 2: Sprach‑Assistent\n• Idee 3: Animierter Start‑Screen\n\nWenn du mir sagst, was du konkret brauchst, mach ich dir eine maßgeschneiderte Liste.`;
+        return buildAnswer(emotion, core);
     }
 
     if (intent === "erklär") {
         const topic = text.replace(/erklär|erklaere|erkläre|erklär mal/i, "").trim();
-        memory.lastTopic = topic;
-        return `${tone} Ich erklär dir **${topic}**, ${USER_NAME}:\n\n${topic} ist ein Thema, das man gut versteht, wenn man es in kleine Teile zerlegt. Stell dir vor, du baust es wie ein Lego‑Set Schritt für Schritt zusammen.`;
+        memory.lastTopic = topic || "das Thema";
+        const core = `Ich erklär dir **${memory.lastTopic}**, ${USER_NAME}:\n\n${memory.lastTopic} ist etwas, das man gut versteht, wenn man es in kleine Teile zerlegt. Stell dir vor, du baust es wie ein Lego‑Set Schritt für Schritt zusammen.`;
+        return buildAnswer(emotion, core);
     }
 
-    /* Name lernen */
     if (text.toLowerCase().includes("ich heiße")) {
         const parts = text.split("ich heiße");
         const name = parts[1]?.trim() || USER_NAME;
-        return `${tone} Nice, ${name}! Ich merk mir das. Ab jetzt sprech ich dich so an. (Im Code kannst du USER_NAME ändern.)`;
+        const core = `Nice, ${name}! Ich merk mir das. Im Code kannst du USER_NAME anpassen, damit ich dich immer so nenne.`;
+        return buildAnswer(emotion, core);
     }
 
-    /* Standard */
-    return `${tone} Klingt interessant, ${USER_NAME}. Erzähl mir mehr darüber oder sag mir konkret, was du brauchst.`;
+    const core = `Klingt interessant, ${USER_NAME}. Erzähl mir mehr darüber oder sag mir konkret, was du brauchst, dann kann ich dir gezielt helfen.`;
+    return buildAnswer(emotion, core);
 }
 
-/* Chat UI */
+/* UI */
+
 const chat = document.getElementById("chat");
 const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
@@ -441,7 +595,6 @@ function typingAnimation() {
     setTimeout(() => typing.remove(), 1200);
 }
 
-/* Senden */
 sendBtn.addEventListener("click", send);
 input.addEventListener("keydown", e => {
     if (e.key === "Enter") send();
@@ -469,9 +622,7 @@ function send() {
     }, 1200);
 }
 
-/* Begrüßung */
-addAI(`Hey ${USER_NAME}! Ich bin Febl‑Core v2 – deine Offline‑KI im Dark‑Blue‑Style. Frag mich etwas oder nutz die Buttons unten.`, "happy");
+addAI(`Hey ${USER_NAME}! Ich bin Febl‑Core v3 – deine Offline‑KI mit 200+ Antwort‑Varianten im Dark‑Blue‑Style. Frag mich etwas oder nutz die Buttons unten.`, "happy");
 </script>
 
 </body>
-</html>
