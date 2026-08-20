@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Febl Chat</title>
+<title>Febl Chat – Dark Blue</title>
 
 <style>
     * { box-sizing: border-box; }
@@ -11,9 +11,9 @@
         margin: 0;
         padding: 0;
         height: 100vh;
-        background: #f3f4f6;
+        background: #0a1224;
         font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-        color: #111827;
+        color: #e5e7eb;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -22,12 +22,11 @@
     .app {
         width: 900px;
         max-width: 95vw;
-        height: 80vh;
-        max-height: 95vh;
-        background: #ffffff;
-        border-radius: 16px;
-        border: 1px solid #e5e7eb;
-        box-shadow: 0 20px 40px rgba(15,23,42,0.08);
+        height: 85vh;
+        background: #0f1a33;
+        border-radius: 18px;
+        border: 1px solid rgba(148,163,184,0.25);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         display: grid;
         grid-template-rows: auto 1fr auto;
         overflow: hidden;
@@ -35,34 +34,33 @@
 
     /* Header */
     .header {
-        padding: 12px 16px;
-        border-bottom: 1px solid #e5e7eb;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: #f9fafb;
-    }
-
-    .header-title {
-        font-size: 15px;
+        padding: 14px 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        background: #0d1730;
+        font-size: 16px;
         font-weight: 600;
-    }
-
-    .header-sub {
-        font-size: 12px;
-        color: #6b7280;
+        letter-spacing: 0.5px;
     }
 
     /* Chat */
     .chat {
-        padding: 16px;
+        padding: 20px;
         overflow-y: auto;
-        background: #f9fafb;
     }
 
     .msg-row {
         display: flex;
-        margin-bottom: 10px;
+        margin-bottom: 14px;
+        opacity: 0;
+        transform: translateY(10px);
+        animation: msgEnter 0.35s ease forwards;
+    }
+
+    @keyframes msgEnter {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     .msg-row.user { justify-content: flex-end; }
@@ -70,65 +68,77 @@
 
     .msg-bubble {
         max-width: 70%;
-        padding: 8px 12px;
-        border-radius: 12px;
-        font-size: 14px;
-        line-height: 1.4;
+        padding: 12px 16px;
+        border-radius: 14px;
+        font-size: 15px;
+        line-height: 1.5;
         white-space: pre-wrap;
+        animation: bubblePop 0.25s ease;
+    }
+
+    @keyframes bubblePop {
+        0% { transform: scale(0.9); }
+        100% { transform: scale(1); }
     }
 
     .msg-bubble.user {
-        background: #2563eb;
-        color: #f9fafb;
+        background: #1e3a8a;
+        color: #e5e7eb;
         border-bottom-right-radius: 4px;
+        box-shadow: 0 4px 12px rgba(30,58,138,0.4);
     }
 
     .msg-bubble.ai {
-        background: #e5e7eb;
-        color: #111827;
+        background: #162447;
+        color: #e5e7eb;
         border-bottom-left-radius: 4px;
+        border: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 4px 12px rgba(22,36,71,0.4);
     }
 
-    /* Footer / Input */
+    /* Footer */
     .footer {
-        padding: 12px 16px;
-        border-top: 1px solid #e5e7eb;
-        background: #f9fafb;
+        padding: 16px 20px;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        background: #0d1730;
     }
 
     .input-wrapper {
         display: flex;
-        gap: 8px;
+        gap: 12px;
         align-items: center;
+        background: #0a1224;
+        border-radius: 14px;
+        border: 1px solid rgba(255,255,255,0.15);
+        padding: 12px 16px;
     }
 
     #userInput {
         flex: 1;
-        background: #ffffff;
-        border-radius: 999px;
-        border: 1px solid #d1d5db;
-        padding: 8px 12px;
-        font-size: 14px;
+        background: transparent;
+        border: none;
+        color: #e5e7eb;
+        font-size: 16px;
         outline: none;
     }
 
-    #userInput:focus {
-        border-color: #2563eb;
-        box-shadow: 0 0 0 1px rgba(37,99,235,0.3);
+    #userInput::placeholder {
+        color: #94a3b8;
     }
 
     .send-btn {
-        padding: 8px 14px;
-        border-radius: 999px;
+        padding: 10px 18px;
+        border-radius: 10px;
         border: none;
-        background: #2563eb;
-        color: #f9fafb;
-        font-size: 13px;
+        background: #1e3a8a;
+        color: #e5e7eb;
+        font-size: 15px;
         cursor: pointer;
+        transition: 0.2s;
     }
 
     .send-btn:hover {
-        background: #1d4ed8;
+        background: #2a4bb8;
     }
 </style>
 </head>
@@ -136,19 +146,10 @@
 <body>
 
 <div class="app">
-    <!-- Header -->
-    <div class="header">
-        <div>
-            <div class="header-title">Febl Chat</div>
-            <div class="header-sub">Clean · simpel · bereit für KI</div>
-        </div>
-        <div class="header-sub">Operator: Felix</div>
-    </div>
+    <div class="header">Febl Chat – Dark Blue Edition</div>
 
-    <!-- Chat -->
     <div class="chat" id="chat"></div>
 
-    <!-- Footer -->
     <div class="footer">
         <div class="input-wrapper">
             <input id="userInput" type="text" autocomplete="off" placeholder="Schreib etwas …">
@@ -162,7 +163,7 @@ const chat = document.getElementById("chat");
 const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 
-addAI("Hey Felix, das ist dein cleanes Chat‑Interface. Du kannst hier schreiben, und ich antworte simpel lokal.");
+addAI("Hey Felix! Willkommen im Dark‑Blue Chat. Schreib einfach los.");
 
 input.addEventListener("keydown", e => {
     if (e.key === "Enter") send();
@@ -199,22 +200,23 @@ function addAI(text) {
     chat.scrollTop = chat.scrollHeight;
 }
 
-/* einfache lokale „Antwortlogik“ */
+/* einfache lokale Antwortlogik */
 function handleAI(prompt) {
     const p = prompt.toLowerCase();
 
     if (p.includes("wie gehts") || p.includes("wie geht es")) {
-        addAI("Mir geht’s gut – ich bin dein cleanes Chat‑Interface und warte auf deine Ideen.");
+        addAI("Mir geht’s gut, Felix. Das neue Design fühlt sich ziemlich smooth an.");
         return;
     }
 
     if (p.includes("wer bist du")) {
-        addAI("Ich bin Febl Chat – eine einfache Oberfläche, die du später mit echter KI verbinden kannst.");
+        addAI("Ich bin Febl Chat – deine dunkle, blaue, animierte Chat‑Konsole.");
         return;
     }
 
-    addAI("Spannend. Ich bin noch eine simple Version ohne echte Online‑KI, aber du kannst mich als Basis für deine eigene KI‑Logik nutzen.");
+    addAI("Interessant! Ich bin noch eine einfache Version ohne echte KI‑Backend, aber das Design steht. Sag mir, was du als Nächstes willst.");
 }
 </script>
 
 </body>
+</html>
