@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Febl Chat – Dark Blue Smart + Loader</title>
+<title>Febl Chat – Dark Blue Smart + Loader + Typing</title>
 
 <style>
     * { box-sizing: border-box; }
@@ -43,9 +43,7 @@
         margin-bottom: 20px;
     }
 
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     .loader-text {
         font-size: 18px;
@@ -54,9 +52,7 @@
         animation: fadeIn 1s ease;
     }
 
-    @keyframes fadeOut {
-        to { opacity: 0; visibility: hidden; }
-    }
+    @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
     /* ---------------- MAIN APP ---------------- */
     .app {
@@ -75,9 +71,7 @@
         animation-delay: 2.3s;
     }
 
-    @keyframes appFadeIn {
-        to { opacity: 1; }
-    }
+    @keyframes appFadeIn { to { opacity: 1; } }
 
     .header {
         padding: 14px 20px;
@@ -102,10 +96,7 @@
     }
 
     @keyframes msgEnter {
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        to { opacity: 1; transform: translateY(0); }
     }
 
     .msg-row.user { justify-content: flex-end; }
@@ -141,6 +132,39 @@
         box-shadow: 0 4px 12px rgba(22,36,71,0.4);
     }
 
+    /* ---------------- TYPING ANIMATION ---------------- */
+    .typing {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 16px;
+        margin-bottom: 14px;
+        background: #162447;
+        border-radius: 14px;
+        width: fit-content;
+        border: 1px solid rgba(255,255,255,0.08);
+        opacity: 0;
+        animation: msgEnter 0.35s ease forwards;
+    }
+
+    .dot {
+        width: 8px;
+        height: 8px;
+        background: #3b82f6;
+        border-radius: 50%;
+        animation: blink 1.4s infinite;
+    }
+
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes blink {
+        0% { opacity: 0.2; }
+        50% { opacity: 1; }
+        100% { opacity: 0.2; }
+    }
+
+    /* ---------------- FOOTER ---------------- */
     .footer {
         padding: 16px 20px;
         border-top: 1px solid rgba(255,255,255,0.08);
@@ -166,9 +190,7 @@
         outline: none;
     }
 
-    #userInput::placeholder {
-        color: #94a3b8;
-    }
+    #userInput::placeholder { color: #94a3b8; }
 
     .send-btn {
         padding: 10px 18px;
@@ -223,9 +245,8 @@ const sendBtn = document.getElementById("sendBtn");
 
 const cooldown = 1000; // 1 Sekunde Cooldown
 
-// Startnachricht nach Loader
 setTimeout(() => {
-    addAI("Hey Felix! Ich bin jetzt mit Ladeanimation, Cooldown und smarten Antworten bereit.");
+    addAI("Hey Felix! Jetzt mit Ladeanimation, Cooldown und Typing‑Animation.");
 }, 2600);
 
 input.addEventListener("keydown", e => {
@@ -241,7 +262,7 @@ function send() {
 
     input.value = "";
     addUser(text);
-    handleAI(text);
+    typingAnimation();
 
     sendBtn.disabled = true;
     input.disabled = true;
@@ -275,17 +296,40 @@ function addAI(text) {
     chat.scrollTop = chat.scrollHeight;
 }
 
+/* ---------------- TYPING ANIMATION ---------------- */
+function typingAnimation() {
+    const typing = document.createElement("div");
+    typing.className = "typing";
+    typing.innerHTML = `
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+    `;
+    chat.appendChild(typing);
+    chat.scrollTop = chat.scrollHeight;
+
+    setTimeout(() => {
+        typing.remove();
+        smartAI(lastUserMessage());
+    }, 1200);
+}
+
+function lastUserMessage() {
+    const bubbles = chat.querySelectorAll(".msg-bubble.user");
+    return bubbles[bubbles.length - 1].textContent;
+}
+
 /* ---------------- SMART ANSWERS ---------------- */
-function handleAI(prompt) {
+function smartAI(prompt) {
     const p = prompt.toLowerCase();
 
     if (p.includes("wie geht")) {
-        addAI("Mir geht’s gut, Felix. Die neue Ladeanimation fühlt sich richtig smooth an.");
+        addAI("Mir geht’s gut, Felix. Die neue Typing‑Animation fühlt sich richtig smooth an.");
         return;
     }
 
     if (p.includes("wer bist")) {
-        addAI("Ich bin Febl Chat – jetzt mit Loader, Cooldown und smarter Logik.");
+        addAI("Ich bin Febl Chat – jetzt mit Loader, Cooldown und Typing‑Animation.");
         return;
     }
 
@@ -299,7 +343,7 @@ function handleAI(prompt) {
         return;
     }
 
-    addAI("Alles klar. Frag mich einfach etwas – ich antworte jetzt schlau und smooth.");
+    addAI("Alles klar. Frag mich einfach etwas – ich antworte jetzt standardmäßig und sauber.");
 }
 </script>
 
