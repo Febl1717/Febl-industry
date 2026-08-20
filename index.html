@@ -2,7 +2,9 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Febl Chat – DeepSeek KI</title>
+<title>Febl Chat – Local KI</title>
+
+<script src="https://cdn.jsdelivr.net/npm/webllm/dist/webllm.min.js"></script>
 
 <style>
     * { box-sizing: border-box; }
@@ -186,7 +188,7 @@
 
 <!-- App -->
 <div class="app">
-    <div class="header">Febl Chat – DeepSeek KI</div>
+    <div class="header">Febl Chat – Local KI</div>
 
     <div class="chat" id="chat"></div>
 
@@ -204,10 +206,15 @@ const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 
 const cooldown = 1000;
-const DEEPSEEK_KEY = "sk-414b10fa84044209825045ae6822cba2"; // <-- WICHTIG
+
+let engine;
+
+(async () => {
+    engine = await webllm.createEngine("Llama-3.2-3B-Instruct");
+})();
 
 setTimeout(() => {
-    addAI("Hey Felix! Ich bin jetzt mit echter DeepSeek‑KI verbunden – ohne Proxy, ohne Server.");
+    addAI("Hey Felix! Ich bin jetzt eine echte KI – komplett lokal im Browser, ohne API‑Key.");
 }, 2600);
 
 input.addEventListener("keydown", e => {
@@ -272,7 +279,7 @@ function typingAnimation() {
 
     setTimeout(async () => {
         typing.remove();
-        await callDeepSeek(userText);
+        await callLocalAI(userText);
     }, 1200);
 }
 
@@ -281,36 +288,15 @@ function lastUserMessage() {
     return bubbles[bubbles.length - 1].textContent;
 }
 
-/* DeepSeek Browser‑Bridge */
-async function callDeepSeek(prompt) {
-    if (!DEEPSEEK_KEY || DEEPSEEK_KEY === "sk-414b10fa84044209825045ae6822cba2") {
-        addAI("Bitte trage deinen DeepSeek API‑Key ein.");
-        return;
-    }
+async function callLocalAI(prompt) {
+    const answer = await engine.chat.completions.create({
+        messages: [
+            { role: "system", content: "Du bist eine hilfreiche KI für Felix." },
+            { role: "user", content: prompt }
+        ]
+    });
 
-    try {
-        const res = await fetch("https://api.deepseek.com/chat/completions", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-API-Key": DEEPSEEK_KEY
-            },
-            body: JSON.stringify({
-                model: "deepseek-chat",
-                messages: [
-                    { role: "system", content: "Du bist eine hilfreiche KI für Felix." },
-                    { role: "user", content: prompt }
-                ]
-            })
-        });
-
-        const data = await res.json();
-        const answer = data.choices?.[0]?.message?.content || "Keine Antwort.";
-        addAI(answer);
-
-    } catch (err) {
-        addAI("Fehler: " + err);
-    }
+    addAI(answer.choices[0].message.content);
 }
 </script>
 
