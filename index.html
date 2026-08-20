@@ -5,116 +5,399 @@
     <title>Febl Industry KI</title>
     <style>
         body {
-            background: #0a0a0a;
+            background: #050608;
+            color: #e5e5e5;
+            font-family: "Consolas", "Courier New", monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .terminal-wrapper {
+            width: 420px;
+            max-width: 95vw;
+            background: #0b0d10;
+            border-radius: 12px;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
+            border: 1px solid #0ff;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .terminal-header {
+            background: #11141a;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #0ff;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .dot.red { background: #ff5f57; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #28c840; }
+
+        .header-title {
             color: #0ff;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding-top: 50px;
+            font-size: 13px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
         }
 
-        .ai-box {
-            width: 400px;
-            margin: auto;
-            padding: 20px;
-            border: 2px solid #0ff;
+        .header-status {
+            font-size: 11px;
+            color: #8f8f8f;
+        }
+
+        .terminal-body {
+            flex: 1;
+            padding: 12px;
+            overflow-y: auto;
+            background: radial-gradient(circle at top, #10131a 0%, #050608 60%);
+        }
+
+        .chat-bubble {
+            max-width: 80%;
+            padding: 8px 10px;
+            margin: 6px 0;
             border-radius: 10px;
-            box-shadow: 0 0 20px #0ff;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 10px #0ff; }
-            50% { box-shadow: 0 0 25px #0ff; }
-            100% { box-shadow: 0 0 10px #0ff; }
-        }
-
-        #userInput {
-            width: 80%;
-            padding: 10px;
-            margin-top: 20px;
-            border-radius: 5px;
-            border: none;
-            outline: none;
-        }
-
-        #sendBtn {
-            margin-top: 10px;
-            padding: 10px 20px;
-            background: #0ff;
-            color: #000;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        #sendBtn:hover {
-            background: #00cccc;
-        }
-
-        #output {
-            margin-top: 20px;
-            text-align: left;
-            width: 80%;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .answer {
-            background: #111;
-            padding: 10px;
-            margin-top: 10px;
-            border-left: 3px solid #0ff;
+            font-size: 13px;
+            line-height: 1.4;
+            position: relative;
             opacity: 0;
-            transform: translateY(10px);
-            animation: appear 0.4s forwards;
+            transform: translateY(8px);
+            animation: bubbleAppear 0.25s forwards;
         }
 
-        @keyframes appear {
+        .chat-bubble.user {
+            margin-left: auto;
+            background: #1f2933;
+            color: #e5e5e5;
+            border-bottom-right-radius: 2px;
+        }
+
+        .chat-bubble.ki {
+            margin-right: auto;
+            background: #041f2f;
+            color: #aaf7ff;
+            border-bottom-left-radius: 2px;
+            border: 1px solid rgba(0, 255, 255, 0.4);
+        }
+
+        .chat-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin-bottom: 3px;
+            opacity: 0.7;
+        }
+
+        @keyframes bubbleAppear {
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
+
+        .typing {
+            display: inline-block;
+            font-size: 11px;
+            color: #0ff;
+            margin-top: 4px;
+            letter-spacing: 0.15em;
+            animation: blink 0.8s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        .terminal-input {
+            border-top: 1px solid #0ff;
+            background: #050608;
+            padding: 8px;
+            display: flex;
+            gap: 6px;
+        }
+
+        #userInput {
+            flex: 1;
+            background: #0b0d10;
+            border: 1px solid #1f2933;
+            border-radius: 6px;
+            color: #e5e5e5;
+            padding: 8px;
+            font-size: 13px;
+            outline: none;
+        }
+
+        #userInput::placeholder {
+            color: #555;
+        }
+
+        #sendBtn {
+            padding: 8px 14px;
+            background: #0ff;
+            color: #000;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        #sendBtn:hover {
+            background: #00cccc;
+            transform: translateY(-1px);
+        }
+
+        #sendBtn:active {
+            transform: translateY(1px);
+        }
+
+        .persona-line {
+            font-size: 11px;
+            color: #8f8f8f;
+            margin-bottom: 6px;
+        }
     </style>
 </head>
-
 <body>
 
-    <div class="ai-box">
-        <h1>Febl Industry KI</h1>
-
-        <input id="userInput" type="text" placeholder="Frage eingeben...">
-        <button id="sendBtn">Senden</button>
-
-        <div id="output"></div>
+<div class="terminal-wrapper">
+    <div class="terminal-header">
+        <div class="header-left">
+            <div class="dot red"></div>
+            <div class="dot yellow"></div>
+            <div class="dot green"></div>
+            <div class="header-title">FEBL INDUSTRY KI</div>
+        </div>
+        <div class="header-status">SYSTEM ONLINE</div>
     </div>
 
-    <script>
-        document.getElementById("sendBtn").addEventListener("click", () => {
-            const input = document.getElementById("userInput").value.trim();
+    <div class="terminal-body" id="output">
+        <div class="persona-line">
+            Persönlichkeit: analytisch, leicht sarkastisch, futuristisch – designt von Felix.
+        </div>
+        <div class="chat-bubble ki">
+            <div class="chat-label">Febl Industry KI</div>
+            <div>Bootsequenz abgeschlossen. Ich bin bereit für deine Fragen.</div>
+        </div>
+    </div>
 
-            if (input === "") {
-                printAnswer("Bitte eine Frage eingeben.");
-                return;
+    <div class="terminal-input">
+        <input id="userInput" type="text" placeholder="Frag mich etwas...">
+        <button id="sendBtn">Senden</button>
+    </div>
+</div>
+
+<audio id="sndSend">
+    <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=" type="audio/wav">
+</audio>
+<audio id="sndReply">
+    <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=" type="audio/wav">
+</audio>
+
+<script>
+    const API_KEY = "HIER_DEIN_API_KEY"; // <- später echten Key eintragen
+    const USE_DEMO_MODE = true;          // wenn true: keine echte API, nur simulierte KI
+
+    const sendBtn = document.getElementById("sendBtn");
+    const userInput = document.getElementById("userInput");
+    const output = document.getElementById("output");
+    const sndSend = document.getElementById("sndSend");
+    const sndReply = document.getElementById("sndReply");
+
+    sendBtn.addEventListener("click", handleSend);
+    userInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") handleSend();
+    });
+
+    function handleSend() {
+        const text = userInput.value.trim();
+        if (!text) return;
+
+        playSound(sndSend);
+        addBubble(text, "user");
+        userInput.value = "";
+
+        const typing = addTypingIndicator();
+
+        if (USE_DEMO_MODE) {
+            setTimeout(() => {
+                removeTypingIndicator(typing);
+                const demoAnswer = generateDemoAnswer(text);
+                addBubble(demoAnswer, "ki");
+                playSound(sndReply);
+                scrollToBottom();
+            }, 900);
+        } else {
+            callAI(text)
+                .then(answer => {
+                    removeTypingIndicator(typing);
+                    addBubble(answer, "ki");
+                    playSound(sndReply);
+                    scrollToBottom();
+                })
+                .catch(err => {
+                    removeTypingIndicator(typing);
+                    addBubble("Fehler bei der KI-Anfrage: " + err, "ki");
+                    scrollToBottom();
+                });
+        }
+    }
+
+    function addBubble(text, who) {
+        const bubble = document.createElement("div");
+        bubble.className = "chat-bubble " + who;
+
+        const label = document.createElement("div");
+        label.className = "chat-label";
+        label.textContent = who === "user" ? "Du" : "Febl Industry KI";
+
+        const content = document.createElement("div");
+        typeText(content, text);
+
+        bubble.appendChild(label);
+        bubble.appendChild(content);
+        output.appendChild(bubble);
+        scrollToBottom();
+    }
+
+    function addTypingIndicator() {
+        const bubble = document.createElement("div");
+        bubble.className = "chat-bubble ki";
+
+        const label = document.createElement("div");
+        label.className = "chat-label";
+        label.textContent = "Febl Industry KI";
+
+        const typing = document.createElement("span");
+        typing.className = "typing";
+        typing.textContent = "TYPING...";
+
+        bubble.appendChild(label);
+        bubble.appendChild(typing);
+        output.appendChild(bubble);
+        scrollToBottom();
+        return bubble;
+    }
+
+    function removeTypingIndicator(el) {
+        if (el && el.parentNode) {
+            el.parentNode.removeChild(el);
+        }
+    }
+
+    function typeText(element, text, speed = 18) {
+        let i = 0;
+        function step() {
+            element.textContent = text.slice(0, i);
+            i++;
+            if (i <= text.length) {
+                setTimeout(step, speed);
             }
+        }
+        step();
+    }
 
-            reply(input);
-            document.getElementById("userInput").value = "";
+    function playSound(audioEl) {
+        if (!audioEl) return;
+        audioEl.currentTime = 0;
+        audioEl.play().catch(() => {});
+    }
+
+    function scrollToBottom() {
+        output.scrollTop = output.scrollHeight;
+    }
+
+    function generateDemoAnswer(question) {
+        const personaIntro = [
+            "Okay, das ist interessant.",
+            "Hm, das passt zu meinem Stil.",
+            "Analyse gestartet.",
+            "Felix, du stellst gute Fragen.",
+            "Ich mag solche Inputs."
+        ];
+
+        const core = [
+            "Ich bin eine experimentelle KI von Febl Industry, designt für Neugier und Spielereien.",
+            "Meine Antworten sind nicht perfekt, aber sie spiegeln eine Mischung aus Logik und leichtem Humor wider.",
+            "Wenn du willst, kann Felix mich später mit einer echten API verbinden, damit ich noch schlauer werde.",
+            "Ich arbeite gerade mit einem Demo‑Modus, aber mein Interface ist bereit für echte KI‑Power.",
+            "Deine Frage triggert meine Analyse‑Routine, auch wenn ich gerade nur lokal simuliere."
+        ];
+
+        const outro = [
+            "Frag ruhig weiter, ich lerne aus deinem Stil.",
+            "Wenn du magst, können wir ein eigenes Personality‑Profil für mich bauen.",
+            "Ich bin mehr Terminal‑Buddy als Orakel, aber ich gebe mein Bestes.",
+            "Du kannst mich jederzeit neu starten – ich nehme es nicht persönlich.",
+            "Febl Industry KI bleibt online, solange du fragst."
+        ];
+
+        function pick(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        return `${pick(personaIntro)}\n\nZu deiner Frage: "${question}"\n\n${pick(core)}\n\n${pick(outro)}`;
+    }
+
+    async function callAI(question) {
+        // Beispiel für OpenAI‑ähnliche API – musst du später anpassen
+        const url = "https://api.openai.com/v1/chat/completions";
+
+        const body = {
+            model: "gpt-4o-mini",
+            messages: [
+                {
+                    role: "system",
+                    content: "Du bist die 'Febl Industry KI', eine futuristische, leicht sarkastische, aber hilfreiche Assistentin, die von Felix gebaut wurde."
+                },
+                {
+                    role: "user",
+                    content: question
+                }
+            ]
+        };
+
+        const res = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${API_KEY}`
+            },
+            body: JSON.stringify(body)
         });
 
-        function reply(question) {
-            printAnswer("Verarbeite: " + question);
+        if (!res.ok) {
+            throw new Error("HTTP " + res.status);
         }
 
-        function printAnswer(text) {
-            const box = document.getElementById("output");
-            const div = document.createElement("div");
-            div.className = "answer";
-            div.innerText = text;
-            box.appendChild(div);
-        }
-    </script>
+        const data = await res.json();
+        const answer = data.choices?.[0]?.message?.content || "Keine Antwort erhalten.";
+        return answer;
+    }
+</script>
 
 </body>
 </html>
