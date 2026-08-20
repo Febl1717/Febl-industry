@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Febl Industry KI – Neon Minimal</title>
+<title>Febl Industry KI – Console</title>
 
 <style>
     * { box-sizing: border-box; }
@@ -11,50 +11,80 @@
         margin: 0;
         padding: 0;
         height: 100vh;
-        background: #020b14;
+        background: radial-gradient(circle at top, #050816 0%, #000 70%);
         font-family: "JetBrains Mono", monospace;
-        color: #c8f7ff;
+        color: #e0f7ff;
         display: flex;
         justify-content: center;
         align-items: center;
     }
 
-    .shell {
-        width: 900px;
+    .app {
+        width: 960px;
         max-width: 95vw;
-        height: 80vh;
+        height: 85vh;
+        max-height: 95vh;
+        background: rgba(5, 20, 40, 0.85);
+        border-radius: 14px;
+        border: 1px solid rgba(0,255,255,0.35);
+        box-shadow: 0 0 30px rgba(0,255,255,0.25);
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        overflow: hidden;
+    }
+
+    /* Header */
+    .header {
+        padding: 10px 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(90deg, rgba(0,255,255,0.15), transparent);
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #7ee7ff;
+    }
+
+    .header-title {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .header-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #00f2ff;
+        box-shadow: 0 0 8px #00f2ff;
+    }
+
+    .header-status {
+        font-size: 11px;
+        color: #9af3ff;
+    }
+
+    /* Main */
+    .main {
         display: grid;
         grid-template-columns: 2fr 1fr;
-        gap: 16px;
-        padding: 16px;
+        gap: 0;
+        padding: 10px 12px;
     }
 
-    /* Minimal Panels */
-    .panel {
-        background: rgba(0, 20, 40, 0.6);
-        border: 1px solid rgba(0,255,255,0.25);
-        border-radius: 10px;
-        padding: 14px;
-        backdrop-filter: blur(4px);
-    }
-
-    /* Terminal */
-    .terminal {
+    /* Chat Panel */
+    .chat-panel {
+        border-right: 1px solid rgba(0,255,255,0.2);
+        padding-right: 10px;
         display: flex;
         flex-direction: column;
         height: 100%;
     }
 
-    .terminal-header {
-        font-size: 12px;
-        letter-spacing: 0.1em;
-        color: #7ee7ff;
-        margin-bottom: 8px;
-    }
-
-    .terminal-body {
+    .chat-body {
         flex: 1;
-        background: rgba(0, 10, 20, 0.7);
+        background: rgba(0, 10, 20, 0.9);
         border-radius: 8px;
         padding: 10px;
         overflow-y: auto;
@@ -62,7 +92,7 @@
         border: 1px solid rgba(0,255,255,0.15);
     }
 
-    .line {
+    .msg {
         margin: 6px 0;
         white-space: pre-wrap;
         opacity: 0;
@@ -74,169 +104,249 @@
         to { opacity: 1; transform: translateY(0); }
     }
 
-    .line.ai {
+    .msg.user {
+        color: #e0f7ff;
+    }
+
+    .msg.ai {
         color: #7ee7ff;
         text-shadow: 0 0 6px #00eaff;
     }
 
-    /* Input */
-    .input-line {
+    /* Side Panel */
+    .side-panel {
+        padding-left: 10px;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        font-size: 12px;
+    }
+
+    .side-section {
+        background: rgba(0, 15, 30, 0.9);
+        border-radius: 8px;
+        border: 1px solid rgba(0,255,255,0.2);
+        padding: 8px;
+        margin-bottom: 8px;
+    }
+
+    .side-title {
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 11px;
+        color: #7ee7ff;
+        margin-bottom: 4px;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 2px 6px;
+        border-radius: 6px;
+        border: 1px solid rgba(0,255,255,0.4);
+        font-size: 10px;
+        margin-right: 4px;
+        color: #9af3ff;
+    }
+
+    /* Footer / Input */
+    .footer {
+        padding: 8px 14px;
+        border-top: 1px solid rgba(0,255,255,0.25);
         display: flex;
         align-items: center;
-        margin-top: 10px;
-        padding-top: 8px;
-        border-top: 1px solid rgba(0,255,255,0.25);
+        gap: 8px;
+    }
+
+    .prompt-label {
+        font-size: 12px;
+        color: #7ee7ff;
     }
 
     #userInput {
         flex: 1;
-        background: transparent;
-        border: none;
-        border-bottom: 1px solid rgba(0,255,255,0.5);
-        color: #c8f7ff;
-        font-size: 14px;
-        padding: 4px;
+        background: rgba(0, 10, 20, 0.9);
+        border-radius: 6px;
+        border: 1px solid rgba(0,255,255,0.4);
+        color: #e0f7ff;
+        font-family: inherit;
+        font-size: 13px;
+        padding: 6px 8px;
         outline: none;
     }
 
     #userInput:focus {
-        border-bottom-color: #00f2ff;
+        border-color: #00f2ff;
+        box-shadow: 0 0 10px rgba(0,255,255,0.35);
     }
 
-    /* Avatar */
-    .avatar-panel {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        align-items: center;
-    }
-
-    .avatar-header {
+    .send-btn {
+        padding: 6px 12px;
+        border-radius: 6px;
+        border: 1px solid rgba(0,255,255,0.6);
+        background: rgba(0,255,255,0.1);
+        color: #e0f7ff;
         font-size: 12px;
-        letter-spacing: 0.1em;
-        color: #7ee7ff;
-        margin-bottom: 10px;
+        cursor: pointer;
     }
 
-    .avatar-circle {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        border: 2px solid rgba(0,255,255,0.4);
-        background: radial-gradient(circle, #00eaff 0%, #001018 70%);
-        box-shadow: 0 0 20px rgba(0,255,255,0.3);
+    .send-btn:hover {
+        background: rgba(0,255,255,0.2);
     }
 </style>
 </head>
 
 <body>
 
-<div class="shell">
-    <!-- Terminal -->
-    <div class="panel terminal">
-        <div class="terminal-header">[ FEBL INDUSTRY KI – MINIMAL MODE ]</div>
+<div class="app">
+    <!-- Header -->
+    <div class="header">
+        <div class="header-title">
+            <div class="header-dot"></div>
+            <span>FEBL INDUSTRY KI – CONSOLE</span>
+        </div>
+        <div class="header-status">MODE: ANALYTIC · LINK: LOCAL KI</div>
+    </div>
 
-        <div class="terminal-body" id="terminalBody"></div>
+    <!-- Main -->
+    <div class="main">
+        <!-- Chat -->
+        <div class="chat-panel">
+            <div class="chat-body" id="chatBody"></div>
+        </div>
 
-        <div class="input-line">
-            <span>>>> </span>
-            <input id="userInput" type="text" autocomplete="off" placeholder="Befehl eingeben...">
+        <!-- Side Info -->
+        <div class="side-panel">
+            <div class="side-section">
+                <div class="side-title">SESSION</div>
+                <div>Operator: Felix</div>
+                <div>Environment: Browser · Local KI</div>
+            </div>
+            <div class="side-section">
+                <div class="side-title">MODES</div>
+                <div>
+                    <span class="badge">ANALYSE</span>
+                    <span class="badge">EXPLAIN</span>
+                    <span class="badge">IDEAS</span>
+                </div>
+            </div>
+            <div class="side-section">
+                <div class="side-title">TIPPS</div>
+                <div>- „Erklär mir …“</div>
+                <div>- „Analysiere …“</div>
+                <div>- „Gib mir Ideen für …“</div>
+            </div>
         </div>
     </div>
 
-    <!-- Avatar -->
-    <div class="panel avatar-panel">
-        <div class="avatar-header">AI CORE</div>
-        <div class="avatar-circle"></div>
+    <!-- Footer -->
+    <div class="footer">
+        <span class="prompt-label">Prompt:</span>
+        <input id="userInput" type="text" autocomplete="off" placeholder="Frag deine Febl-KI etwas...">
+        <button class="send-btn" id="sendBtn">Senden</button>
     </div>
 </div>
 
-<!-- WebLLM -->
 <script type="module">
 import * as webllm from "https://esm.run/@mlc-ai/web-llm";
 
-const terminalBody = document.getElementById("terminalBody");
+const chatBody = document.getElementById("chatBody");
 const input = document.getElementById("userInput");
+const sendBtn = document.getElementById("sendBtn");
 
 let engine = null;
 
-/* Boot */
+/* Boot-Messages */
 const bootLines = [
-    "Systemstart...",
-    "WebGPU prüfen... OK",
-    "Lade lokales KI-Modell...",
-    "Modell: Llama-3.1-8B-Instruct",
-    "Febl Industry KI Minimal Mode aktiv."
+    "[System] Starte Febl Industry KI Console...",
+    "[System] Prüfe WebGPU...",
+    "[System] Lade lokales KI-Modell (Llama-3.1-8B-Instruct)...",
+    "[System] Session bereit. Du kannst Fragen stellen."
 ];
 
 bootLines.forEach((line, i) => {
-    setTimeout(() => addLine(line, false, true), i * 400);
+    setTimeout(() => addMsg(line, "ai"), i * 400);
 });
 
 /* Engine laden */
 (async () => {
     try {
         engine = await webllm.CreateMLCEngine("Llama-3.1-8B-Instruct");
-        addLine("[KI] Modell geladen.", false, true);
+        addMsg("[System] KI-Modell erfolgreich geladen.", "ai");
     } catch (e) {
-        addLine("[KI] Fehler beim Laden: " + e, false, true);
+        addMsg("[System] Fehler beim Laden des Modells: " + e, "ai");
     }
 })();
 
-/* Eingabe */
+/* Input Events */
 input.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
-        const cmd = input.value.trim();
-        input.value = "";
-        handleCommand(cmd);
+        sendCurrent();
     }
 });
 
-/* Command Handling */
-function handleCommand(cmd) {
-    if (!cmd) return;
+sendBtn.addEventListener("click", sendCurrent);
 
-    addLine(">>> " + cmd);
+function sendCurrent() {
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = "";
+    handleUserInput(text);
+}
 
-    const loading = addLine("[KI] Verarbeite...", true, true);
+/* Chat Handling */
+function handleUserInput(text) {
+    addMsg("Du: " + text, "user");
 
     if (!engine) {
-        loading.remove();
-        addLine("[KI] Modell lädt noch...", false, true);
+        addMsg("[KI] Modell lädt noch, bitte kurz warten.", "ai");
         return;
     }
 
-    callAI(cmd).then(answer => {
-        loading.remove();
-        addLine("[KI] " + answer, false, true);
+    const loadingId = addMsg("[KI] Denke nach...", "ai");
+
+    callAI(text).then(answer => {
+        replaceMsg(loadingId, "[KI] " + answer, "ai");
     }).catch(err => {
-        loading.remove();
-        addLine("[KI] Fehler: " + err, false, true);
+        replaceMsg(loadingId, "[KI] Fehler: " + err, "ai");
     });
 }
 
-/* Terminal-Ausgabe */
-function addLine(text, noAnim = false, ai = false) {
-    const div = document.createElement("div");
-    div.className = "line";
-    if (noAnim) div.style.animation = "none";
-    if (ai) div.classList.add("ai");
-    div.textContent = text;
-    terminalBody.appendChild(div);
-    terminalBody.scrollTop = terminalBody.scrollHeight;
-    return div;
-}
-
-/* KI */
+/* KI-Aufruf */
 async function callAI(question) {
     const reply = await engine.chat.completions.create({
         messages: [
-            { role: "system", content: "Du bist die Febl Industry KI im Minimal Mode. Antworte klar, direkt und futuristisch." },
-            { role: "user", content: question }
+            {
+                role: "system",
+                content: "Du bist die Febl Industry KI Console. Antworte klar, direkt, leicht futuristisch, aber verständlich. Du sprichst mit Felix."
+            },
+            {
+                role: "user",
+                content: question
+            }
         ]
     });
 
     return reply.choices[0].message.content;
+}
+
+/* Chat Rendering */
+let msgCounter = 0;
+
+function addMsg(text, type) {
+    const div = document.createElement("div");
+    div.className = "msg " + (type || "");
+    div.textContent = text;
+    div.dataset.id = ++msgCounter;
+    chatBody.appendChild(div);
+    chatBody.scrollTop = chatBody.scrollHeight;
+    return div.dataset.id;
+}
+
+function replaceMsg(id, newText, type) {
+    const el = [...chatBody.querySelectorAll(".msg")].find(m => m.dataset.id === String(id));
+    if (!el) return;
+    el.textContent = newText;
+    el.className = "msg " + (type || "");
 }
 </script>
 
