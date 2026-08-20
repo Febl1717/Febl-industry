@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Febl Chat – Local KI</title>
 
+<!-- WebLLM: KI direkt im Browser -->
 <script src="https://cdn.jsdelivr.net/npm/webllm/dist/webllm.min.js"></script>
 
 <style>
@@ -45,6 +46,12 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
+    .loader-text {
+        font-size: 18px;
+        letter-spacing: 1px;
+        color: #cbd5e1;
+    }
+
     /* App */
     .app {
         width: 900px;
@@ -52,6 +59,7 @@
         background: #0f1a33;
         border-radius: 18px;
         border: 1px solid rgba(148,163,184,0.25);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         display: grid;
         grid-template-rows: auto 1fr auto;
         overflow: hidden;
@@ -204,24 +212,35 @@
 const chat = document.getElementById("chat");
 const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
-
 const cooldown = 1000;
 
-let engine;
+let engine = null;
+let modelReady = false;
 
+/* KI im Browser initialisieren */
 (async () => {
-    engine = await webllm.createEngine("Llama-3.2-3B-Instruct");
+    try {
+        addSystemInfo("Modell wird geladen… erster Start kann etwas dauern.");
+        engine = await webllm.createEngine("Llama-3.2-3B-Instruct");
+        modelReady = true;
+        addSystemInfo("Modell bereit. Du kannst jetzt Fragen stellen.");
+    } catch (e) {
+        addSystemInfo("Fehler beim Laden der lokalen KI: " + e);
+    }
 })();
 
+/* Begrüßung nach Loader */
 setTimeout(() => {
-    addAI("Hey Felix! Ich bin jetzt eine echte KI – komplett lokal im Browser, ohne API‑Key.");
+    addAI("Hey Felix! Ich bin eine KI, die komplett im Browser läuft – ohne Server und ohne API‑Key.");
 }, 2600);
 
+/* Events */
 input.addEventListener("keydown", e => {
     if (e.key === "Enter") send();
 });
 sendBtn.addEventListener("click", send);
 
+/* Senden */
 function send() {
     if (sendBtn.disabled) return;
 
@@ -242,6 +261,7 @@ function send() {
     }, cooldown);
 }
 
+/* Nachrichten */
 function addUser(text) {
     const row = document.createElement("div");
     row.className = "msg-row user";
@@ -264,6 +284,20 @@ function addAI(text) {
     chat.scrollTop = chat.scrollHeight;
 }
 
+function addSystemInfo(text) {
+    const row = document.createElement("div");
+    row.className = "msg-row ai";
+    const bubble = document.createElement("div");
+    bubble.className = "msg-bubble ai";
+    bubble.style.opacity = "0.7";
+    bubble.style.fontSize = "13px";
+    bubble.textContent = text;
+    row.appendChild(bubble);
+    chat.appendChild(row);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+/* Typing */
 function typingAnimation() {
     const typing = document.createElement("div");
     typing.className = "typing";
@@ -288,15 +322,26 @@ function lastUserMessage() {
     return bubbles[bubbles.length - 1].textContent;
 }
 
+/* Lokale KI */
 async function callLocalAI(prompt) {
-    const answer = await engine.chat.completions.create({
-        messages: [
-            { role: "system", content: "Du bist eine hilfreiche KI für Felix." },
-            { role: "user", content: prompt }
-        ]
-    });
+    if (!modelReady || !engine) {
+        addAI("Die KI lädt noch. Warte ein paar Sekunden und versuch es nochmal.");
+        return;
+    }
 
-    addAI(answer.choices[0].message.content);
+    try {
+        const result = await engine.chat.completions.create({
+            messages: [
+                { role: "system", content: "Du bist eine hilfreiche, freundliche KI für Felix. Antworte klar und auf die Frage bezogen." },
+                { role: "user", content: prompt }
+            ]
+        });
+
+        const answer = result.choices[0].message.content;
+        addAI(answer);
+    } catch (e) {
+        addAI("Fehler bei der lokalen KI: " + e);
+    }
 }
 </script>
 
