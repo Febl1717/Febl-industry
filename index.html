@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Febl Industry KI – Console</title>
+<title>Febl Industry KI – Copilot Chat + SerpAPI</title>
 
 <style>
     * { box-sizing: border-box; }
@@ -12,8 +12,8 @@
         padding: 0;
         height: 100vh;
         background: radial-gradient(circle at top, #050816 0%, #000 70%);
-        font-family: "JetBrains Mono", monospace;
-        color: #e0f7ff;
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        color: #e5e7eb;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -23,174 +23,101 @@
         width: 960px;
         max-width: 95vw;
         height: 85vh;
-        max-height: 95vh;
-        background: rgba(5, 20, 40, 0.85);
-        border-radius: 14px;
-        border: 1px solid rgba(0,255,255,0.35);
-        box-shadow: 0 0 30px rgba(0,255,255,0.25);
+        background: #0b1120;
+        border-radius: 18px;
+        border: 1px solid rgba(148,163,184,0.4);
+        box-shadow: 0 24px 60px rgba(15,23,42,0.9);
         display: grid;
         grid-template-rows: auto 1fr auto;
         overflow: hidden;
     }
 
-    /* Header */
     .header {
-        padding: 10px 14px;
+        padding: 14px 20px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background: linear-gradient(90deg, rgba(0,255,255,0.15), transparent);
-        font-size: 12px;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: #7ee7ff;
+        border-bottom: 1px solid rgba(30,64,175,0.6);
+        background: linear-gradient(90deg, rgba(30,64,175,0.4), transparent);
     }
 
-    .header-title {
-        display: flex;
-        gap: 8px;
-        align-items: center;
+    .logo-dot {
+        width: 26px;
+        height: 26px;
+        border-radius: 999px;
+        background: radial-gradient(circle, #38bdf8 0%, #1d4ed8 60%, #020617 100%);
+        box-shadow: 0 0 18px rgba(56,189,248,0.8);
     }
 
-    .header-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: #00f2ff;
-        box-shadow: 0 0 8px #00f2ff;
-    }
-
-    .header-status {
-        font-size: 11px;
-        color: #9af3ff;
-    }
-
-    /* Main */
-    .main {
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-        gap: 0;
-        padding: 10px 12px;
-    }
-
-    /* Chat Panel */
-    .chat-panel {
-        border-right: 1px solid rgba(0,255,255,0.2);
-        padding-right: 10px;
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-    }
-
-    .chat-body {
-        flex: 1;
-        background: rgba(0, 10, 20, 0.9);
-        border-radius: 8px;
-        padding: 10px;
+    .chat {
+        padding: 16px 20px;
         overflow-y: auto;
-        font-size: 13px;
-        border: 1px solid rgba(0,255,255,0.15);
+        background: radial-gradient(circle at top, rgba(15,23,42,0.9), #020617);
     }
 
-    .msg {
-        margin: 6px 0;
+    .msg-row {
+        display: flex;
+        margin-bottom: 12px;
+    }
+
+    .msg-row.user { justify-content: flex-end; }
+    .msg-row.ai { justify-content: flex-start; }
+
+    .msg-bubble {
+        max-width: 70%;
+        padding: 10px 12px;
+        border-radius: 16px;
+        font-size: 14px;
+        line-height: 1.4;
         white-space: pre-wrap;
-        opacity: 0;
-        transform: translateY(4px);
-        animation: fadeIn 0.2s forwards;
     }
 
-    @keyframes fadeIn {
-        to { opacity: 1; transform: translateY(0); }
+    .msg-bubble.user {
+        background: #1d4ed8;
+        color: #e5e7eb;
+        border-bottom-right-radius: 4px;
     }
 
-    .msg.user {
-        color: #e0f7ff;
+    .msg-bubble.ai {
+        background: #020617;
+        color: #e5e7eb;
+        border: 1px solid rgba(148,163,184,0.5);
+        border-bottom-left-radius: 4px;
     }
 
-    .msg.ai {
-        color: #7ee7ff;
-        text-shadow: 0 0 6px #00eaff;
-    }
-
-    /* Side Panel */
-    .side-panel {
-        padding-left: 10px;
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        font-size: 12px;
-    }
-
-    .side-section {
-        background: rgba(0, 15, 30, 0.9);
-        border-radius: 8px;
-        border: 1px solid rgba(0,255,255,0.2);
-        padding: 8px;
-        margin-bottom: 8px;
-    }
-
-    .side-title {
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
-        font-size: 11px;
-        color: #7ee7ff;
-        margin-bottom: 4px;
-    }
-
-    .badge {
-        display: inline-block;
-        padding: 2px 6px;
-        border-radius: 6px;
-        border: 1px solid rgba(0,255,255,0.4);
-        font-size: 10px;
-        margin-right: 4px;
-        color: #9af3ff;
-    }
-
-    /* Footer / Input */
     .footer {
-        padding: 8px 14px;
-        border-top: 1px solid rgba(0,255,255,0.25);
-        display: flex;
-        align-items: center;
-        gap: 8px;
+        padding: 12px 20px;
+        border-top: 1px solid rgba(31,41,55,0.9);
+        background: linear-gradient(to top, #020617, rgba(15,23,42,0.9));
     }
 
-    .prompt-label {
-        font-size: 12px;
-        color: #7ee7ff;
+    .input-wrapper {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        background: #020617;
+        border-radius: 999px;
+        border: 1px solid rgba(55,65,81,0.9);
+        padding: 6px 10px;
     }
 
     #userInput {
         flex: 1;
-        background: rgba(0, 10, 20, 0.9);
-        border-radius: 6px;
-        border: 1px solid rgba(0,255,255,0.4);
-        color: #e0f7ff;
-        font-family: inherit;
-        font-size: 13px;
-        padding: 6px 8px;
+        background: transparent;
+        border: none;
+        color: #e5e7eb;
+        font-size: 14px;
         outline: none;
     }
 
-    #userInput:focus {
-        border-color: #00f2ff;
-        box-shadow: 0 0 10px rgba(0,255,255,0.35);
-    }
-
     .send-btn {
-        padding: 6px 12px;
-        border-radius: 6px;
-        border: 1px solid rgba(0,255,255,0.6);
-        background: rgba(0,255,255,0.1);
-        color: #e0f7ff;
-        font-size: 12px;
+        padding: 6px 14px;
+        border-radius: 999px;
+        border: none;
+        background: #1d4ed8;
+        color: #e5e7eb;
+        font-size: 13px;
         cursor: pointer;
-    }
-
-    .send-btn:hover {
-        background: rgba(0,255,255,0.2);
     }
 </style>
 </head>
@@ -198,155 +125,95 @@
 <body>
 
 <div class="app">
-    <!-- Header -->
     <div class="header">
-        <div class="header-title">
-            <div class="header-dot"></div>
-            <span>FEBL INDUSTRY KI – CONSOLE</span>
+        <div style="display:flex;align-items:center;gap:10px;">
+            <div class="logo-dot"></div>
+            <div>
+                <div style="font-size:15px;font-weight:600;">Febl Industry KI</div>
+                <div style="font-size:12px;color:#9ca3af;">Copilot‑Style Chat + Google‑Suche</div>
+            </div>
         </div>
-        <div class="header-status">MODE: ANALYTIC · LINK: LOCAL KI</div>
+        <div style="font-size:12px;color:#9ca3af;">Operator: Felix</div>
     </div>
 
-    <!-- Main -->
-    <div class="main">
-        <!-- Chat -->
-        <div class="chat-panel">
-            <div class="chat-body" id="chatBody"></div>
-        </div>
+    <div class="chat" id="chat"></div>
 
-        <!-- Side Info -->
-        <div class="side-panel">
-            <div class="side-section">
-                <div class="side-title">SESSION</div>
-                <div>Operator: Felix</div>
-                <div>Environment: Browser · Local KI</div>
-            </div>
-            <div class="side-section">
-                <div class="side-title">MODES</div>
-                <div>
-                    <span class="badge">ANALYSE</span>
-                    <span class="badge">EXPLAIN</span>
-                    <span class="badge">IDEAS</span>
-                </div>
-            </div>
-            <div class="side-section">
-                <div class="side-title">TIPPS</div>
-                <div>- „Erklär mir …“</div>
-                <div>- „Analysiere …“</div>
-                <div>- „Gib mir Ideen für …“</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer -->
     <div class="footer">
-        <span class="prompt-label">Prompt:</span>
-        <input id="userInput" type="text" autocomplete="off" placeholder="Frag deine Febl-KI etwas...">
-        <button class="send-btn" id="sendBtn">Senden</button>
+        <div class="input-wrapper">
+            <input id="userInput" type="text" autocomplete="off" placeholder="Frag deine KI etwas …">
+            <button class="send-btn" id="sendBtn">Senden</button>
+        </div>
     </div>
 </div>
 
-<script type="module">
-import * as webllm from "https://esm.run/@mlc-ai/web-llm";
+<script>
+const SERP_API_KEY = "06ed74f1cece99fa0eb7f01951cdb7d8ba7a7bb700e5715848ee74ae2ac78c6f";  // <--- WICHTIG
 
-const chatBody = document.getElementById("chatBody");
+const chat = document.getElementById("chat");
 const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 
-let engine = null;
+addAI("Hey Felix! Ich bin deine Febl‑KI mit Google‑Power. Frag mich irgendwas – ich suche es live für dich raus.");
 
-/* Boot-Messages */
-const bootLines = [
-    "[System] Starte Febl Industry KI Console...",
-    "[System] Prüfe WebGPU...",
-    "[System] Lade lokales KI-Modell (Llama-3.1-8B-Instruct)...",
-    "[System] Session bereit. Du kannst Fragen stellen."
-];
+input.addEventListener("keydown", e => { if (e.key === "Enter") send(); });
+sendBtn.addEventListener("click", send);
 
-bootLines.forEach((line, i) => {
-    setTimeout(() => addMsg(line, "ai"), i * 400);
-});
-
-/* Engine laden */
-(async () => {
-    try {
-        engine = await webllm.CreateMLCEngine("Llama-3.1-8B-Instruct");
-        addMsg("[System] KI-Modell erfolgreich geladen.", "ai");
-    } catch (e) {
-        addMsg("[System] Fehler beim Laden des Modells: " + e, "ai");
-    }
-})();
-
-/* Input Events */
-input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-        sendCurrent();
-    }
-});
-
-sendBtn.addEventListener("click", sendCurrent);
-
-function sendCurrent() {
+function send() {
     const text = input.value.trim();
     if (!text) return;
     input.value = "";
-    handleUserInput(text);
+    addUser(text);
+    handleAI(text);
 }
 
-/* Chat Handling */
-function handleUserInput(text) {
-    addMsg("Du: " + text, "user");
+function addUser(text) {
+    const row = document.createElement("div");
+    row.className = "msg-row user";
+    const bubble = document.createElement("div");
+    bubble.className = "msg-bubble user";
+    bubble.textContent = text;
+    row.appendChild(bubble);
+    chat.appendChild(row);
+    chat.scrollTop = chat.scrollHeight;
+}
 
-    if (!engine) {
-        addMsg("[KI] Modell lädt noch, bitte kurz warten.", "ai");
-        return;
+function addAI(text) {
+    const row = document.createElement("div");
+    row.className = "msg-row ai";
+    const bubble = document.createElement("div");
+    bubble.className = "msg-bubble ai";
+    bubble.textContent = text;
+    row.appendChild(bubble);
+    chat.appendChild(row);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+async function handleAI(prompt) {
+    addAI("Suche…");
+
+    try {
+        const url = `https://serpapi.com/search.json?engine=google&q=${encodeURIComponent(prompt)}&hl=de&gl=de&api_key=${SERP_API_KEY}`;
+
+        const res = await fetch(url);
+        const data = await res.json();
+
+        let answer = "";
+
+        if (data.answer_box?.answer) {
+            answer = data.answer_box.answer;
+        } else if (data.answer_box?.snippet) {
+            answer = data.answer_box.snippet;
+        } else if (data.organic_results?.length > 0) {
+            answer = data.organic_results[0].snippet || data.organic_results[0].title;
+        } else {
+            answer = "Ich habe etwas gefunden, aber Google hat mir keine klare Antwort gegeben.";
+        }
+
+        addAI(answer);
+
+    } catch (err) {
+        addAI("Fehler bei der Google‑Suche: " + err);
     }
-
-    const loadingId = addMsg("[KI] Denke nach...", "ai");
-
-    callAI(text).then(answer => {
-        replaceMsg(loadingId, "[KI] " + answer, "ai");
-    }).catch(err => {
-        replaceMsg(loadingId, "[KI] Fehler: " + err, "ai");
-    });
-}
-
-/* KI-Aufruf */
-async function callAI(question) {
-    const reply = await engine.chat.completions.create({
-        messages: [
-            {
-                role: "system",
-                content: "Du bist die Febl Industry KI Console. Antworte klar, direkt, leicht futuristisch, aber verständlich. Du sprichst mit Felix."
-            },
-            {
-                role: "user",
-                content: question
-            }
-        ]
-    });
-
-    return reply.choices[0].message.content;
-}
-
-/* Chat Rendering */
-let msgCounter = 0;
-
-function addMsg(text, type) {
-    const div = document.createElement("div");
-    div.className = "msg " + (type || "");
-    div.textContent = text;
-    div.dataset.id = ++msgCounter;
-    chatBody.appendChild(div);
-    chatBody.scrollTop = chatBody.scrollHeight;
-    return div.dataset.id;
-}
-
-function replaceMsg(id, newText, type) {
-    const el = [...chatBody.querySelectorAll(".msg")].find(m => m.dataset.id === String(id));
-    if (!el) return;
-    el.textContent = newText;
-    el.className = "msg " + (type || "");
 }
 </script>
 
