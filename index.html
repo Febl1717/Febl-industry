@@ -8,7 +8,7 @@
 
 /* Hintergrund */
 body{
-    background:#020617;
+    background:#0f172a;
     height:100vh;
     display:flex;
     justify-content:center;
@@ -31,9 +31,6 @@ body{
 
 /* Handy Vollbild */
 @media(max-width:600px){
-    body{
-        background:#0f172a;
-    }
     .app{
         width:100%;
         height:100vh;
@@ -45,8 +42,8 @@ body{
 
 /* Header */
 .header{
-    padding:12px 14px;
-    font-size:16px;
+    padding:18px 18px;
+    font-size:20px;
     font-weight:600;
     border-bottom:1px solid rgba(148,163,184,0.35);
     display:flex;
@@ -56,79 +53,65 @@ body{
 
 /* Zurück Button */
 .back-btn{
-    padding:10px 14px;
+    padding:14px 18px;
     background:#3b82f6;
     border:none;
-    border-radius:10px;
+    border-radius:14px;
     color:white;
-    font-size:14px;
+    font-size:18px;
     cursor:pointer;
-}
-
-@media(max-width:600px){
-    .back-btn{
-        padding:14px;
-        font-size:16px;
-    }
 }
 
 /* Chat löschen Button */
 .clear-btn{
-    padding:10px 14px;
+    padding:14px 18px;
     background:#ef4444;
     border:none;
-    border-radius:10px;
+    border-radius:14px;
     color:white;
-    font-size:14px;
+    font-size:18px;
     cursor:pointer;
-}
-
-@media(max-width:600px){
-    .clear-btn{
-        padding:14px;
-        font-size:16px;
-    }
 }
 
 /* Chat Bereich */
 .chat{
     flex:1;
-    padding:14px;
+    padding:18px;
     overflow-y:auto;
 }
 
 /* Nachrichten */
 .msg-row{
-    margin-bottom:16px;
+    margin-bottom:22px;
     display:flex;
     align-items:flex-start;
-    gap:10px;
+    gap:14px;
 }
 
 .msg-label{
-    font-size:11px;
-    opacity:0.6;
-    margin-bottom:4px;
+    font-size:14px;
+    opacity:0.7;
+    margin-bottom:6px;
 }
 
 .msg-bubble{
-    max-width:80%;
-    padding:12px 14px;
-    border-radius:14px;
-    font-size:15px;
-    line-height:1.5;
+    max-width:85%;
+    padding:16px 18px;
+    border-radius:18px;
+    font-size:18px;
+    line-height:1.6;
     white-space:pre-wrap;
 }
 
 /* Avatare */
 .avatar{
-    width:30px;
-    height:30px;
+    width:40px;
+    height:40px;
     border-radius:999px;
     display:flex;
     justify-content:center;
     align-items:center;
-    font-size:15px;
+    font-size:20px;
     font-weight:600;
 }
 
@@ -153,30 +136,30 @@ body{
 
 /* Footer */
 .footer{
-    padding:12px;
+    padding:18px;
     border-top:1px solid rgba(148,163,184,0.35);
     display:flex;
-    gap:10px;
+    gap:14px;
 }
 
 #userInput{
     flex:1;
     background:#020617;
     border:1px solid rgba(148,163,184,0.5);
-    border-radius:12px;
-    padding:12px;
-    font-size:16px;
+    border-radius:14px;
+    padding:16px;
+    font-size:18px;
     color:#e5e7eb;
 }
 
 .send-btn{
-    width:52px;
-    height:42px;
+    width:70px;
+    height:60px;
     background:#3b82f6;
-    border-radius:12px;
+    border-radius:14px;
     border:none;
     color:#fff;
-    font-size:18px;
+    font-size:26px;
     cursor:pointer;
 }
 
@@ -191,15 +174,14 @@ body{
     flex-direction:column;
     z-index:999;
     color:white;
-    font-size:28px;
+    font-size:36px;
     opacity:1;
-    transition:0.6s;
+    transition:opacity 0.6s ease;
 }
 
-.intro.hidden {
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.6s ease;
+.intro.hidden{
+    opacity:0;
+    pointer-events:none;
 }
 </style>
 </head>
@@ -208,7 +190,7 @@ body{
 <!-- Start Intro -->
 <div id="intro" class="intro">
     <div>Hallo!</div>
-    <div style="font-size:16px;opacity:0.7;margin-top:10px;">Febl industry KI wird geladen…</div>
+    <div style="font-size:20px;opacity:0.7;margin-top:10px;">Febl industry KI wird geladen…</div>
 </div>
 
 <div class="app">
@@ -236,10 +218,15 @@ const chat = document.getElementById("chat");
 const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 
-/* Intro */
-setTimeout(()=>{
-    document.getElementById("intro").classList.add("hidden");
-},1500);
+/* Intro Fix */
+setTimeout(() => {
+    const intro = document.getElementById("intro");
+    intro.classList.add("hidden");
+
+    setTimeout(() => {
+        intro.style.display = "none";
+    }, 600);
+}, 1500);
 
 /* Chat-Verlauf */
 let messages = JSON.parse(localStorage.getItem("feblChatHistory") || "[]");
