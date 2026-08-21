@@ -30,6 +30,15 @@
         overflow: hidden;
     }
 
+    /* Handy-Optimierung */
+    @media (max-width: 600px) {
+        .app {
+            width: 100%;
+            height: 100vh;
+            border-radius: 0;
+        }
+    }
+
     .header {
         padding: 18px 26px;
         font-size: 18px;
@@ -38,11 +47,6 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-    }
-
-    .status {
-        font-size: 14px;
-        opacity: 0.8;
     }
 
     .chat {
@@ -126,22 +130,73 @@
         box-shadow: 0 0 12px rgba(37,99,235,0.5);
     }
 
-    @media (max-width: 600px) {
-        .app {
-            width: 100%;
-            height: 100vh;
-            border-radius: 0;
-        }
+    /* Popup */
+    .popup {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.55);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(6px);
+        z-index: 999;
+        opacity: 1;
+        transition: opacity 0.4s ease;
+    }
+
+    .popup.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .popup-content {
+        background: #0f172a;
+        padding: 30px;
+        border-radius: 18px;
+        border: 1px solid rgba(148,163,184,0.35);
+        box-shadow: 0 0 25px rgba(0,0,0,0.45);
+        text-align: center;
+        width: 300px;
+    }
+
+    #nameInput {
+        width: 100%;
+        padding: 12px;
+        border-radius: 12px;
+        border: 1px solid rgba(148,163,184,0.35);
+        background: #0a0f1c;
+        color: #e5e7eb;
+        margin-bottom: 20px;
+        font-size: 16px;
+    }
+
+    #saveNameBtn {
+        width: 100%;
+        padding: 12px;
+        background: #3b82f6;
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    #saveNameBtn:hover {
+        background: #2563eb;
     }
 </style>
 </head>
 <body>
-   <div id="namePopup" class="popup">
+
+<!-- Popup -->
+<div id="namePopup" class="popup">
     <div class="popup-content">
         <h2>Wie heißt du?</h2>
         <input id="nameInput" type="text" placeholder="Dein Name">
         <button id="saveNameBtn">Speichern</button>
     </div>
+</div>
 
 <div class="app">
     <div class="header">
@@ -158,25 +213,43 @@
 </div>
 
 <script>
-// ⭐ DEIN API-KEY HIER EINSETZEN
+// ⭐ API KEY
 const API_KEY = "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";
 
-// ⭐ Modellname (funktioniert bei dir)
-const MODEL = "groq/compound";
+// ⭐ Modell
+const MODEL = "groq/compound-mini";
 
 // ⭐ API URL
 const API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
-const chat = document.getElementById("chat");
-const input = document.getElementById("userInput");
-const sendBtn = document.getElementById("sendBtn");
+let userName = localStorage.getItem("feblUserName");
+
+if (!userName) {
+    document.getElementById("namePopup").classList.remove("hidden");
+}
+
+document.getElementById("saveNameBtn").addEventListener("click", () => {
+    const name = document.getElementById("nameInput").value.trim();
+    if (!name) return;
+
+    localStorage.setItem("feblUserName", name);
+    userName = name;
+
+    document.getElementById("namePopup").classList.add("hidden");
+
+    addMessage("ai", `Hallo ${userName}! Schön dich zu sehen. Ich bin Febl industry KI.`);
+});
 
 let messages = [
     {
         role: "system",
-        content: "Du bist Febl industry KI (open beta). Du antwortest IMMER ausschließlich auf Deutsch, egal in welcher Sprache der Nutzer schreibt. Du verwendest modernes, natürliches, freundliches Deutsch. Keine englischen Wörter, keine arabischen Wörter, keine Übersetzungen. Nur Deutsch."
+        content: `Du bist Febl industry KI (open beta). Du antwortest IMMER ausschließlich auf Deutsch. Sprich den Nutzer mit seinem Namen (${userName || "Nutzer"}) an.`
     }
 ];
+
+const chat = document.getElementById("chat");
+const input = document.getElementById("userInput");
+const sendBtn = document.getElementById("sendBtn");
 
 function addMessage(role, text) {
     const row = document.createElement("div");
@@ -184,7 +257,7 @@ function addMessage(role, text) {
 
     const label = document.createElement("div");
     label.className = "msg-label";
-    label.textContent = role === "user" ? "Du" : "Febl industry KI";
+    label.textContent = role === "user" ? userName : "Febl industry KI";
 
     const bubble = document.createElement("div");
     bubble.className = "msg-bubble";
@@ -199,7 +272,6 @@ function addMessage(role, text) {
 async function sendToAPI(userText) {
     messages.push({ role: "user", content: userText });
 
-    // ⭐ FIX: Nur die letzten 10 Nachrichten senden
     const limitedMessages = messages.slice(-10);
 
     try {
@@ -243,8 +315,6 @@ sendBtn.addEventListener("click", send);
 input.addEventListener("keydown", e => {
     if (e.key === "Enter") send();
 });
-
-addMessage("ai", "Hallo nutzer! Ich bin jetzt komplett auf Deutsch eingestellt und habe ein neues smoothes Design.");
 </script>
 
 </body>
