@@ -77,7 +77,6 @@ body{
     font-size:15px;
     line-height:1.6;
     white-space:pre-wrap;
-    backdrop-filter:blur(10px);
 }
 
 /* Avatare */
@@ -99,20 +98,17 @@ body{
 
 .user-row .msg-bubble{
     background:#1d4ed8;
-    box-shadow:0 0 16px rgba(59,130,246,0.7);
 }
 
 /* KI */
 .ai-row .msg-bubble{
-    background:rgba(15,23,42,0.9);
+    background:#1e293b;
     border:1px solid rgba(148,163,184,0.5);
-    box-shadow:0 0 18px rgba(56,189,248,0.6);
 }
 
-/* KI Avatar Neon */
+/* KI Avatar */
 .ai-avatar{
-    background:radial-gradient(circle,#22c55e 0%,#0f172a 60%);
-    box-shadow:0 0 18px rgba(34,197,94,0.9);
+    background:#22c55e;
 }
 
 /* Footer */
@@ -133,12 +129,6 @@ body{
     font-size:15px;
     color:#e5e7eb;
     outline:none;
-    transition:0.2s;
-}
-
-#userInput:focus{
-    border-color:#3b82f6;
-    box-shadow:0 0 12px rgba(59,130,246,0.6);
 }
 
 /* Senden Button */
@@ -151,21 +141,18 @@ body{
     color:#fff;
     font-size:18px;
     cursor:pointer;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    transition:0.2s;
-    box-shadow:0 0 14px rgba(59,130,246,0.7);
 }
 
-.send-btn:hover{
-    background:#2563eb;
-    transform:translateY(-1px);
-    box-shadow:0 0 18px rgba(37,99,235,0.9);
-}
-
-.send-btn:active{
-    transform:scale(0.95);
+/* Chat löschen Button */
+.clear-btn{
+    width:120px;
+    padding:10px;
+    background:#ef4444;
+    border:none;
+    border-radius:12px;
+    color:white;
+    font-size:14px;
+    cursor:pointer;
 }
 
 /* Popup */
@@ -192,7 +179,6 @@ body{
     padding:26px;
     border-radius:18px;
     border:1px solid rgba(148,163,184,0.35);
-    box-shadow:0 0 25px rgba(0,0,0,0.6);
     text-align:center;
     width:280px;
 }
@@ -215,7 +201,6 @@ body{
     border-radius:12px;
     color:white;
     cursor:pointer;
-    box-shadow:0 0 14px rgba(34,197,94,0.7);
 }
 </style>
 </head>
@@ -233,7 +218,7 @@ body{
 <div class="app">
     <div class="header">
         <span>Febl industry KI (open beta)</span>
-        <span class="status">bereit</span>
+        <button id="clearChatBtn" class="clear-btn">Chat löschen</button>
     </div>
 
     <div class="chat" id="chat"></div>
@@ -267,7 +252,7 @@ function systemMessage(){
     };
 }
 
-/* Popup */
+/* Popup nur einmal */
 if(!userName){
     document.getElementById("namePopup").classList.remove("hidden");
 }else{
@@ -278,6 +263,7 @@ if(!userName){
     }
 }
 
+/* Name speichern */
 document.getElementById("saveNameBtn").onclick=()=>{
     const name=document.getElementById("nameInput").value.trim();
     if(!name)return;
@@ -294,7 +280,7 @@ function addMessage(role,text){
     renderMessage(role,text);
 }
 
-/* Render + Avatar + Typing */
+/* Render + Avatar */
 function renderMessage(role,text){
     const row=document.createElement("div");
     row.className="msg-row "+(role==="user"?"user-row":"ai-row");
@@ -321,25 +307,11 @@ function renderMessage(role,text){
     }else{
         row.appendChild(avatar);
         row.appendChild(wrap);
-        typeText(bubble,text);
+        bubble.textContent=text; /* leichte Animation entfernt */
     }
 
     chat.appendChild(row);
     chat.scrollTop=chat.scrollHeight;
-}
-
-/* Typing Animation */
-function typeText(el,text,speed=20){
-    let i=0;
-    function step(){
-        if(i<=text.length){
-            el.textContent=text.slice(0,i);
-            i++;
-            chat.scrollTop=chat.scrollHeight;
-            setTimeout(step,speed);
-        }
-    }
-    step();
 }
 
 /* API */
@@ -384,6 +356,14 @@ function send(){
 
 sendBtn.onclick=send;
 input.onkeydown=e=>{if(e.key==="Enter")send()};
+
+/* Chat löschen */
+document.getElementById("clearChatBtn").onclick=()=>{
+    localStorage.removeItem("feblChatHistory");
+    messages=[];
+    chat.innerHTML="";
+    addMessage("ai",`Chat gelöscht. Ich bin wieder da, ${userName}!`);
+};
 </script>
 
 </body>
