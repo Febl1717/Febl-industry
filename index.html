@@ -162,16 +162,12 @@
 </div>
 
 <script>
-// ⭐ API-Daten (OpenAI)
-const API_KEY = "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";
+// ⭐ API-Daten (DeepSeek)
+const API_KEY = "sk-fc3d46568b9f4389a68ffb962f8ad708";
 
-// OpenAI Chat API
-const REAL_API_URL = "https://api.openai.com/v1/chat/completions";
-
-// Proxy für Browser (kein localhost nötig)
-const API_URL = "https://corsproxy.io/?" + REAL_API_URL;
-
-const MODEL = "gpt-4o-mini";
+// DeepSeek Chat API
+const API_URL = "https://api.deepseek.com/chat/completions";
+const MODEL   = "deepseek-chat";
 
 const chat = document.getElementById("chat");
 const input = document.getElementById("userInput");
@@ -244,7 +240,7 @@ input.addEventListener("keydown", e => {
 });
 
 // Begrüßung
-addMessage("assistant", "Hallo nutzer! Ich bin **Febl industry KI (open beta)** — deine persönliche KI wie ChatGPT, jetzt mit OpenAI‑Power.");
+addMessage("assistant", "Hallo nutzer! Ich bin **Febl industry KI (open beta)** — jetzt mit DeepSeek‑Power, komplett ohne Localhost.");
 </script>
 
 </body>
