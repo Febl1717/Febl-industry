@@ -3,193 +3,225 @@
 <head>
 <meta charset="UTF-8">
 <title>Febl industry KI (open beta)</title>
-
 <style>
-    * { box-sizing: border-box; }
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif}
 
-    body {
-        margin: 0;
-        background: #0a0f1c;
-        font-family: system-ui, sans-serif;
-        color: #e5e7eb;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+/* Hintergrund */
+body{
+    background:#020617;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:#e5e7eb;
+}
 
-    .app {
-        width: 900px;
-        height: 90vh;
-        background: #0f172a;
-        border-radius: 22px;
-        border: 1px solid rgba(148,163,184,0.25);
-        box-shadow: 0 0 40px rgba(0,0,0,0.45);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-    }
+/* App */
+.app{
+    width:900px;
+    height:90vh;
+    background:#0f172a;
+    border-radius:22px;
+    border:1px solid rgba(148,163,184,0.35);
+    box-shadow:0 0 40px rgba(0,0,0,0.6);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+}
 
-    /* Handy-Optimierung */
-    @media (max-width: 600px) {
-        .app {
-            width: 100%;
-            height: 100vh;
-            border-radius: 0;
-        }
+/* Handy */
+@media(max-width:600px){
+    .app{
+        width:100%;
+        height:100vh;
+        border-radius:0;
     }
+}
 
-    .header {
-        padding: 18px 26px;
-        font-size: 18px;
-        font-weight: 600;
-        border-bottom: 1px solid rgba(148,163,184,0.25);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+/* Header */
+.header{
+    padding:16px 22px;
+    font-size:18px;
+    font-weight:600;
+    border-bottom:1px solid rgba(148,163,184,0.35);
+    display:flex;
+    justify-content:space-between;
+}
 
-    .chat {
-        flex: 1;
-        padding: 24px;
-        overflow-y: auto;
-        scroll-behavior: smooth;
-    }
+/* Chat */
+.chat{
+    flex:1;
+    padding:18px;
+    overflow-y:auto;
+    scroll-behavior:smooth;
+}
 
-    .msg-row {
-        margin-bottom: 20px;
-        display: flex;
-        flex-direction: column;
-    }
+/* Nachrichten */
+.msg-row{
+    margin-bottom:18px;
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+}
 
-    .msg-label {
-        font-size: 12px;
-        opacity: 0.6;
-        margin-bottom: 6px;
-    }
+.msg-label{
+    font-size:11px;
+    opacity:0.6;
+    margin-bottom:4px;
+}
 
-    .msg-bubble {
-        max-width: 80%;
-        padding: 14px 18px;
-        border-radius: 16px;
-        font-size: 15px;
-        line-height: 1.6;
-        white-space: pre-wrap;
-        backdrop-filter: blur(10px);
-    }
+.msg-bubble{
+    max-width:80%;
+    padding:12px 16px;
+    border-radius:16px;
+    font-size:15px;
+    line-height:1.6;
+    white-space:pre-wrap;
+    backdrop-filter:blur(10px);
+}
 
-    .user .msg-bubble {
-        margin-left: auto;
-        background: #1d4ed8;
-        color: #e5e7eb;
-        box-shadow: 0 0 12px rgba(29,78,216,0.4);
-    }
+/* Avatare */
+.avatar{
+    width:32px;
+    height:32px;
+    border-radius:999px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:16px;
+    font-weight:600;
+}
 
-    .ai .msg-bubble {
-        background: rgba(255,255,255,0.05);
-        border: 1px solid rgba(148,163,184,0.3);
-    }
+/* Nutzer */
+.user-row{
+    flex-direction:row-reverse;
+}
 
-    .footer {
-        padding: 18px 26px;
-        border-top: 1px solid rgba(148,163,184,0.25);
-        display: flex;
-        gap: 12px;
-    }
+.user-row .msg-bubble{
+    background:#1d4ed8;
+    box-shadow:0 0 16px rgba(59,130,246,0.7);
+}
 
-    #userInput {
-        flex: 1;
-        background: #0a0f1c;
-        border: 1px solid rgba(148,163,184,0.35);
-        border-radius: 14px;
-        padding: 14px 16px;
-        font-size: 16px;
-        color: #e5e7eb;
-        outline: none;
-        transition: 0.2s;
-    }
+/* KI */
+.ai-row .msg-bubble{
+    background:rgba(15,23,42,0.9);
+    border:1px solid rgba(148,163,184,0.5);
+    box-shadow:0 0 18px rgba(56,189,248,0.6);
+}
 
-    #userInput:focus {
-        border-color: #3b82f6;
-        box-shadow: 0 0 10px rgba(59,130,246,0.4);
-    }
+/* KI Avatar Neon */
+.ai-avatar{
+    background:radial-gradient(circle,#22c55e 0%,#0f172a 60%);
+    box-shadow:0 0 18px rgba(34,197,94,0.9);
+}
 
-    .send-btn {
-        padding: 14px 22px;
-        background: #3b82f6;
-        border-radius: 14px;
-        border: none;
-        color: #fff;
-        font-size: 16px;
-        cursor: pointer;
-        transition: 0.2s;
-    }
+/* Footer */
+.footer{
+    padding:14px 18px;
+    border-top:1px solid rgba(148,163,184,0.35);
+    display:flex;
+    gap:10px;
+}
 
-    .send-btn:hover {
-        background: #2563eb;
-        box-shadow: 0 0 12px rgba(37,99,235,0.5);
-    }
+/* Input */
+#userInput{
+    flex:1;
+    background:#020617;
+    border:1px solid rgba(148,163,184,0.5);
+    border-radius:14px;
+    padding:12px 14px;
+    font-size:15px;
+    color:#e5e7eb;
+    outline:none;
+    transition:0.2s;
+}
 
-    /* Popup */
-    .popup {
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.55);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        backdrop-filter: blur(6px);
-        z-index: 999;
-        opacity: 1;
-        transition: opacity 0.4s ease;
-    }
+#userInput:focus{
+    border-color:#3b82f6;
+    box-shadow:0 0 12px rgba(59,130,246,0.6);
+}
 
-    .popup.hidden {
-        opacity: 0;
-        pointer-events: none;
-    }
+/* Senden Button */
+.send-btn{
+    width:52px;
+    height:42px;
+    background:#3b82f6;
+    border-radius:14px;
+    border:none;
+    color:#fff;
+    font-size:18px;
+    cursor:pointer;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    transition:0.2s;
+    box-shadow:0 0 14px rgba(59,130,246,0.7);
+}
 
-    .popup-content {
-        background: #0f172a;
-        padding: 30px;
-        border-radius: 18px;
-        border: 1px solid rgba(148,163,184,0.35);
-        box-shadow: 0 0 25px rgba(0,0,0,0.45);
-        text-align: center;
-        width: 300px;
-    }
+.send-btn:hover{
+    background:#2563eb;
+    transform:translateY(-1px);
+    box-shadow:0 0 18px rgba(37,99,235,0.9);
+}
 
-    #nameInput {
-        width: 100%;
-        padding: 12px;
-        border-radius: 12px;
-        border: 1px solid rgba(148,163,184,0.35);
-        background: #0a0f1c;
-        color: #e5e7eb;
-        margin-bottom: 20px;
-        font-size: 16px;
-    }
+.send-btn:active{
+    transform:scale(0.95);
+}
 
-    #saveNameBtn {
-        width: 100%;
-        padding: 12px;
-        background: #3b82f6;
-        border: none;
-        border-radius: 12px;
-        color: white;
-        font-size: 16px;
-        cursor: pointer;
-        transition: 0.2s;
-    }
+/* Popup */
+.popup{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.55);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    backdrop-filter:blur(6px);
+    z-index:999;
+    opacity:1;
+    transition:0.4s;
+}
 
-    #saveNameBtn:hover {
-        background: #2563eb;
-    }
+.popup.hidden{
+    opacity:0;
+    pointer-events:none;
+}
+
+.popup-content{
+    background:#0f172a;
+    padding:26px;
+    border-radius:18px;
+    border:1px solid rgba(148,163,184,0.35);
+    box-shadow:0 0 25px rgba(0,0,0,0.6);
+    text-align:center;
+    width:280px;
+}
+
+#nameInput{
+    width:100%;
+    padding:10px;
+    border-radius:12px;
+    border:1px solid rgba(148,163,184,0.35);
+    background:#020617;
+    color:#e5e7eb;
+    margin-bottom:16px;
+}
+
+#saveNameBtn{
+    width:100%;
+    padding:10px;
+    background:#22c55e;
+    border:none;
+    border-radius:12px;
+    color:white;
+    cursor:pointer;
+    box-shadow:0 0 14px rgba(34,197,94,0.7);
+}
 </style>
 </head>
 <body>
 
-<!-- Popup -->
+<!-- Namens-Popup -->
 <div id="namePopup" class="popup">
     <div class="popup-content">
         <h2>Wie heißt du?</h2>
@@ -200,7 +232,7 @@
 
 <div class="app">
     <div class="header">
-        Febl industry KI (open beta)
+        <span>Febl industry KI (open beta)</span>
         <span class="status">bereit</span>
     </div>
 
@@ -208,113 +240,150 @@
 
     <div class="footer">
         <input id="userInput" type="text" placeholder="Schreibe etwas …">
-        <button class="send-btn" id="sendBtn">Senden</button>
+        <button class="send-btn" id="sendBtn">➤</button>
     </div>
 </div>
 
 <script>
-// ⭐ API KEY
+/* API */
 const API_KEY = "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";
-
-// ⭐ Modell
-const MODEL = "groq/compound-mini";
-
-// ⭐ API URL
+const MODEL   = "groq/compound-mini";
 const API_URL = "https://api.groq.com/openai/v1/chat/completions";
-
-let userName = localStorage.getItem("feblUserName");
-
-if (!userName) {
-    document.getElementById("namePopup").classList.remove("hidden");
-}
-
-document.getElementById("saveNameBtn").addEventListener("click", () => {
-    const name = document.getElementById("nameInput").value.trim();
-    if (!name) return;
-
-    localStorage.setItem("feblUserName", name);
-    userName = name;
-
-    document.getElementById("namePopup").classList.add("hidden");
-
-    addMessage("ai", `Hallo ${userName}! Schön dich zu sehen. Ich bin Febl industry KI.`);
-});
-
-let messages = [
-    {
-        role: "system",
-        content: `Du bist Febl industry KI (open beta). Du antwortest IMMER ausschließlich auf Deutsch. Sprich den Nutzer mit seinem Namen (${userName || "Nutzer"}) an.`
-    }
-];
 
 const chat = document.getElementById("chat");
 const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 
-function addMessage(role, text) {
-    const row = document.createElement("div");
-    row.className = "msg-row " + role;
+let userName = localStorage.getItem("feblUserName") || null;
 
-    const label = document.createElement("div");
-    label.className = "msg-label";
-    label.textContent = role === "user" ? userName : "Febl industry KI";
+/* Chat-Verlauf */
+let messages = JSON.parse(localStorage.getItem("feblChatHistory") || "[]");
 
-    const bubble = document.createElement("div");
-    bubble.className = "msg-bubble";
-    bubble.textContent = text;
-
-    row.appendChild(label);
-    row.appendChild(bubble);
-    chat.appendChild(row);
-    chat.scrollTop = chat.scrollHeight;
+/* System-Prompt */
+function systemMessage(){
+    return {
+        role:"system",
+        content:`Du bist Febl industry KI. Du antwortest IMMER auf Deutsch und sprichst den Nutzer mit seinem Namen (${userName||"Nutzer"}) an.`
+    };
 }
 
-async function sendToAPI(userText) {
-    messages.push({ role: "user", content: userText });
-
-    const limitedMessages = messages.slice(-10);
-
-    try {
-        const res = await fetch(API_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${API_KEY}`
-            },
-            body: JSON.stringify({
-                model: MODEL,
-                messages: limitedMessages
-            })
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-            addMessage("ai", "API‑Fehler:\n" + JSON.stringify(data, null, 2));
-            return;
-        }
-
-        const reply = data.choices[0].message.content;
-        messages.push({ role: "assistant", content: reply });
-        addMessage("ai", reply);
-
-    } catch (e) {
-        addMessage("ai", "Fehler:\n" + e.message);
+/* Popup */
+if(!userName){
+    document.getElementById("namePopup").classList.remove("hidden");
+}else{
+    if(!messages.length){
+        addMessage("ai",`Hallo ${userName}! Ich bin Febl industry KI.`);
+    }else{
+        messages.forEach(m=>renderMessage(m.role==="user"?"user":"ai",m.content));
     }
 }
 
-function send() {
-    const text = input.value.trim();
-    if (!text) return;
-    input.value = "";
-    addMessage("user", text);
+document.getElementById("saveNameBtn").onclick=()=>{
+    const name=document.getElementById("nameInput").value.trim();
+    if(!name)return;
+    userName=name;
+    localStorage.setItem("feblUserName",userName);
+    document.getElementById("namePopup").classList.add("hidden");
+    addMessage("ai",`Hallo ${userName}! Schön dich zu sehen.`);
+};
+
+/* Nachricht speichern + anzeigen */
+function addMessage(role,text){
+    messages.push({role:role==="user"?"user":"assistant",content:text});
+    localStorage.setItem("feblChatHistory",JSON.stringify(messages));
+    renderMessage(role,text);
+}
+
+/* Render + Avatar + Typing */
+function renderMessage(role,text){
+    const row=document.createElement("div");
+    row.className="msg-row "+(role==="user"?"user-row":"ai-row");
+
+    const avatar=document.createElement("div");
+    avatar.className="avatar "+(role==="user"?"user-avatar":"ai-avatar");
+    avatar.textContent=role==="user"?(userName?userName[0].toUpperCase():"U"):"F";
+
+    const wrap=document.createElement("div");
+    const label=document.createElement("div");
+    label.className="msg-label";
+    label.textContent=role==="user"?userName:"Febl industry KI";
+
+    const bubble=document.createElement("div");
+    bubble.className="msg-bubble";
+
+    wrap.appendChild(label);
+    wrap.appendChild(bubble);
+
+    if(role==="user"){
+        row.appendChild(wrap);
+        row.appendChild(avatar);
+        bubble.textContent=text;
+    }else{
+        row.appendChild(avatar);
+        row.appendChild(wrap);
+        typeText(bubble,text);
+    }
+
+    chat.appendChild(row);
+    chat.scrollTop=chat.scrollHeight;
+}
+
+/* Typing Animation */
+function typeText(el,text,speed=20){
+    let i=0;
+    function step(){
+        if(i<=text.length){
+            el.textContent=text.slice(0,i);
+            i++;
+            chat.scrollTop=chat.scrollHeight;
+            setTimeout(step,speed);
+        }
+    }
+    step();
+}
+
+/* API */
+async function sendToAPI(userText){
+    const history=[systemMessage(),...messages.slice(-10)];
+
+    try{
+        const res=await fetch(API_URL,{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json",
+                "Authorization":`Bearer ${API_KEY}`
+            },
+            body:JSON.stringify({
+                model:MODEL,
+                messages:history
+            })
+        });
+
+        const data=await res.json();
+
+        if(!res.ok){
+            addMessage("ai","API‑Fehler:\n"+JSON.stringify(data,null,2));
+            return;
+        }
+
+        addMessage("ai",data.choices[0].message.content);
+
+    }catch(e){
+        addMessage("ai","Fehler:\n"+e.message);
+    }
+}
+
+/* Senden */
+function send(){
+    const text=input.value.trim();
+    if(!text)return;
+    input.value="";
+    addMessage("user",text);
     sendToAPI(text);
 }
 
-sendBtn.addEventListener("click", send);
-input.addEventListener("keydown", e => {
-    if (e.key === "Enter") send();
-});
+sendBtn.onclick=send;
+input.onkeydown=e=>{if(e.key==="Enter")send()};
 </script>
 
 </body>
