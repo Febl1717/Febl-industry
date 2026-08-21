@@ -42,8 +42,8 @@ body{
 
 /* Header */
 .header{
-    padding:18px 18px;
-    font-size:20px;
+    padding:20px;
+    font-size:22px;
     font-weight:600;
     border-bottom:1px solid rgba(148,163,184,0.35);
     display:flex;
@@ -51,9 +51,9 @@ body{
     align-items:center;
 }
 
-/* Zurück Button */
+/* Buttons im Header */
 .back-btn{
-    padding:14px 18px;
+    padding:14px 20px;
     background:#3b82f6;
     border:none;
     border-radius:14px;
@@ -62,9 +62,8 @@ body{
     cursor:pointer;
 }
 
-/* Chat löschen Button */
 .clear-btn{
-    padding:14px 18px;
+    padding:14px 20px;
     background:#ef4444;
     border:none;
     border-radius:14px;
@@ -76,42 +75,42 @@ body{
 /* Chat Bereich */
 .chat{
     flex:1;
-    padding:18px;
+    padding:20px;
     overflow-y:auto;
 }
 
 /* Nachrichten */
 .msg-row{
-    margin-bottom:22px;
+    margin-bottom:24px;
     display:flex;
     align-items:flex-start;
-    gap:14px;
+    gap:16px;
 }
 
 .msg-label{
-    font-size:14px;
+    font-size:15px;
     opacity:0.7;
     margin-bottom:6px;
 }
 
 .msg-bubble{
     max-width:85%;
-    padding:16px 18px;
-    border-radius:18px;
-    font-size:18px;
+    padding:18px 20px;
+    border-radius:20px;
+    font-size:20px;
     line-height:1.6;
     white-space:pre-wrap;
 }
 
 /* Avatare */
 .avatar{
-    width:40px;
-    height:40px;
+    width:45px;
+    height:45px;
     border-radius:999px;
     display:flex;
     justify-content:center;
     align-items:center;
-    font-size:20px;
+    font-size:22px;
     font-weight:600;
 }
 
@@ -136,30 +135,32 @@ body{
 
 /* Footer */
 .footer{
-    padding:18px;
+    padding:20px;
     border-top:1px solid rgba(148,163,184,0.35);
     display:flex;
-    gap:14px;
+    gap:16px;
 }
 
+/* Eingabe */
 #userInput{
     flex:1;
     background:#020617;
     border:1px solid rgba(148,163,184,0.5);
-    border-radius:14px;
-    padding:16px;
-    font-size:18px;
+    border-radius:16px;
+    padding:18px;
+    font-size:20px;
     color:#e5e7eb;
 }
 
+/* Senden Button */
 .send-btn{
-    width:70px;
-    height:60px;
+    width:80px;
+    height:70px;
     background:#3b82f6;
-    border-radius:14px;
+    border-radius:16px;
     border:none;
     color:#fff;
-    font-size:26px;
+    font-size:32px;
     cursor:pointer;
 }
 
@@ -174,7 +175,7 @@ body{
     flex-direction:column;
     z-index:999;
     color:white;
-    font-size:36px;
+    font-size:40px;
     opacity:1;
     transition:opacity 0.6s ease;
 }
@@ -190,14 +191,14 @@ body{
 <!-- Start Intro -->
 <div id="intro" class="intro">
     <div>Hallo!</div>
-    <div style="font-size:20px;opacity:0.7;margin-top:10px;">Febl industry KI wird geladen…</div>
+    <div style="font-size:22px;opacity:0.7;margin-top:10px;">Febl industry KI wird geladen…</div>
 </div>
 
 <div class="app">
     <div class="header">
         <button id="backBtn" class="back-btn">Zurück</button>
-        <span>Febl industry KI (open beta)</span>
-        <button id="clearChatBtn" class="clear-btn">Chat löschen</button>
+        <span>Febl industry KI</span>
+        <button id="clearChatBtn" class="clear-btn">Löschen</button>
     </div>
 
     <div class="chat" id="chat"></div>
