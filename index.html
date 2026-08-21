@@ -16,7 +16,7 @@ body{
     color:#e5e7eb;
 }
 
-/* App Container */
+/* App Container – DESKTOP NORMAL */
 .app{
     width:900px;
     height:90vh;
@@ -29,92 +29,72 @@ body{
     overflow:hidden;
 }
 
-/* Handy Vollbild + Ultra groß */
-@media(max-width:600px){
-    .app{
-        width:100%;
-        height:100vh;
-        border-radius:0;
-        border:none;
-        box-shadow:none;
-    }
-}
-
-/* Header */
+/* Header – DESKTOP NORMAL */
 .header{
-    padding:26px;
-    font-size:32px;
-    font-weight:700;
+    padding:16px 18px;
+    font-size:18px;
+    font-weight:600;
     border-bottom:1px solid rgba(148,163,184,0.35);
     display:flex;
     justify-content:space-between;
     align-items:center;
 }
 
-/* Buttons im Header */
-.back-btn{
-    padding:22px 30px;
+.back-btn,
+.clear-btn{
+    padding:8px 12px;
     background:#3b82f6;
     border:none;
-    border-radius:20px;
+    border-radius:10px;
     color:white;
-    font-size:26px;
+    font-size:14px;
     cursor:pointer;
 }
 
 .clear-btn{
-    padding:22px 30px;
     background:#ef4444;
-    border:none;
-    border-radius:20px;
-    color:white;
-    font-size:26px;
-    cursor:pointer;
 }
 
-/* Chat Bereich */
+/* Chat – DESKTOP NORMAL */
 .chat{
     flex:1;
-    padding:26px;
+    padding:16px;
     overflow-y:auto;
 }
 
-/* Nachrichten */
 .msg-row{
-    margin-bottom:32px;
+    margin-bottom:16px;
     display:flex;
     align-items:flex-start;
-    gap:22px;
+    gap:10px;
 }
 
 .msg-label{
-    font-size:22px;
+    font-size:11px;
     opacity:0.7;
-    margin-bottom:10px;
+    margin-bottom:4px;
 }
 
 .msg-bubble{
-    max-width:85%;
-    padding:26px 30px;
-    border-radius:26px;
-    font-size:28px;
-    line-height:1.6;
+    max-width:80%;
+    padding:12px 14px;
+    border-radius:14px;
+    font-size:15px;
+    line-height:1.5;
     white-space:pre-wrap;
 }
 
-/* Avatare */
 .avatar{
-    width:60px;
-    height:60px;
+    width:30px;
+    height:30px;
     border-radius:999px;
     display:flex;
     justify-content:center;
     align-items:center;
-    font-size:32px;
-    font-weight:700;
+    font-size:16px;
+    font-weight:600;
 }
 
-/* Nutzer */
 .user-row{
     flex-direction:row-reverse;
 }
@@ -123,7 +103,6 @@ body{
     background:#1d4ed8;
 }
 
-/* KI */
 .ai-row .msg-bubble{
     background:#1e293b;
     border:1px solid rgba(148,163,184,0.5);
@@ -133,38 +112,36 @@ body{
     background:#22c55e;
 }
 
-/* Footer */
+/* Footer – DESKTOP NORMAL */
 .footer{
-    padding:26px;
+    padding:14px 16px;
     border-top:1px solid rgba(148,163,184,0.35);
     display:flex;
-    gap:22px;
+    gap:10px;
 }
 
-/* Eingabe */
 #userInput{
     flex:1;
     background:#020617;
     border:1px solid rgba(148,163,184,0.5);
-    border-radius:20px;
-    padding:26px;
-    font-size:28px;
+    border-radius:12px;
+    padding:12px;
+    font-size:15px;
     color:#e5e7eb;
 }
 
-/* Senden Button */
 .send-btn{
-    width:100px;
-    height:90px;
+    width:52px;
+    height:42px;
     background:#3b82f6;
-    border-radius:20px;
+    border-radius:12px;
     border:none;
     color:#fff;
-    font-size:40px;
+    font-size:18px;
     cursor:pointer;
 }
 
-/* Intro */
+/* Intro – DESKTOP NORMAL */
 .intro{
     position:fixed;
     inset:0;
@@ -175,7 +152,7 @@ body{
     flex-direction:column;
     z-index:999;
     color:white;
-    font-size:48px;
+    font-size:28px;
     opacity:1;
     transition:opacity 0.6s ease;
 }
@@ -184,6 +161,78 @@ body{
     opacity:0;
     pointer-events:none;
 }
+
+/* ---------- HANDY: ALLES VIEL GRÖSSER ---------- */
+@media(max-width:600px){
+
+    .app{
+        width:100%;
+        height:100vh;
+        border-radius:0;
+        border:none;
+        box-shadow:none;
+    }
+
+    .header{
+        padding:24px;
+        font-size:26px;
+    }
+
+    .back-btn,
+    .clear-btn{
+        padding:18px 22px;
+        font-size:20px;
+        border-radius:16px;
+    }
+
+    .chat{
+        padding:22px;
+    }
+
+    .msg-row{
+        margin-bottom:26px;
+        gap:18px;
+    }
+
+    .msg-label{
+        font-size:18px;
+    }
+
+    .msg-bubble{
+        max-width:85%;
+        padding:22px 24px;
+        border-radius:22px;
+        font-size:22px;
+    }
+
+    .avatar{
+        width:46px;
+        height:46px;
+        font-size:24px;
+    }
+
+    .footer{
+        padding:22px;
+        gap:16px;
+    }
+
+    #userInput{
+        padding:20px;
+        font-size:22px;
+        border-radius:18px;
+    }
+
+    .send-btn{
+        width:80px;
+        height:64px;
+        font-size:28px;
+        border-radius:18px;
+    }
+
+    .intro{
+        font-size:34px;
+    }
+}
 </style>
 </head>
 <body>
@@ -191,14 +240,14 @@ body{
 <!-- Start Intro -->
 <div id="intro" class="intro">
     <div>Hallo!</div>
-    <div style="font-size:28px;opacity:0.7;margin-top:10px;">Febl industry KI wird geladen…</div>
+    <div style="font-size:18px;opacity:0.7;margin-top:10px;">Febl industry KI wird geladen…</div>
 </div>
 
 <div class="app">
     <div class="header">
-        <button id="backBtn" class="back-btn">←</button>
-        <span>Febl KI</span>
-        <button id="clearChatBtn" class="clear-btn">✖</button>
+        <button id="backBtn" class="back-btn">Zurück</button>
+        <span>Febl industry KI</span>
+        <button id="clearChatBtn" class="clear-btn">Löschen</button>
     </div>
 
     <div class="chat" id="chat"></div>
@@ -210,7 +259,6 @@ body{
 </div>
 
 <script>
-/* API */
 const API_KEY = "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";
 const MODEL   = "groq/compound-mini";
 const API_URL = "https://api.groq.com/openai/v1/chat/completions";
@@ -219,20 +267,18 @@ const chat = document.getElementById("chat");
 const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 
-/* Intro Fix */
+/* Intro sauber ausblenden */
 setTimeout(() => {
     const intro = document.getElementById("intro");
     intro.classList.add("hidden");
-
     setTimeout(() => {
         intro.style.display = "none";
     }, 600);
 }, 1500);
 
-/* Chat-Verlauf */
+/* Verlauf */
 let messages = JSON.parse(localStorage.getItem("feblChatHistory") || "[]");
 
-/* System-Prompt */
 function systemMessage(){
     return {
         role:"system",
@@ -247,14 +293,12 @@ if(!messages.length){
     messages.forEach(m=>renderMessage(m.role==="user"?"user":"ai",m.content));
 }
 
-/* Nachricht speichern */
 function addMessage(role,text){
     messages.push({role:role==="user"?"user":"assistant",content:text});
     localStorage.setItem("feblChatHistory",JSON.stringify(messages));
     renderMessage(role,text);
 }
 
-/* Render */
 function renderMessage(role,text){
     const row=document.createElement("div");
     row.className="msg-row "+(role==="user"?"user-row":"ai-row");
@@ -287,10 +331,8 @@ function renderMessage(role,text){
     chat.scrollTop=chat.scrollHeight;
 }
 
-/* API */
 async function sendToAPI(userText){
     const history=[systemMessage(),...messages.slice(-10)];
-
     try{
         const res=await fetch(API_URL,{
             method:"POST",
@@ -303,22 +345,17 @@ async function sendToAPI(userText){
                 messages:history
             })
         });
-
         const data=await res.json();
-
         if(!res.ok){
             addMessage("ai","API‑Fehler:\n"+JSON.stringify(data,null,2));
             return;
         }
-
         addMessage("ai",data.choices[0].message.content);
-
     }catch(e){
         addMessage("ai","Fehler:\n"+e.message);
     }
 }
 
-/* Senden */
 function send(){
     const text=input.value.trim();
     if(!text)return;
@@ -330,7 +367,6 @@ function send(){
 sendBtn.onclick=send;
 input.onkeydown=e=>{if(e.key==="Enter")send()};
 
-/* Chat löschen */
 document.getElementById("clearChatBtn").onclick=()=>{
     localStorage.removeItem("feblChatHistory");
     messages=[];
@@ -338,10 +374,10 @@ document.getElementById("clearChatBtn").onclick=()=>{
     addMessage("ai","Chat gelöscht. Hallo!");
 };
 
-/* Zurück Button */
 document.getElementById("backBtn").onclick=()=>{
     window.location.href="https://febl-industry-3.jimdosite.com/";
 };
 </script>
 
 </body>
+</html>
