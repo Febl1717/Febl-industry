@@ -117,7 +117,6 @@
         font-size: 14px;
     }
 
-    /* 📱 Handy-Design */
     @media (max-width: 600px) {
         .app {
             width: 100%;
@@ -162,14 +161,14 @@
 </div>
 
 <script>
-// ⭐ API-Daten (Groq)
+// ⭐ GROQ API
 const API_KEY = "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";
 
-// Groq OpenAI-kompatible API
-const API_URL = "https://api.groq.com/openai/v1/chat/completions";
-
-// Modell (du kannst jedes Groq-Modell nutzen)
+// ⭐ FUNKTIONIERENDES MODELL
 const MODEL = "mixtral-8x7b-32768";
+
+// ⭐ Groq OpenAI-kompatible API
+const API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 const chat = document.getElementById("chat");
 const input = document.getElementById("userInput");
@@ -242,7 +241,7 @@ input.addEventListener("keydown", e => {
 });
 
 // Begrüßung
-addMessage("assistant", "Hallo nutzer! Ich bin **Febl industry KI (open beta)** — jetzt mit Groq‑Power, schnell wie ein Blitz und komplett ohne Localhost.");
+addMessage("assistant", "Hallo Felix! Ich bin **Febl industry KI (open beta)** — jetzt mit dem funktionierenden Groq‑Modell `mixtral-8x7b-32768`.");
 </script>
 
 </body>
