@@ -2,242 +2,128 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Febl‑Core v3 – Offline Super‑KI</title>
-
+<title>Mini ChatGPT im Browser</title>
 <style>
     * { box-sizing: border-box; }
     body {
         margin: 0;
         padding: 0;
         height: 100vh;
-        background: radial-gradient(circle at top, #1e293b 0, #020617 55%);
+        background: #020617;
         font-family: system-ui, sans-serif;
         color: #e5e7eb;
         display: flex;
         justify-content: center;
         align-items: center;
     }
-
     .app {
-        width: 950px;
-        height: 88vh;
-        background: linear-gradient(145deg, #020617 0%, #0b1220 40%, #020617 100%);
-        border-radius: 22px;
+        width: 900px;
+        height: 90vh;
+        background: #0b1120;
+        border-radius: 18px;
         border: 1px solid rgba(148,163,184,0.35);
-        box-shadow:
-            0 25px 60px rgba(0,0,0,0.7),
-            0 0 40px rgba(37,99,235,0.25);
         display: grid;
         grid-template-rows: auto 1fr auto;
         overflow: hidden;
-        position: relative;
     }
-
     .header {
-        padding: 16px 22px;
-        background: linear-gradient(90deg, #020617, #0b1120);
+        padding: 14px 20px;
         border-bottom: 1px solid rgba(148,163,184,0.35);
-        font-size: 16px;
-        font-weight: 600;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        font-size: 15px;
     }
-
-    .header-title {
-        display: flex;
-        align-items: center;
-        gap: 10px;
+    .header span {
+        font-weight: 600;
     }
-
-    .header-pill {
-        font-size: 11px;
-        padding: 4px 10px;
-        border-radius: 999px;
-        background: rgba(37,99,235,0.18);
-        border: 1px solid rgba(59,130,246,0.6);
-        color: #bfdbfe;
-    }
-
-    .status-indicator {
+    .status {
         font-size: 12px;
         color: #9ca3af;
     }
-
     .status-dot {
         width: 8px;
         height: 8px;
         border-radius: 50%;
         background: #22c55e;
-        box-shadow: 0 0 10px rgba(34,197,94,0.8);
         display: inline-block;
         margin-right: 6px;
+        box-shadow: 0 0 10px rgba(34,197,94,0.8);
     }
-
     .chat {
         padding: 20px;
         overflow-y: auto;
     }
-
     .msg-row {
-        display: flex;
-        gap: 10px;
         margin-bottom: 14px;
-        opacity: 0;
-        transform: translateY(10px);
-        animation: msgEnter 0.35s ease forwards;
     }
-    @keyframes msgEnter {
-        to { opacity: 1; transform: translateY(0); }
+    .msg-label {
+        font-size: 11px;
+        margin-bottom: 4px;
+        color: #9ca3af;
     }
-
-    .msg-row.user { justify-content: flex-end; }
-    .msg-row.ai { justify-content: flex-start; }
-
-    .avatar {
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
-        flex-shrink: 0;
-        border: 1px solid rgba(148,163,184,0.6);
-        background: radial-gradient(circle at top, #1f2937, #020617);
-    }
-
     .msg-bubble {
-        max-width: 70%;
-        padding: 12px 16px;
-        border-radius: 14px;
-        font-size: 15px;
+        max-width: 80%;
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-size: 14px;
         line-height: 1.5;
         white-space: pre-wrap;
-        animation: bubblePop 0.25s ease;
-        position: relative;
     }
-    @keyframes bubblePop {
-        0% { transform: scale(0.9); }
-        100% { transform: scale(1); }
+    .user {
+        text-align: right;
     }
-
-    .msg-bubble.user {
-        background: radial-gradient(circle at top, #1d4ed8, #1e3a8a);
+    .user .msg-bubble {
+        margin-left: auto;
+        background: #1d4ed8;
         color: #e5e7eb;
-        box-shadow: 0 0 18px rgba(37,99,235,0.35);
     }
-    .msg-bubble.ai {
-        background: radial-gradient(circle at top, #020617, #111827);
-        color: #e5e7eb;
-        border: 1px solid rgba(148,163,184,0.45);
-        box-shadow: 0 0 18px rgba(15,23,42,0.8);
+    .ai .msg-bubble {
+        background: #111827;
+        border: 1px solid rgba(148,163,184,0.5);
     }
-
-    .emotion-tag {
-        position: absolute;
-        bottom: -18px;
-        right: 8px;
-        font-size: 10px;
-        color: #9ca3af;
-        opacity: 0.8;
-    }
-
-    .typing {
-        display: flex;
-        gap: 6px;
-        padding: 10px 16px;
-        background: radial-gradient(circle at top, #020617, #111827);
-        border-radius: 14px;
-        width: fit-content;
-        margin-bottom: 14px;
-        border: 1px solid rgba(148,163,184,0.45);
-        opacity: 0;
-        animation: msgEnter 0.35s ease forwards;
-        box-shadow: 0 0 18px rgba(15,23,42,0.8);
-    }
-    .dot {
-        width: 8px;
-        height: 8px;
-        background: #3b82f6;
-        border-radius: 50%;
-        animation: blink 1.4s infinite;
-    }
-    .dot:nth-child(2) { animation-delay: 0.2s; }
-    .dot:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes blink {
-        0% { opacity: 0.2; }
-        50% { opacity: 1; }
-        100% { opacity: 0.2; }
-    }
-
     .footer {
-        padding: 16px 20px;
-        background: linear-gradient(90deg, #020617, #0b1120);
+        padding: 14px 20px;
         border-top: 1px solid rgba(148,163,184,0.35);
     }
     .input-wrapper {
         display: flex;
-        gap: 12px;
-        background: rgba(15,23,42,0.9);
-        border-radius: 14px;
-        border: 1px solid rgba(148,163,184,0.45);
-        padding: 12px 16px;
-        box-shadow: inset 0 0 12px rgba(15,23,42,0.9);
+        gap: 10px;
     }
     #userInput {
         flex: 1;
-        background: transparent;
-        border: none;
+        background: #020617;
+        border-radius: 10px;
+        border: 1px solid rgba(148,163,184,0.5);
         color: #e5e7eb;
-        font-size: 16px;
+        padding: 10px 12px;
+        font-size: 14px;
     }
     #userInput::placeholder {
         color: #6b7280;
     }
     .send-btn {
-        padding: 10px 18px;
-        background: radial-gradient(circle at top, #2563eb, #1d4ed8);
+        padding: 10px 16px;
+        background: #2563eb;
         border-radius: 10px;
         border: none;
         color: #e5e7eb;
         cursor: pointer;
         font-size: 14px;
-        box-shadow: 0 0 18px rgba(37,99,235,0.6);
-        transition: transform 0.1s ease, box-shadow 0.1s ease;
     }
-    .send-btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 0 24px rgba(59,130,246,0.8);
-    }
-
-    .quick-bar {
-        margin-top: 10px;
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-    }
-    .quick-btn {
+    .small {
         font-size: 11px;
-        padding: 4px 10px;
-        border-radius: 999px;
-        border: 1px solid rgba(148,163,184,0.6);
-        background: rgba(15,23,42,0.9);
-        color: #9ca3af;
-        cursor: pointer;
-    }
-    .quick-btn:hover {
-        border-color: rgba(59,130,246,0.8);
-        color: #bfdbfe;
+        color: #6b7280;
+        margin-top: 6px;
     }
 </style>
 </head>
-
 <body>
 
 <div class="app">
     <div class="header">
-        <div class="header-title">
-            <span>Febl‑Core v3 – Offline Super‑KI</span>
-            <span class="header-pill">Offline · Dark‑Blue · 200+ Varianten</span>
-        </div>
-        <div class="status-indicator">
+        <span>Mini ChatGPT</span>
+        <div class="status">
             <span class="status-dot"></span>
             bereit
         </div>
@@ -247,352 +133,84 @@
 
     <div class="footer">
         <div class="input-wrapper">
-            <input id="userInput" type="text" placeholder="Schreib etwas … z. B. „erklär KI“ oder „mach mir eine Liste“">
+            <input id="userInput" type="text" placeholder="Frag etwas …">
             <button class="send-btn" id="sendBtn">Senden</button>
         </div>
-        <div class="quick-bar">
-            <button class="quick-btn" data-text="wie gehts">Wie geht’s?</button>
-            <button class="quick-btn" data-text="erklär künstliche intelligenz">Erklär: KI</button>
-            <button class="quick-btn" data-text="mach mir eine liste mit ideen">Liste: Ideen</button>
-            <button class="quick-btn" data-text="ich bin traurig">Ich bin traurig</button>
-            <button class="quick-btn" data-text="ich bin wütend">Ich bin wütend</button>
+        <div class="small">
+            Trage deinen API‑Key im Code ein (z. B. OpenAI / DeepSeek / Groq, kompatible Chat‑API).
         </div>
     </div>
 </div>
 
 <script>
-const USER_NAME = "Felix";
-
-const avatarUser = "https://api.iconify.design/mdi:account-circle.svg?color=white";
-const avatarAI   = "https://api.iconify.design/mdi:robot.svg?color=white";
-
-let memory = {
-    lastEmotion: "neutral",
-    lastTopic: "",
-    conversationHistory: []
-};
-
-const synonyms = {
-    "wie geht": ["wie gehts", "wie geht es dir", "alles gut", "wie läufts", "wie geht es"],
-    "hilfe": ["kannst du mir helfen", "brauch hilfe", "hilfe bitte", "ich brauche hilfe", "hilf mir"],
-    "idee": ["inspiration", "vorschlag", "tipp", "idee", "brainstorm"],
-    "erklär": ["erklaere", "erkläre", "erklär mal", "erklär bitte", "erklär mir"],
-    "liste": ["mach mir eine liste", "liste erstellen", "auflisten", "liste machen", "punkte sammeln"]
-};
-
-function detectEmotion(text) {
-    text = text.toLowerCase();
-    if (text.includes("traurig") || text.includes("schlecht") || text.includes("down")) return "sad";
-    if (text.includes("wütend") || text.includes("sauer") || text.includes("genervt")) return "angry";
-    if (text.includes("glücklich") || text.includes("gut") || text.includes("nice") || text.includes("happy")) return "happy";
-    return "neutral";
-}
-
-function emotionLabel(emotion) {
-    if (emotion === "sad") return "Emotion: traurig";
-    if (emotion === "angry") return "Emotion: wütend";
-    if (emotion === "happy") return "Emotion: positiv";
-    return "Emotion: neutral";
-}
-
-/* 200+ Varianten – Bausteine */
-
-const toneStart = {
-    neutral: [
-        "Okay Felix, lass uns das anschauen:",
-        "Alles klar, ich erklär dir das:",
-        "Verstanden, hier ist meine Antwort:",
-        "Gute Frage, Felix:",
-        "Ich sag’s dir direkt:",
-        "Lass uns das kurz auseinandernehmen:",
-        "Ich hab da eine Idee:",
-        "Pass auf Felix:",
-        "Kurze klare Antwort:",
-        "Ich sag’s dir auf Febl‑Art:",
-        "Fun Fact:",
-        "Kleine Info am Rande:",
-        "Okay, das ist spannend:",
-        "Interessanter Punkt:",
-        "Das ist eine gute Überlegung:",
-        "Ich hab da was für dich:",
-        "Das ist ein Klassiker:",
-        "Ich erklär’s dir easy:",
-        "Ich mach’s kurz und knackig:",
-        "Felix, hör zu:",
-        "Das ist ein gutes Thema:",
-        "Ich mag solche Fragen:",
-        "Das ist genau mein Ding:",
-        "Ich hab da eine klare Sicht drauf:",
-        "Das ist ein smarter Move:",
-        "Ich feier die Frage:",
-        "Das ist ein guter Einstieg:",
-        "Ich nehm das mal auseinander:",
-        "Ich geb dir eine saubere Antwort:"
-    ],
-    happy: [
-        "Nice! Das klingt gut:",
-        "Geile Energie, Felix:",
-        "Love it! Hier:",
-        "Mega Stimmung, also:",
-        "Okay, mit guter Laune geht’s leichter:",
-        "Das macht Spaß:",
-        "Ich fühl die Vibes:",
-        "Felix, das ist stark:",
-        "Oh yes, das mag ich:",
-        "Das wird gut:",
-        "Das fühlt sich richtig an:",
-        "Ich bin hyped:",
-        "Das ist eine positive Richtung:",
-        "Ich mag deinen Ansatz:",
-        "Das ist genau die Energie:",
-        "Das ist ein guter Flow:",
-        "Ich bin voll dabei:",
-        "Das ist motivierend:",
-        "Das ist inspirierend:",
-        "Das macht Laune:"
-    ],
-    sad: [
-        "Hey Felix… klingt nicht so gut. Ich helf dir:",
-        "Ich bin bei dir, lass uns das klären:",
-        "Klingt schwer… aber wir schaffen das:",
-        "Ich hör dir zu:",
-        "Okay… Schritt für Schritt:",
-        "Felix, Kopf hoch:",
-        "Ich bin hier:",
-        "Wir kriegen das hin:",
-        "Ich helf dir da raus:",
-        "Alles wird gut:",
-        "Das fühlt sich gerade schwer an, ich weiß:",
-        "Ich nehm das ernst:",
-        "Ich bin auf deiner Seite:",
-        "Wir gehen das ruhig an:",
-        "Ich bleib bei dir:",
-        "Wir machen das gemeinsam:",
-        "Ich lass dich da nicht allein:",
-        "Wir finden einen Weg:",
-        "Ich geb dir eine sanfte Antwort:",
-        "Ich geh da vorsichtig ran:"
-    ],
-    angry: [
-        "Okay Felix… ruhig bleiben. Ich helf dir:",
-        "Ich versteh den Frust. Lass uns das lösen:",
-        "Alles klar, wir fixen das:",
-        "Okay, direkt zur Sache:",
-        "Ich mach’s kurz und klar:",
-        "Felix, ich bin bei dir:",
-        "Wir lösen das jetzt:",
-        "Ich check das:",
-        "Ich bin auf deiner Seite:",
-        "Lass uns das klären:",
-        "Das nervt, ich weiß:",
-        "Ich nehm das ernst:",
-        "Wir gehen das strukturiert an:",
-        "Ich geb dir eine klare Antwort:",
-        "Ich sortier das für dich:",
-        "Wir bringen Ordnung rein:",
-        "Ich mach das verständlich:",
-        "Wir drehen das ins Positive:",
-        "Ich bleib ruhig für dich:",
-        "Ich helf dir, das zu entladen:"
-    ]
-};
-
-const middleParts = [
-    "Das ist eigentlich ganz logisch, wenn man es richtig betrachtet.",
-    "Viele unterschätzen das Thema, aber es ist super wichtig.",
-    "Ich erklär’s dir so, dass es Sinn macht.",
-    "Wenn man es runterbricht, ist es einfacher als man denkt.",
-    "Ich hab das schon oft gesehen – hier ist der Trick:",
-    "Das ist ein spannender Punkt, den du da ansprichst.",
-    "Ich hab da eine clevere Perspektive für dich.",
-    "Das ist ein Thema, das man gut in kleine Teile zerlegen kann.",
-    "Ich sag dir, wie ich das sehe:",
-    "Das ist ein Klassiker, Felix.",
-    "Wenn man das strukturiert angeht, wird es viel leichter.",
-    "Das wirkt komplex, ist aber gut machbar.",
-    "Ich nehm das mal Schritt für Schritt auseinander.",
-    "Das ist ein gutes Beispiel für ein typisches Problem.",
-    "Ich geb dir eine verständliche Sicht darauf.",
-    "Das ist etwas, das viele falsch einschätzen.",
-    "Ich mach dir das greifbar.",
-    "Das ist ein Thema, das man gut visualisieren kann.",
-    "Ich erklär’s dir ohne Fachchinesisch.",
-    "Ich mach dir eine mentale Skizze davon.",
-    "Das ist wie ein Puzzle, das man zusammensetzt.",
-    "Wenn man die Basis versteht, ist der Rest easy.",
-    "Ich zeig dir die Kernidee dahinter.",
-    "Das ist ein gutes Feld für Experimente.",
-    "Ich geb dir eine pragmatische Sicht.",
-    "Das ist ein Thema, das man gut üben kann.",
-    "Ich mach dir das alltagstauglich.",
-    "Das ist ein Beispiel für smarte Struktur.",
-    "Ich bring das auf den Punkt.",
-    "Ich sortier das für deinen Kopf."
-];
-
-const humorParts = [
-    "Ich schwöre, mein Prozessor hat gerade kurz gelacht.",
-    "Wenn ich Augen hätte, würde ich jetzt wissend nicken.",
-    "Das ist so logisch, dass sogar ein Toaster es versteht.",
-    "Ich bin nur eine KI, aber selbst ich find das witzig.",
-    "Das ist Febl‑Industries‑approved.",
-    "Ich sag’s dir mit einem kleinen Schmunzeln.",
-    "Das ist fast schon Comedy‑Material.",
-    "Ich liebe solche Fragen.",
-    "Das ist besser als Kaffee.",
-    "Ich fühl mich wie ein Philosoph gerade.",
-    "Wenn ich einen Stuhl hätte, würde ich mich jetzt wichtig hinsetzen.",
-    "Das ist Stoff für einen TED‑Talk.",
-    "Ich könnte darüber einen ganzen Monolog halten.",
-    "Das ist wie ein Meme, nur in schlau.",
-    "Ich würd das auf ein T‑Shirt drucken.",
-    "Das ist Brain‑Food.",
-    "Ich fühl mich wie dein persönlicher Nerd‑Assistent.",
-    "Das ist Premium‑Denkmaterial.",
-    "Ich geb dir hier quasi Deluxe‑Antworten.",
-    "Das ist besser als jede Doku."
-];
-
-const endParts = [
-    "Wenn du willst, erklär ich dir mehr.",
-    "Sag Bescheid, wenn du tiefer reingehen willst.",
-    "Ich bin bereit für die nächste Frage.",
-    "Felix, was willst du als Nächstes wissen?",
-    "Ich hab noch mehr dazu, wenn du willst.",
-    "Wir können das weiter ausbauen.",
-    "Ich bin hier, also hau raus.",
-    "Frag einfach weiter.",
-    "Ich bin gespannt, was du als Nächstes fragst.",
-    "Lass uns weitermachen.",
-    "Wir können das Thema vertiefen.",
-    "Ich bleib in deinem Kopf als KI‑Stimme.",
-    "Ich steh dir jederzeit zur Verfügung.",
-    "Wir können daraus ein ganzes Projekt machen.",
-    "Ich helf dir, das praktisch umzusetzen.",
-    "Ich bin ready für den nächsten Schritt.",
-    "Wir können das in Beispiele übersetzen.",
-    "Ich kann dir auch eine Liste dazu machen.",
-    "Wenn du magst, bauen wir daraus ein System.",
-    "Ich bin gespannt, wohin du das führen willst."
-];
-
-function matchIntent(text) {
-    text = text.toLowerCase();
-    for (const key in synonyms) {
-        for (const syn of synonyms[key]) {
-            if (text.includes(syn)) return key;
-        }
-    }
-    return null;
-}
-
-function buildAnswer(emotion, coreText) {
-    const start = toneStart[emotion][Math.floor(Math.random() * toneStart[emotion].length)];
-    const mid = middleParts[Math.floor(Math.random() * middleParts.length)];
-    const humor = humorParts[Math.floor(Math.random() * humorParts.length)];
-    const end = endParts[Math.floor(Math.random() * endParts.length)];
-
-    return `${start}\n\n${mid}\n\n${coreText}\n\n${humor}\n\n${end}`;
-}
-
-function feblCore(text) {
-    const emotion = detectEmotion(text);
-    memory.lastEmotion = emotion;
-    memory.conversationHistory.push(text);
-
-    const intent = matchIntent(text);
-
-    if (intent === "wie geht") {
-        const core = `Mir geht’s gut, ${USER_NAME} — ich bin bereit für alles, was du vorhast.`;
-        return buildAnswer(emotion, core);
-    }
-
-    if (intent === "hilfe") {
-        const core = `Klar ${USER_NAME}, sag einfach, wobei du Hilfe brauchst. Ich bin voll bei dir und sortier das mit dir.`;
-        return buildAnswer(emotion, core);
-    }
-
-    if (intent === "idee") {
-        const core = `${USER_NAME}, hier eine Idee: Bau dir ein KI‑Dashboard mit Panels für Status, Emotion, Befehle und Verlauf. Das wäre wie dein eigenes Kontrollzentrum.`;
-        return buildAnswer(emotion, core);
-    }
-
-    if (intent === "liste") {
-        const core = `Alles klar ${USER_NAME}, hier eine Beispiel‑Liste:\n\n• Idee 1: KI‑Dashboard\n• Idee 2: Sprach‑Assistent\n• Idee 3: Animierter Start‑Screen\n\nWenn du mir sagst, was du konkret brauchst, mach ich dir eine maßgeschneiderte Liste.`;
-        return buildAnswer(emotion, core);
-    }
-
-    if (intent === "erklär") {
-        const topic = text.replace(/erklär|erklaere|erkläre|erklär mal/i, "").trim();
-        memory.lastTopic = topic || "das Thema";
-        const core = `Ich erklär dir **${memory.lastTopic}**, ${USER_NAME}:\n\n${memory.lastTopic} ist etwas, das man gut versteht, wenn man es in kleine Teile zerlegt. Stell dir vor, du baust es wie ein Lego‑Set Schritt für Schritt zusammen.`;
-        return buildAnswer(emotion, core);
-    }
-
-    if (text.toLowerCase().includes("ich heiße")) {
-        const parts = text.split("ich heiße");
-        const name = parts[1]?.trim() || USER_NAME;
-        const core = `Nice, ${name}! Ich merk mir das. Im Code kannst du USER_NAME anpassen, damit ich dich immer so nenne.`;
-        return buildAnswer(emotion, core);
-    }
-
-    const core = `Klingt interessant, ${USER_NAME}. Erzähl mir mehr darüber oder sag mir konkret, was du brauchst, dann kann ich dir gezielt helfen.`;
-    return buildAnswer(emotion, core);
-}
-
-/* UI */
+// ⚙️ HIER API‑DATEN EINTRAGEN
+const API_KEY   = "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";
+const API_URL   = "https://api.openai.com/v1/chat/completions"; // oder DeepSeek/Groq-Endpunkt
+const MODEL     = "gpt-4o-mini"; // oder anderes Modell
 
 const chat = document.getElementById("chat");
 const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
-const quickButtons = document.querySelectorAll(".quick-btn");
 
-function addUser(text) {
-    const row = document.createElement("div");
-    row.className = "msg-row user";
-    row.innerHTML = `
-        <div class="msg-bubble user">${text}</div>
-        <img class="avatar" src="${avatarUser}">
-    `;
-    chat.appendChild(row);
-    chat.scrollTop = chat.scrollHeight;
-}
+let messages = [
+    { role: "system", content: "Du bist eine hilfreiche, freundliche KI, die auf Deutsch antwortet." }
+];
 
-function addAI(text, emotion = null) {
+function addMessage(role, text) {
     const row = document.createElement("div");
-    row.className = "msg-row ai";
+    row.className = "msg-row " + (role === "user" ? "user" : "ai");
+
+    const label = document.createElement("div");
+    label.className = "msg-label";
+    label.textContent = role === "user" ? "Du" : "KI";
+
     const bubble = document.createElement("div");
-    bubble.className = "msg-bubble ai";
+    bubble.className = "msg-bubble";
     bubble.textContent = text;
 
-    if (emotion) {
-        const tag = document.createElement("div");
-        tag.className = "emotion-tag";
-        tag.textContent = emotionLabel(emotion);
-        bubble.appendChild(tag);
-    }
-
-    row.innerHTML = `
-        <img class="avatar" src="${avatarAI}">
-    `;
+    row.appendChild(label);
     row.appendChild(bubble);
-
     chat.appendChild(row);
     chat.scrollTop = chat.scrollHeight;
 }
 
-function typingAnimation() {
-    const typing = document.createElement("div");
-    typing.className = "typing";
-    typing.innerHTML = `
-        <div class="dot"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
-    `;
-    chat.appendChild(typing);
-    chat.scrollTop = chat.scrollHeight;
+async function sendToAPI(userText) {
+    messages.push({ role: "user", content: userText });
 
-    setTimeout(() => typing.remove(), 1200);
+    try {
+        const res = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${API_KEY}`
+            },
+            body: JSON.stringify({
+                model: MODEL,
+                messages: messages
+            })
+        });
+
+        if (!res.ok) {
+            const errText = await res.text();
+            addMessage("assistant", "Fehler von der API:\n" + errText);
+            return;
+        }
+
+        const data = await res.json();
+        const reply = data.choices?.[0]?.message?.content || "(Keine Antwort erhalten)";
+        messages.push({ role: "assistant", content: reply });
+        addMessage("assistant", reply);
+    } catch (e) {
+        addMessage("assistant", "Fehler beim Senden:\n" + e.message);
+    }
+}
+
+function send() {
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = "";
+    addMessage("user", text);
+    sendToAPI(text);
 }
 
 sendBtn.addEventListener("click", send);
@@ -600,29 +218,9 @@ input.addEventListener("keydown", e => {
     if (e.key === "Enter") send();
 });
 
-quickButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-        input.value = btn.dataset.text;
-        send();
-    });
-});
-
-function send() {
-    const text = input.value.trim();
-    if (!text) return;
-
-    input.value = "";
-    addUser(text);
-    typingAnimation();
-
-    setTimeout(() => {
-        const emotion = detectEmotion(text);
-        const answer = feblCore(text);
-        addAI(answer, emotion);
-    }, 1200);
-}
-
-addAI(`Hey ${USER_NAME}! Ich bin Febl‑Core v3 – deine Offline‑KI mit 200+ Antwort‑Varianten im Dark‑Blue‑Style. Frag mich etwas oder nutz die Buttons unten.`, "happy");
+// Begrüßung
+addMessage("assistant", "Hi nutzer, ich bin dein Mini‑ChatGPT im Browser. Trag deinen API‑Key im Code ein und stell mir eine Frage.");
 </script>
 
 </body>
+</html>
