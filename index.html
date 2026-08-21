@@ -28,7 +28,6 @@ body{
     overflow:hidden;
 }
 
-/* Handy */
 @media(max-width:600px){
     .app{
         width:100%;
@@ -59,7 +58,6 @@ body{
     cursor:pointer;
 }
 
-/* Handy: Chat löschen Button größer + unter Header */
 @media(max-width:600px){
     .clear-btn{
         width:100%;
@@ -156,64 +154,46 @@ body{
     cursor:pointer;
 }
 
-/* Popup */
-.popup{
+/* Mikrofon */
+.mic-btn{
+    width:52px;
+    height:42px;
+    background:#22c55e;
+    border-radius:14px;
+    border:none;
+    color:#fff;
+    font-size:18px;
+    cursor:pointer;
+}
+
+/* Popup Intro */
+.intro{
     position:fixed;
     inset:0;
-    background:rgba(0,0,0,0.55);
+    background:#020617;
     display:flex;
     justify-content:center;
     align-items:center;
-    backdrop-filter:blur(6px);
+    flex-direction:column;
     z-index:999;
+    color:white;
+    font-size:28px;
     opacity:1;
-    transition:0.4s;
+    transition:0.6s;
 }
 
-.popup.hidden{
+.intro.hidden{
     opacity:0;
     pointer-events:none;
-}
-
-.popup-content{
-    background:#0f172a;
-    padding:26px;
-    border-radius:18px;
-    border:1px solid rgba(148,163,184,0.35);
-    text-align:center;
-    width:280px;
-}
-
-#nameInput{
-    width:100%;
-    padding:10px;
-    border-radius:12px;
-    border:1px solid rgba(148,163,184,0.35);
-    background:#020617;
-    color:#e5e7eb;
-    margin-bottom:16px;
-}
-
-#saveNameBtn{
-    width:100%;
-    padding:10px;
-    background:#22c55e;
-    border:none;
-    border-radius:12px;
-    color:white;
-    cursor:pointer;
 }
 </style>
 </head>
 <body>
 
-<!-- Popup nur EINMAL -->
-<div id="namePopup" class="popup">
-    <div class="popup-content">
-        <h2>Wie heißt du?</h2>
-        <input id="nameInput" type="text" placeholder="Dein Name">
-        <button id="saveNameBtn">Speichern</button>
-    </div>
+<!-- Start Intro -->
+<div id="intro" class="intro">
+    <div>Hallo!</div>
+    <div style="font-size:16px;opacity:0.7;margin-top:10px;">Febl industry KI wird geladen…</div>
 </div>
 
 <div class="app">
@@ -226,11 +206,13 @@ body{
 
     <div class="footer">
         <input id="userInput" type="text" placeholder="Schreibe etwas …">
+        <button class="mic-btn" id="micBtn">🎤</button>
         <button class="send-btn" id="sendBtn">➤</button>
     </div>
 </div>
 
 <script>
+/* API */
 const API_KEY = "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";
 const MODEL   = "groq/compound-mini";
 const API_URL = "https://api.groq.com/openai/v1/chat/completions";
@@ -238,37 +220,29 @@ const API_URL = "https://api.groq.com/openai/v1/chat/completions";
 const chat = document.getElementById("chat");
 const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
+const micBtn = document.getElementById("micBtn");
 
-let userName = localStorage.getItem("feblUserName") || null;
+/* Start Intro */
+setTimeout(()=>{
+    document.getElementById("intro").classList.add("hidden");
+},1500);
+
+/* Chat-Verlauf */
 let messages = JSON.parse(localStorage.getItem("feblChatHistory") || "[]");
-
-/* Popup nur einmal */
-if(!userName){
-    document.getElementById("namePopup").classList.remove("hidden");
-}else{
-    if(!messages.length){
-        addMessage("ai",`Hallo ${userName}! Ich bin Febl industry KI.`);
-    }else{
-        messages.forEach(m=>renderMessage(m.role==="user"?"user":"ai",m.content));
-    }
-}
-
-/* Name speichern */
-document.getElementById("saveNameBtn").onclick=()=>{
-    const name=document.getElementById("nameInput").value.trim();
-    if(!name)return;
-    userName=name;
-    localStorage.setItem("feblUserName",userName);
-    document.getElementById("namePopup").classList.add("hidden");
-    addMessage("ai",`Hallo ${userName}! Schön dich zu sehen.`);
-};
 
 /* System-Prompt */
 function systemMessage(){
     return {
         role:"system",
-        content:`Du bist Febl industry KI. Du antwortest IMMER auf Deutsch und sprichst den Nutzer mit seinem Namen (${userName||"Nutzer"}) an.`
+        content:`Du bist Febl industry KI. Du antwortest IMMER auf Deutsch und nennst den Nutzer einfach "Nutzer".`
     };
+}
+
+/* Startnachricht */
+if(!messages.length){
+    addMessage("ai","Hallo Nutzer! Wie kann ich dir helfen?");
+}else{
+    messages.forEach(m=>renderMessage(m.role==="user"?"user":"ai",m.content));
 }
 
 /* Nachricht speichern */
@@ -285,12 +259,12 @@ function renderMessage(role,text){
 
     const avatar=document.createElement("div");
     avatar.className="avatar "+(role==="user"?"user-avatar":"ai-avatar");
-    avatar.textContent=role==="user"?(userName?userName[0].toUpperCase():"U"):"F";
+    avatar.textContent=role==="user"?"U":"F";
 
     const wrap=document.createElement("div");
     const label=document.createElement("div");
     label.className="msg-label";
-    label.textContent=role==="user"?userName:"Febl industry KI";
+    label.textContent=role==="user"?"Nutzer":"Febl industry KI";
 
     const bubble=document.createElement("div");
     bubble.className="msg-bubble";
@@ -335,7 +309,10 @@ async function sendToAPI(userText){
             return;
         }
 
-        addMessage("ai",data.choices[0].message.content);
+        const reply=data.choices[0].message.content;
+        addMessage("ai",reply);
+
+        speak(reply);
 
     }catch(e){
         addMessage("ai","Fehler:\n"+e.message);
@@ -359,8 +336,30 @@ document.getElementById("clearChatBtn").onclick=()=>{
     localStorage.removeItem("feblChatHistory");
     messages=[];
     chat.innerHTML="";
-    addMessage("ai",`Chat gelöscht. Ich bin wieder da, ${userName}!`);
+    addMessage("ai","Chat gelöscht. Hallo Nutzer!");
 };
+
+/* Sprachfunktion – Zuhören */
+micBtn.onclick=()=>{
+    const rec=new(window.SpeechRecognition||window.webkitSpeechRecognition)();
+    rec.lang="de-DE";
+    rec.start();
+
+    rec.onresult=e=>{
+        const text=e.results[0][0].transcript;
+        input.value=text;
+        send();
+    };
+};
+
+/* Sprachfunktion – Reden */
+function speak(text){
+    const msg=new SpeechSynthesisUtterance();
+    msg.text=text;
+    msg.lang="de-DE";
+    msg.rate=1.0;
+    speechSynthesis.speak(msg);
+}
 </script>
 
 </body>
