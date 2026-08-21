@@ -6,7 +6,6 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif}
 
-/* Hintergrund */
 body{
     background:#020617;
     height:100vh;
@@ -46,6 +45,28 @@ body{
     border-bottom:1px solid rgba(148,163,184,0.35);
     display:flex;
     justify-content:space-between;
+    align-items:center;
+}
+
+/* Chat löschen Button */
+.clear-btn{
+    padding:10px 14px;
+    background:#ef4444;
+    border:none;
+    border-radius:12px;
+    color:white;
+    font-size:14px;
+    cursor:pointer;
+}
+
+/* Handy: Chat löschen Button größer + unter Header */
+@media(max-width:600px){
+    .clear-btn{
+        width:100%;
+        margin-top:10px;
+        padding:14px;
+        font-size:16px;
+    }
 }
 
 /* Chat */
@@ -53,7 +74,6 @@ body{
     flex:1;
     padding:18px;
     overflow-y:auto;
-    scroll-behavior:smooth;
 }
 
 /* Nachrichten */
@@ -79,7 +99,6 @@ body{
     white-space:pre-wrap;
 }
 
-/* Avatare */
 .avatar{
     width:32px;
     height:32px;
@@ -91,7 +110,6 @@ body{
     font-weight:600;
 }
 
-/* Nutzer */
 .user-row{
     flex-direction:row-reverse;
 }
@@ -100,13 +118,11 @@ body{
     background:#1d4ed8;
 }
 
-/* KI */
 .ai-row .msg-bubble{
     background:#1e293b;
     border:1px solid rgba(148,163,184,0.5);
 }
 
-/* KI Avatar */
 .ai-avatar{
     background:#22c55e;
 }
@@ -119,7 +135,6 @@ body{
     gap:10px;
 }
 
-/* Input */
 #userInput{
     flex:1;
     background:#020617;
@@ -128,10 +143,8 @@ body{
     padding:12px 14px;
     font-size:15px;
     color:#e5e7eb;
-    outline:none;
 }
 
-/* Senden Button */
 .send-btn{
     width:52px;
     height:42px;
@@ -140,18 +153,6 @@ body{
     border:none;
     color:#fff;
     font-size:18px;
-    cursor:pointer;
-}
-
-/* Chat löschen Button */
-.clear-btn{
-    width:120px;
-    padding:10px;
-    background:#ef4444;
-    border:none;
-    border-radius:12px;
-    color:white;
-    font-size:14px;
     cursor:pointer;
 }
 
@@ -206,7 +207,7 @@ body{
 </head>
 <body>
 
-<!-- Namens-Popup -->
+<!-- Popup nur EINMAL -->
 <div id="namePopup" class="popup">
     <div class="popup-content">
         <h2>Wie heißt du?</h2>
@@ -230,7 +231,6 @@ body{
 </div>
 
 <script>
-/* API */
 const API_KEY = "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";
 const MODEL   = "groq/compound-mini";
 const API_URL = "https://api.groq.com/openai/v1/chat/completions";
@@ -240,17 +240,7 @@ const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 
 let userName = localStorage.getItem("feblUserName") || null;
-
-/* Chat-Verlauf */
 let messages = JSON.parse(localStorage.getItem("feblChatHistory") || "[]");
-
-/* System-Prompt */
-function systemMessage(){
-    return {
-        role:"system",
-        content:`Du bist Febl industry KI. Du antwortest IMMER auf Deutsch und sprichst den Nutzer mit seinem Namen (${userName||"Nutzer"}) an.`
-    };
-}
 
 /* Popup nur einmal */
 if(!userName){
@@ -273,14 +263,22 @@ document.getElementById("saveNameBtn").onclick=()=>{
     addMessage("ai",`Hallo ${userName}! Schön dich zu sehen.`);
 };
 
-/* Nachricht speichern + anzeigen */
+/* System-Prompt */
+function systemMessage(){
+    return {
+        role:"system",
+        content:`Du bist Febl industry KI. Du antwortest IMMER auf Deutsch und sprichst den Nutzer mit seinem Namen (${userName||"Nutzer"}) an.`
+    };
+}
+
+/* Nachricht speichern */
 function addMessage(role,text){
     messages.push({role:role==="user"?"user":"assistant",content:text});
     localStorage.setItem("feblChatHistory",JSON.stringify(messages));
     renderMessage(role,text);
 }
 
-/* Render + Avatar */
+/* Render */
 function renderMessage(role,text){
     const row=document.createElement("div");
     row.className="msg-row "+(role==="user"?"user-row":"ai-row");
@@ -296,6 +294,7 @@ function renderMessage(role,text){
 
     const bubble=document.createElement("div");
     bubble.className="msg-bubble";
+    bubble.textContent=text;
 
     wrap.appendChild(label);
     wrap.appendChild(bubble);
@@ -303,11 +302,9 @@ function renderMessage(role,text){
     if(role==="user"){
         row.appendChild(wrap);
         row.appendChild(avatar);
-        bubble.textContent=text;
     }else{
         row.appendChild(avatar);
         row.appendChild(wrap);
-        bubble.textContent=text; /* leichte Animation entfernt */
     }
 
     chat.appendChild(row);
