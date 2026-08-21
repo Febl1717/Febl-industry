@@ -97,8 +97,10 @@ const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 
 let messages = [
-    { role: "system", content: "Du bist Febl industry KI (open beta). Antworte freundlich und klar auf Deutsch." }
-];
+    {
+  role: "system",
+  content: "Du antwortest ausschließlich auf Deutsch. Wenn der Nutzer in einer anderen Sprache schreibt, ignorierst du diese Sprache und antwortest trotzdem auf Deutsch. Du bist Febl industry KI (open beta) und sprichst nur Deutsch."
+}
 
 function addMessage(role, text) {
     const row = document.createElement("div");
