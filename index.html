@@ -29,7 +29,7 @@ body{
     overflow:hidden;
 }
 
-/* Handy Vollbild */
+/* Handy Vollbild + Ultra groß */
 @media(max-width:600px){
     .app{
         width:100%;
@@ -42,9 +42,9 @@ body{
 
 /* Header */
 .header{
-    padding:20px;
-    font-size:22px;
-    font-weight:600;
+    padding:26px;
+    font-size:32px;
+    font-weight:700;
     border-bottom:1px solid rgba(148,163,184,0.35);
     display:flex;
     justify-content:space-between;
@@ -53,65 +53,65 @@ body{
 
 /* Buttons im Header */
 .back-btn{
-    padding:14px 20px;
+    padding:22px 30px;
     background:#3b82f6;
     border:none;
-    border-radius:14px;
+    border-radius:20px;
     color:white;
-    font-size:18px;
+    font-size:26px;
     cursor:pointer;
 }
 
 .clear-btn{
-    padding:14px 20px;
+    padding:22px 30px;
     background:#ef4444;
     border:none;
-    border-radius:14px;
+    border-radius:20px;
     color:white;
-    font-size:18px;
+    font-size:26px;
     cursor:pointer;
 }
 
 /* Chat Bereich */
 .chat{
     flex:1;
-    padding:20px;
+    padding:26px;
     overflow-y:auto;
 }
 
 /* Nachrichten */
 .msg-row{
-    margin-bottom:24px;
+    margin-bottom:32px;
     display:flex;
     align-items:flex-start;
-    gap:16px;
+    gap:22px;
 }
 
 .msg-label{
-    font-size:15px;
+    font-size:22px;
     opacity:0.7;
-    margin-bottom:6px;
+    margin-bottom:10px;
 }
 
 .msg-bubble{
     max-width:85%;
-    padding:18px 20px;
-    border-radius:20px;
-    font-size:20px;
+    padding:26px 30px;
+    border-radius:26px;
+    font-size:28px;
     line-height:1.6;
     white-space:pre-wrap;
 }
 
 /* Avatare */
 .avatar{
-    width:45px;
-    height:45px;
+    width:60px;
+    height:60px;
     border-radius:999px;
     display:flex;
     justify-content:center;
     align-items:center;
-    font-size:22px;
-    font-weight:600;
+    font-size:32px;
+    font-weight:700;
 }
 
 /* Nutzer */
@@ -135,10 +135,10 @@ body{
 
 /* Footer */
 .footer{
-    padding:20px;
+    padding:26px;
     border-top:1px solid rgba(148,163,184,0.35);
     display:flex;
-    gap:16px;
+    gap:22px;
 }
 
 /* Eingabe */
@@ -146,21 +146,21 @@ body{
     flex:1;
     background:#020617;
     border:1px solid rgba(148,163,184,0.5);
-    border-radius:16px;
-    padding:18px;
-    font-size:20px;
+    border-radius:20px;
+    padding:26px;
+    font-size:28px;
     color:#e5e7eb;
 }
 
 /* Senden Button */
 .send-btn{
-    width:80px;
-    height:70px;
+    width:100px;
+    height:90px;
     background:#3b82f6;
-    border-radius:16px;
+    border-radius:20px;
     border:none;
     color:#fff;
-    font-size:32px;
+    font-size:40px;
     cursor:pointer;
 }
 
@@ -175,7 +175,7 @@ body{
     flex-direction:column;
     z-index:999;
     color:white;
-    font-size:40px;
+    font-size:48px;
     opacity:1;
     transition:opacity 0.6s ease;
 }
@@ -191,14 +191,14 @@ body{
 <!-- Start Intro -->
 <div id="intro" class="intro">
     <div>Hallo!</div>
-    <div style="font-size:22px;opacity:0.7;margin-top:10px;">Febl industry KI wird geladen…</div>
+    <div style="font-size:28px;opacity:0.7;margin-top:10px;">Febl industry KI wird geladen…</div>
 </div>
 
 <div class="app">
     <div class="header">
-        <button id="backBtn" class="back-btn">Zurück</button>
-        <span>Febl industry KI</span>
-        <button id="clearChatBtn" class="clear-btn">Löschen</button>
+        <button id="backBtn" class="back-btn">←</button>
+        <span>Febl KI</span>
+        <button id="clearChatBtn" class="clear-btn">✖</button>
     </div>
 
     <div class="chat" id="chat"></div>
@@ -345,4 +345,3 @@ document.getElementById("backBtn").onclick=()=>{
 </script>
 
 </body>
-</html>
