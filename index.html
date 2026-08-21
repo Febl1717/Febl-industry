@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Mini ChatGPT – Responsive</title>
+<title>ChatGPT Clone – Ohne Localhost</title>
 
 <style>
     * { box-sizing: border-box; }
@@ -38,23 +38,14 @@
         font-size: 15px;
     }
 
-    .header span {
-        font-weight: 600;
-    }
-
-    .status {
-        font-size: 12px;
-        color: #9ca3af;
-    }
-
     .status-dot {
         width: 8px;
         height: 8px;
-        border-radius: 50%;
         background: #22c55e;
-        display: inline-block;
-        margin-right: 6px;
+        border-radius: 50%;
         box-shadow: 0 0 10px rgba(34,197,94,0.8);
+        margin-right: 6px;
+        display: inline-block;
     }
 
     .chat {
@@ -116,10 +107,6 @@
         font-size: 14px;
     }
 
-    #userInput::placeholder {
-        color: #6b7280;
-    }
-
     .send-btn {
         padding: 10px 16px;
         background: #2563eb;
@@ -130,57 +117,28 @@
         font-size: 14px;
     }
 
-    .small {
-        font-size: 11px;
-        color: #6b7280;
-        margin-top: 6px;
-    }
-
-    /* 📱 MOBILE DESIGN */
+    /* 📱 Handy-Design */
     @media (max-width: 600px) {
-        body {
-            align-items: flex-start;
-            padding-top: 10px;
-        }
-
         .app {
             width: 100%;
             height: 100vh;
             border-radius: 0;
         }
-
-        .header {
-            padding: 10px 14px;
-            font-size: 14px;
-        }
-
         .chat {
             padding: 12px;
         }
-
         .msg-bubble {
             max-width: 100%;
             font-size: 15px;
             padding: 12px 16px;
         }
-
         #userInput {
             font-size: 16px;
             padding: 14px;
         }
-
         .send-btn {
             padding: 14px 18px;
             font-size: 16px;
-        }
-
-        .input-wrapper {
-            gap: 6px;
-        }
-
-        .small {
-            font-size: 10px;
-            text-align: center;
         }
     }
 </style>
@@ -189,11 +147,8 @@
 
 <div class="app">
     <div class="header">
-        <span>Mini ChatGPT</span>
-        <div class="status">
-            <span class="status-dot"></span>
-            bereit
-        </div>
+        <span>ChatGPT Clone</span>
+        <span><span class="status-dot"></span>bereit</span>
     </div>
 
     <div class="chat" id="chat"></div>
@@ -203,17 +158,20 @@
             <input id="userInput" type="text" placeholder="Frag etwas …">
             <button class="send-btn" id="sendBtn">Senden</button>
         </div>
-        <div class="small">
-            API‑Key im Code eintragen (OpenAI / DeepSeek / Groq).
-        </div>
     </div>
 </div>
 
 <script>
-// ⚙️ API-DATEN EINTRAGEN
-const API_KEY = "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";
-const API_URL = "https://api.openai.com/v1/chat/completions";
-const MODEL   = "gpt-4o-mini";
+// ⭐ API-Daten
+const API_KEY = "DEIN_API_KEY_HIER";
+
+// Beispiel: DeepSeek
+const REAL_API_URL = "https://api.deepseek.com/chat/completions";
+
+// Proxy für Browser
+const API_URL = "https://corsproxy.io/?" + REAL_API_URL;
+
+const MODEL = "deepseek-chat";
 
 const chat = document.getElementById("chat");
 const input = document.getElementById("userInput");
@@ -286,7 +244,8 @@ input.addEventListener("keydown", e => {
 });
 
 // Begrüßung
-addMessage("assistant", "Hi nutzer! Ich bin deine Febl industry KI. Trag deinen API‑Key im Code ein und frag mich etwas.");
+addMessage("assistant", "Hi Felix! Ich bin deine KI wie ChatGPT – und ich funktioniere komplett ohne Localhost.");
 </script>
 
 </body>
+</html>
