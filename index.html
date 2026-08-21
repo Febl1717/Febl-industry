@@ -5,62 +5,133 @@
 <title>Febl industry KI (open beta)</title>
 
 <style>
+    * { box-sizing: border-box; }
+
     body {
         margin: 0;
-        background: #020617;
-        font-family: system-ui;
+        background: #0a0f1c;
+        font-family: system-ui, sans-serif;
         color: #e5e7eb;
         height: 100vh;
         display: flex;
         justify-content: center;
         align-items: center;
     }
+
     .app {
         width: 900px;
         height: 90vh;
-        background: #0b1120;
-        border-radius: 18px;
-        border: 1px solid rgba(148,163,184,0.35);
-        display: grid;
-        grid-template-rows: auto 1fr auto;
+        background: #0f172a;
+        border-radius: 22px;
+        border: 1px solid rgba(148,163,184,0.25);
+        box-shadow: 0 0 40px rgba(0,0,0,0.45);
+        display: flex;
+        flex-direction: column;
         overflow: hidden;
     }
+
     .header {
-        padding: 14px 20px;
-        border-bottom: 1px solid rgba(148,163,184,0.35);
+        padding: 18px 26px;
+        font-size: 18px;
+        font-weight: 600;
+        border-bottom: 1px solid rgba(148,163,184,0.25);
         display: flex;
         justify-content: space-between;
+        align-items: center;
     }
+
+    .status {
+        font-size: 14px;
+        opacity: 0.8;
+    }
+
     .chat {
-        padding: 20px;
+        flex: 1;
+        padding: 24px;
         overflow-y: auto;
+        scroll-behavior: smooth;
     }
-    .msg-row { margin-bottom: 14px; }
-    .msg-label { font-size: 11px; color: #9ca3af; margin-bottom: 4px; }
+
+    .msg-row {
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .msg-label {
+        font-size: 12px;
+        opacity: 0.6;
+        margin-bottom: 6px;
+    }
+
     .msg-bubble {
         max-width: 80%;
-        padding: 10px 14px;
-        border-radius: 10px;
+        padding: 14px 18px;
+        border-radius: 16px;
+        font-size: 15px;
+        line-height: 1.6;
         white-space: pre-wrap;
+        backdrop-filter: blur(10px);
     }
-    .user .msg-bubble { background: #1d4ed8; margin-left: auto; }
-    .ai .msg-bubble { background: #111827; border: 1px solid rgba(148,163,184,0.5); }
-    .footer { padding: 14px 20px; border-top: 1px solid rgba(148,163,184,0.35); }
+
+    .user .msg-bubble {
+        margin-left: auto;
+        background: #1d4ed8;
+        color: #e5e7eb;
+        box-shadow: 0 0 12px rgba(29,78,216,0.4);
+    }
+
+    .ai .msg-bubble {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(148,163,184,0.3);
+    }
+
+    .footer {
+        padding: 18px 26px;
+        border-top: 1px solid rgba(148,163,184,0.25);
+        display: flex;
+        gap: 12px;
+    }
+
     #userInput {
         flex: 1;
-        background: #020617;
-        border: 1px solid rgba(148,163,184,0.5);
-        border-radius: 10px;
-        padding: 10px;
+        background: #0a0f1c;
+        border: 1px solid rgba(148,163,184,0.35);
+        border-radius: 14px;
+        padding: 14px 16px;
+        font-size: 16px;
         color: #e5e7eb;
+        outline: none;
+        transition: 0.2s;
     }
+
+    #userInput:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 10px rgba(59,130,246,0.4);
+    }
+
     .send-btn {
-        padding: 10px 16px;
-        background: #2563eb;
-        border-radius: 10px;
+        padding: 14px 22px;
+        background: #3b82f6;
+        border-radius: 14px;
         border: none;
         color: #fff;
+        font-size: 16px;
         cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .send-btn:hover {
+        background: #2563eb;
+        box-shadow: 0 0 12px rgba(37,99,235,0.5);
+    }
+
+    @media (max-width: 600px) {
+        .app {
+            width: 100%;
+            height: 100vh;
+            border-radius: 0;
+        }
     }
 </style>
 </head>
@@ -68,28 +139,26 @@
 
 <div class="app">
     <div class="header">
-        <span>Febl industry KI (open beta)</span>
-        <span>bereit</span>
+        Febl industry KI (open beta)
+        <span class="status">bereit</span>
     </div>
 
     <div class="chat" id="chat"></div>
 
     <div class="footer">
-        <div style="display:flex; gap:10px;">
-            <input id="userInput" placeholder="Frag etwas …">
-            <button class="send-btn" id="sendBtn">Senden</button>
-        </div>
+        <input id="userInput" type="text" placeholder="Schreibe etwas …">
+        <button class="send-btn" id="sendBtn">Senden</button>
     </div>
 </div>
 
 <script>
-// ⭐ DEIN GROQ API KEY — HIER EINFÜGEN
-const API_KEY = "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";
+// ⭐ DEIN API-KEY HIER EINSETZEN
+const API_KEY = "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";
 
-// ⭐ EINZIG FUNKTIONIERENDES MODELL (2026)
-const MODEL = "allam-2-7b";
+// ⭐ Modellname (funktioniert bei dir)
+const MODEL = "llama-3.1-70b-versatile";
 
-// ⭐ Groq API URL
+// ⭐ API URL
 const API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 const chat = document.getElementById("chat");
@@ -98,9 +167,10 @@ const sendBtn = document.getElementById("sendBtn");
 
 let messages = [
     {
-  role: "system",
-  content: "Du antwortest ausschließlich auf Deutsch. Wenn der Nutzer in einer anderen Sprache schreibt, ignorierst du diese Sprache und antwortest trotzdem auf Deutsch. Du bist Febl industry KI (open beta) und sprichst nur Deutsch."
-}
+        role: "system",
+        content: "Du bist Febl industry KI (open beta). Du antwortest IMMER ausschließlich auf Deutsch, egal in welcher Sprache der Nutzer schreibt. Du verwendest modernes, natürliches, freundliches Deutsch. Keine englischen Wörter, keine arabischen Wörter, keine Übersetzungen. Nur Deutsch."
+    }
+];
 
 function addMessage(role, text) {
     const row = document.createElement("div");
@@ -165,7 +235,8 @@ input.addEventListener("keydown", e => {
     if (e.key === "Enter") send();
 });
 
-addMessage("ai", "Hallo Felix! Ich bin **Febl industry KI (open beta)** — jetzt wirklich funktionierend.");
+addMessage("ai", "Hallo Felix! Ich bin jetzt komplett auf Deutsch eingestellt und habe ein neues smoothes Design.");
 </script>
 
 </body>
+</html>
