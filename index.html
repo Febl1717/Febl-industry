@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>ChatGPT Clone – Ohne Localhost</title>
+<title>Febl industry KI (open beta)</title>
 
 <style>
     * { box-sizing: border-box; }
@@ -147,7 +147,7 @@
 
 <div class="app">
     <div class="header">
-        <span>ChatGPT Clone</span>
+        <span>Febl industry KI (open beta)</span>
         <span><span class="status-dot"></span>bereit</span>
     </div>
 
@@ -162,23 +162,23 @@
 </div>
 
 <script>
-// ⭐ API-Daten
-const API_KEY = "DEIN_API_KEY_HIER";
+// ⭐ API-Daten (OpenAI)
+const API_KEY = "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";
 
-// Beispiel: DeepSeek
-const REAL_API_URL = "https://api.deepseek.com/chat/completions";
+// OpenAI Chat API
+const REAL_API_URL = "https://api.openai.com/v1/chat/completions";
 
-// Proxy für Browser
+// Proxy für Browser (kein localhost nötig)
 const API_URL = "https://corsproxy.io/?" + REAL_API_URL;
 
-const MODEL = "deepseek-chat";
+const MODEL = "gpt-4o-mini";
 
 const chat = document.getElementById("chat");
 const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 
 let messages = [
-    { role: "system", content: "Du bist eine hilfreiche KI, die auf Deutsch antwortet." }
+    { role: "system", content: "Du bist Febl industry KI (open beta). Antworte freundlich, klar und auf Deutsch." }
 ];
 
 function addMessage(role, text) {
@@ -187,7 +187,7 @@ function addMessage(role, text) {
 
     const label = document.createElement("div");
     label.className = "msg-label";
-    label.textContent = role === "user" ? "Du" : "KI";
+    label.textContent = role === "user" ? "Du" : "Febl industry KI";
 
     const bubble = document.createElement("div");
     bubble.className = "msg-bubble";
@@ -244,7 +244,7 @@ input.addEventListener("keydown", e => {
 });
 
 // Begrüßung
-addMessage("assistant", "Hi Felix! Ich bin deine KI wie ChatGPT – und ich funktioniere komplett ohne Localhost.");
+addMessage("assistant", "Hallo nutzer! Ich bin **Febl industry KI (open beta)** — deine persönliche KI wie ChatGPT, jetzt mit OpenAI‑Power.");
 </script>
 
 </body>
