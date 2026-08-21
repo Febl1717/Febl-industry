@@ -2,7 +2,8 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Mini ChatGPT im Browser</title>
+<title>Mini ChatGPT – Responsive</title>
+
 <style>
     * { box-sizing: border-box; }
     body {
@@ -16,6 +17,7 @@
         justify-content: center;
         align-items: center;
     }
+
     .app {
         width: 900px;
         height: 90vh;
@@ -26,6 +28,7 @@
         grid-template-rows: auto 1fr auto;
         overflow: hidden;
     }
+
     .header {
         padding: 14px 20px;
         border-bottom: 1px solid rgba(148,163,184,0.35);
@@ -34,13 +37,16 @@
         align-items: center;
         font-size: 15px;
     }
+
     .header span {
         font-weight: 600;
     }
+
     .status {
         font-size: 12px;
         color: #9ca3af;
     }
+
     .status-dot {
         width: 8px;
         height: 8px;
@@ -50,18 +56,22 @@
         margin-right: 6px;
         box-shadow: 0 0 10px rgba(34,197,94,0.8);
     }
+
     .chat {
         padding: 20px;
         overflow-y: auto;
     }
+
     .msg-row {
         margin-bottom: 14px;
     }
+
     .msg-label {
         font-size: 11px;
         margin-bottom: 4px;
         color: #9ca3af;
     }
+
     .msg-bubble {
         max-width: 80%;
         padding: 10px 14px;
@@ -70,26 +80,32 @@
         line-height: 1.5;
         white-space: pre-wrap;
     }
+
     .user {
         text-align: right;
     }
+
     .user .msg-bubble {
         margin-left: auto;
         background: #1d4ed8;
         color: #e5e7eb;
     }
+
     .ai .msg-bubble {
         background: #111827;
         border: 1px solid rgba(148,163,184,0.5);
     }
+
     .footer {
         padding: 14px 20px;
         border-top: 1px solid rgba(148,163,184,0.35);
     }
+
     .input-wrapper {
         display: flex;
         gap: 10px;
     }
+
     #userInput {
         flex: 1;
         background: #020617;
@@ -99,9 +115,11 @@
         padding: 10px 12px;
         font-size: 14px;
     }
+
     #userInput::placeholder {
         color: #6b7280;
     }
+
     .send-btn {
         padding: 10px 16px;
         background: #2563eb;
@@ -111,10 +129,59 @@
         cursor: pointer;
         font-size: 14px;
     }
+
     .small {
         font-size: 11px;
         color: #6b7280;
         margin-top: 6px;
+    }
+
+    /* 📱 MOBILE DESIGN */
+    @media (max-width: 600px) {
+        body {
+            align-items: flex-start;
+            padding-top: 10px;
+        }
+
+        .app {
+            width: 100%;
+            height: 100vh;
+            border-radius: 0;
+        }
+
+        .header {
+            padding: 10px 14px;
+            font-size: 14px;
+        }
+
+        .chat {
+            padding: 12px;
+        }
+
+        .msg-bubble {
+            max-width: 100%;
+            font-size: 15px;
+            padding: 12px 16px;
+        }
+
+        #userInput {
+            font-size: 16px;
+            padding: 14px;
+        }
+
+        .send-btn {
+            padding: 14px 18px;
+            font-size: 16px;
+        }
+
+        .input-wrapper {
+            gap: 6px;
+        }
+
+        .small {
+            font-size: 10px;
+            text-align: center;
+        }
     }
 </style>
 </head>
@@ -137,23 +204,23 @@
             <button class="send-btn" id="sendBtn">Senden</button>
         </div>
         <div class="small">
-            Trage deinen API‑Key im Code ein (z. B. OpenAI / DeepSeek / Groq, kompatible Chat‑API).
+            API‑Key im Code eintragen (OpenAI / DeepSeek / Groq).
         </div>
     </div>
 </div>
 
 <script>
-// ⚙️ HIER API‑DATEN EINTRAGEN
-const API_KEY   = "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";
-const API_URL   = "https://api.openai.com/v1/chat/completions"; // oder DeepSeek/Groq-Endpunkt
-const MODEL     = "gpt-4o-mini"; // oder anderes Modell
+// ⚙️ API-DATEN EINTRAGEN
+const API_KEY = "DEIN_API_KEY_HIER";
+const API_URL = "https://api.openai.com/v1/chat/completions";
+const MODEL   = "gpt-4o-mini";
 
 const chat = document.getElementById("chat");
 const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 
 let messages = [
-    { role: "system", content: "Du bist eine hilfreiche, freundliche KI, die auf Deutsch antwortet." }
+    { role: "system", content: "Du bist eine hilfreiche KI, die auf Deutsch antwortet." }
 ];
 
 function addMessage(role, text) {
@@ -192,16 +259,16 @@ async function sendToAPI(userText) {
 
         if (!res.ok) {
             const errText = await res.text();
-            addMessage("assistant", "Fehler von der API:\n" + errText);
+            addMessage("assistant", "API‑Fehler:\n" + errText);
             return;
         }
 
         const data = await res.json();
-        const reply = data.choices?.[0]?.message?.content || "(Keine Antwort erhalten)";
+        const reply = data.choices?.[0]?.message?.content || "(Keine Antwort)";
         messages.push({ role: "assistant", content: reply });
         addMessage("assistant", reply);
     } catch (e) {
-        addMessage("assistant", "Fehler beim Senden:\n" + e.message);
+        addMessage("assistant", "Fehler:\n" + e.message);
     }
 }
 
@@ -219,7 +286,7 @@ input.addEventListener("keydown", e => {
 });
 
 // Begrüßung
-addMessage("assistant", "Hi nutzer, ich bin dein Mini‑ChatGPT im Browser. Trag deinen API‑Key im Code ein und stell mir eine Frage.");
+addMessage("assistant", "Hi Felix! Ich bin dein Mini‑ChatGPT. Trag deinen API‑Key im Code ein und frag mich etwas.");
 </script>
 
 </body>
