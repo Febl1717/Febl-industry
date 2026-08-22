@@ -112,23 +112,24 @@ animation:load 0.8s infinite;
 100%{opacity:0.2;transform:scale(1)}
 }
 
-/* FLOATING INPUT BAR + GLOW */
+/* FLOATING INPUT BAR (PC + Mobile) */
 .input-bar{
-padding:12px 0;
+padding:10px 0;
 display:flex;
 justify-content:center;
 background:transparent;
 position:sticky;
-bottom:12px;
+bottom:10px;
 z-index:50;
 }
 
+/* MOBILE VERSION LIKE BEFORE */
 .input-box{
-width:90%;
+width:94%;
 background:var(--c4);
 border:1px solid rgba(255,255,255,.18);
-padding:8px 18px;
-border-radius:32px 32px 22px 22px;
+padding:10px 16px;
+border-radius:30px;
 display:flex;
 gap:10px;
 align-items:center;
@@ -138,10 +139,10 @@ transition:0.25s;
 
 /* Glow beim Tippen */
 .input-box:focus-within{
-box-shadow:0 0 18px var(--accent), 0 6px 22px rgba(0,0,0,0.45);
-transform:scale(1.02);
+box-shadow:0 0 14px var(--accent), 0 6px 22px rgba(0,0,0,0.45);
 }
 
+/* INPUT */
 #userInput{
 flex:1;
 background:transparent;
@@ -150,11 +151,6 @@ outline:none;
 color:var(--t1);
 font-size:18px;
 padding:6px 0;
-transition:0.15s;
-}
-
-#userInput:focus{
-transform:scale(1.03);
 }
 
 /* SEND BUTTON */
@@ -176,16 +172,16 @@ transform:scale(1.1);
 @media(max-width:600px){
 .input-box{
 width:94%;
-padding:10px 20px;
-border-radius:36px 36px 26px 26px;
+padding:10px 16px;
+border-radius:30px;
 }
 #userInput{
-font-size:20px;
-padding:8px 0;
+font-size:18px;
+padding:6px 0;
 }
 .send-btn{
-width:52px;height:52px;
-font-size:26px;
+width:44px;height:44px;
+font-size:22px;
 }
 }
 </style>
@@ -244,7 +240,7 @@ font-size:26px;
 <script>
 const API_KEY="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";
 const MODEL="groq/compound-mini";
-const API_URL="https://api.groq.com/openai/v1/chat/completions";
+const API_URL="lehttps://api.groq.com/openai/v1/chat/completions";
 
 const chat=document.getElementById("chat");
 const input=document.getElementById("userInput");
