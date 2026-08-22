@@ -88,7 +88,7 @@ font-size:16px;line-height:1.5;white-space:pre-wrap;
 .user-row .msg-bubble{background:var(--user)}
 .ai-row .msg-bubble{background:var(--ai);border:1px solid rgba(255,255,255,.1)}
 
-/* NEW LOADING ANIMATION (NO TEXT) */
+/* LOADING DOTS */
 .loading{
 display:flex;
 gap:6px;
@@ -256,7 +256,7 @@ messages.push({role,content:text});
 renderMessage(role,text);
 }
 
-/* NEW LOADING WITHOUT TEXT */
+/* LOADING DOTS */
 function loading(){
 const row=document.createElement("div");
 row.className="msg-row ai-row";
@@ -276,16 +276,23 @@ if(el)el.remove();
 
 addMessage("ai",t("Hallo Felix! Wie kann ich dir helfen?","Hello Felix! How can I help you?"));
 
+/* ⭐ FIX: KI ANTWORTET IMMER – AUCH BEI FEHLER ⭐ */
 async function sendToAI(text){
 loading();
+
+try{
 const history=[
 {role:"system",content:t("Du antwortest freundlich und hilfst dem Nutzer.","You answer friendly and help the user.")},
 ...messages.slice(-10),
 {role:"user",content:text}
 ];
+
 const res=await fetch(API_URL,{
 method:"POST",
-headers:{"Content-Type":"application/json","Authorization":"Bearer "+API_KEY},
+headers:{
+"Content-Type":"application/json",
+"Authorization":"Bearer "+API_KEY
+},
 body:JSON.stringify({
 model:MODEL,
 messages:history,
@@ -294,9 +301,25 @@ max_tokens:1024,
 top_p:1
 })
 });
+
 const data=await res.json();
 removeLoading();
+
+/* Wenn API Fehler zurückgibt → trotzdem antworten */
+if(data.error){
+addMessage("ai","⚠️ Fehler: "+data.error.message);
+return;
+}
+
+/* Normale Antwort */
 addMessage("ai",data.choices[0].message.content);
+
+}catch(err){
+removeLoading();
+
+/* Wenn Fetch komplett scheitert → trotzdem antworten */
+addMessage("ai","⚠️ Netzwerkfehler: "+err.message);
+}
 }
 
 function send(){
