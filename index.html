@@ -198,32 +198,33 @@ body{
 
 /* Neue größere & zur Mitte hin dünnere Eingabeleiste */
 .input-bar{
-    padding:14px;
+    padding:12px;
     background:var(--bg-header);
     border-top:1px solid rgba(255,255,255,0.1);
     display:flex;
     justify-content:center;
 }
 
+/* WICHTIG: zur Mitte hin dünner durch asymmetrische Radien */
 .input-box{
     width:94%;
     background:var(--bg-input);
-    border:1px solid rgba(255,255,255,0.15);
-    
-    /* WICHTIG: oben & unten dünner, seitlich dicker */
-    padding:6px 18px;
+    border:1px solid rgba(255,255,255,0.18);
 
-    /* WICHTIG: zur Mitte hin dünner */
-    border-radius:28px 28px 22px 22px;
+    /* oben dünner, unten leicht dicker → moderner Dip‑Effekt */
+    padding:10px 18px;
+
+    /* asymmetrische Rundung → Mitte wirkt dünner */
+    border-radius:32px 32px 22px 22px;
 
     display:flex;
-    gap:10px;
+    gap:12px;
     align-items:center;
     transition:0.25s;
 }
 
 .input-box:focus-within{
-    box-shadow:0 0 14px var(--accent);
+    box-shadow:0 0 16px var(--accent);
 }
 
 #userInput{
@@ -233,14 +234,15 @@ body{
     outline:none;
     color:var(--text-main);
 
-    /* etwas größer */
+    /* größer, aber nicht fett */
     font-size:18px;
     padding:6px 0;
 }
 
+/* SEND BUTTON */
 .send-btn{
-    width:46px;
-    height:46px;
+    width:44px;
+    height:44px;
     background:var(--accent);
     border:none;
     border-radius:50%;
@@ -255,6 +257,30 @@ body{
     transform:scale(1.08);
 }
 
+/* MOBILE – perfekt angepasst */
+@media(max-width:600px){
+
+    .input-bar{
+        padding:14px;
+    }
+
+    .input-box{
+        width:96%;
+        padding:12px 20px;
+        border-radius:36px 36px 24px 24px; /* stärkerer Dip für Handy */
+    }
+
+    #userInput{
+        font-size:20px;
+        padding:8px 0;
+    }
+
+    .send-btn{
+        width:52px;
+        height:52px;
+        font-size:24px;
+    }
+}
 /* SETTINGS PANEL */
 .settings-panel{
     position:fixed;
