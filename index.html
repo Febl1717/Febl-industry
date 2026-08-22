@@ -196,9 +196,9 @@ body{
     border:1px solid rgba(255,255,255,0.1);
 }
 
-/* Dünnere Eingabeleiste */
+/* Neue größere & zur Mitte hin dünnere Eingabeleiste */
 .input-bar{
-    padding:10px;
+    padding:14px;
     background:var(--bg-header);
     border-top:1px solid rgba(255,255,255,0.1);
     display:flex;
@@ -206,15 +206,24 @@ body{
 }
 
 .input-box{
-    width:92%;
+    width:94%;
     background:var(--bg-input);
     border:1px solid rgba(255,255,255,0.15);
-    border-radius:20px;
-    padding:8px 14px;
+    
+    /* WICHTIG: oben & unten dünner, seitlich dicker */
+    padding:6px 18px;
+
+    /* WICHTIG: zur Mitte hin dünner */
+    border-radius:28px 28px 22px 22px;
+
     display:flex;
-    gap:8px;
+    gap:10px;
     align-items:center;
     transition:0.25s;
+}
+
+.input-box:focus-within{
+    box-shadow:0 0 14px var(--accent);
 }
 
 #userInput{
@@ -223,20 +232,24 @@ body{
     border:none;
     outline:none;
     color:var(--text-main);
-    font-size:15px;
+
+    /* etwas größer */
+    font-size:18px;
+    padding:6px 0;
 }
 
 .send-btn{
-    width:38px;
-    height:38px;
+    width:46px;
+    height:46px;
     background:var(--accent);
     border:none;
     border-radius:50%;
     color:var(--text-main);
-    font-size:18px;
+    font-size:20px;
     cursor:pointer;
     transition:0.25s;
 }
+
 .send-btn:hover{
     background:var(--accent-soft);
     transform:scale(1.08);
