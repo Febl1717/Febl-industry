@@ -683,22 +683,26 @@ function clearChat(){
     addMessage("ai", answerLang==="de" ? "Chat gelöscht. Hallo!" : "Chat cleared. Hi!");
 }
 
-/* ===========================
-   AUTO-HIDE INPUT BAR
-=========================== */
-let lastScroll = 0;
+/* AUTO-HIDE SETTINGS PANEL BEIM SCROLLEN */
+let lastScrollSettings = 0;
 
 window.addEventListener("scroll", () => {
     const current = window.scrollY;
 
-    if(current > lastScroll + 10){
-        inputBar.style.transform = "translateY(80px)";
-        inputBar.style.opacity = "0";
-    } else {
-        inputBar.style.transform = "translateY(0)";
-        inputBar.style.opacity = "1";
+    // Wenn die Leiste offen ist
+    if(settingsPanel.classList.contains("open")){
+
+        // Nach unten scrollen → Leiste verstecken
+        if(current > lastScrollSettings + 10){
+            settingsPanel.style.right = "-340px";
+        }
+
+        // Nach oben scrollen → Leiste wieder zeigen
+        else{
+            settingsPanel.style.right = "0px";
+        }
     }
 
-    lastScroll = current;
+    lastScrollSettings = current;
 });
 </script>
