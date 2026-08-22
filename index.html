@@ -54,17 +54,17 @@ body{background:var(--bg-main);height:100vh;display:flex;overflow:hidden;color:v
 <body class="theme-purple">
 
 <div class="sidebar">
-    <div class="sidebar-icon" data-action="home"><span>🏠</span><p class="sidebar-text">Home</p></div>
-    <div class="sidebar-icon" data-action="about"><span>👤</span><p class="sidebar-text">Über Febl</p></div>
-    <div class="sidebar-icon" data-action="support"><span>💬</span><p class="sidebar-text">Support</p></div>
-    <div class="sidebar-icon" data-action="clear"><span>🗑️</span><p class="sidebar-text">Chat löschen</p></div>
-    <div class="sidebar-icon" data-action="settings"><span>⚙️</span><p class="sidebar-text">Einstellungen</p></div>
+    <div class="sidebar-icon" data-action="home"><span>🏠</span><p class="sidebar-text" id="txt_home">Home</p></div>
+    <div class="sidebar-icon" data-action="about"><span>👤</span><p class="sidebar-text" id="txt_about">Über Febl</p></div>
+    <div class="sidebar-icon" data-action="support"><span>💬</span><p class="sidebar-text" id="txt_support">Support</p></div>
+    <div class="sidebar-icon" data-action="clear"><span>🗑️</span><p class="sidebar-text" id="txt_clear">Chat löschen</p></div>
+    <div class="sidebar-icon" data-action="settings"><span>⚙️</span><p class="sidebar-text" id="txt_settings">Einstellungen</p></div>
 </div>
 
 <div id="settingsPanel" class="settings-panel">
-    <div class="settings-title">Einstellungen</div>
+    <div class="settings-title" id="txt_settings_title">Einstellungen</div>
 
-    <div class="settings-section-title">Theme</div>
+    <div class="settings-section-title" id="txt_theme_title">Theme</div>
     <select id="themeSelect" class="settings-select">
         <option value="purple">Lila</option>
         <option value="blue">Blau</option>
@@ -73,7 +73,7 @@ body{background:var(--bg-main);height:100vh;display:flex;overflow:hidden;color:v
         <option value="black">Schwarz</option>
     </select>
 
-    <div class="settings-section-title">Sprache</div>
+    <div class="settings-section-title" id="txt_lang_title">Sprache</div>
     <select id="langSelect" class="settings-select">
         <option value="de">Deutsch</option>
         <option value="en">English</option>
@@ -81,7 +81,7 @@ body{background:var(--bg-main);height:100vh;display:flex;overflow:hidden;color:v
 </div>
 
 <div class="main">
-    <div class="header">Febl KI</div>
+    <div class="header" id="txt_header">Febl KI</div>
     <div class="chat" id="chat"></div>
 
     <div class="input-bar">
@@ -93,9 +93,9 @@ body{background:var(--bg-main);height:100vh;display:flex;overflow:hidden;color:v
 </div>
 
 <script>
-const API_KEY = "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";
-const MODEL = "groq/compound-mini";
-const API_URL = "https://api.groq.com/openai/v1/chat/completions";
+const API_KEY="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";
+const MODEL="groq/compound-mini";
+const API_URL="https://api.groq.com/openai/v1/chat/completions";
 
 const chat=document.getElementById("chat");
 const input=document.getElementById("userInput");
@@ -106,6 +106,19 @@ const langSelect=document.getElementById("langSelect");
 
 let lang="de";
 let messages=[];
+
+function updateLanguage(){
+document.getElementById("txt_home").textContent=lang==="de"?"Home":"Home";
+document.getElementById("txt_about").textContent=lang==="de"?"Über Febl":"About Febl";
+document.getElementById("txt_support").textContent=lang==="de"?"Support":"Support";
+document.getElementById("txt_clear").textContent=lang==="de"?"Chat löschen":"Clear chat";
+document.getElementById("txt_settings").textContent=lang==="de"?"Einstellungen":"Settings";
+document.getElementById("txt_settings_title").textContent=lang==="de"?"Einstellungen":"Settings";
+document.getElementById("txt_theme_title").textContent=lang==="de"?"Theme":"Theme";
+document.getElementById("txt_lang_title").textContent=lang==="de"?"Sprache":"Language";
+document.getElementById("txt_header").textContent=lang==="de"?"Febl KI":"Febl AI";
+input.placeholder=lang==="de"?"Nachricht eingeben…":"Type a message…";
+}
 
 function t(de,en){return lang==="de"?de:en}
 
@@ -184,12 +197,18 @@ if(a==="settings")settingsPanel.classList.toggle("open");
 });
 
 themeSelect.onchange=e=>document.body.className="theme-"+e.target.value;
-langSelect.onchange=e=>{lang=e.target.value};
+
+langSelect.onchange=e=>{
+lang=e.target.value;
+updateLanguage();
+};
 
 document.body.onclick=e=>{
 if(!e.target.closest(".settings-panel")&&!e.target.closest(".sidebar-icon"))
 settingsPanel.classList.remove("open");
 };
+
+updateLanguage();
 </script>
 
 </body>
