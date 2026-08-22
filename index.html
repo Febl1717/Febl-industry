@@ -2,99 +2,178 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Febl KI</title>
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif}
+
+/* BASIC COLORS */
 :root{
---bg-main:#0a0b1f;--bg-sidebar:#13143a;--bg-header:#1a1b4a;--bg-chat:#0a0b1f;
---bg-input:#1e1f4d;--bg-bubble-ai:#1e1f4d;--bg-bubble-user:#7c3aed;
---accent:#7c3aed;--text-main:#fff;--text-soft:#e9d5ff}
+--c1:#0a0b1f;--c2:#13143a;--c3:#1a1b4a;--c4:#1e1f4d;
+--ai:#1e1f4d;--user:#7c3aed;--accent:#7c3aed;
+--t1:#fff;--t2:#e9d5ff;
+}
+
+/* THEMES */
 body.theme-purple{}
-body.theme-blue{--bg-main:#0b1120;--bg-sidebar:#0f172a;--bg-header:#1e293b;
---bg-chat:#020617;--bg-input:#1f2937;--bg-bubble-ai:#1e293b;--bg-bubble-user:#3b82f6;
---accent:#3b82f6;--text-soft:#e5e7eb}
-body.theme-red{--bg-main:#1a0b0b;--bg-sidebar:#3b0f0f;--bg-header:#4c1d1d;
---bg-chat:#1a0b0b;--bg-input:#3f1f1f;--bg-bubble-ai:#3f1f1f;--bg-bubble-user:#ef4444;
---accent:#ef4444;--text-soft:#fee2e2}
-body.theme-green{--bg-main:#022c22;--bg-sidebar:#064e3b;--bg-header:#065f46;
---bg-chat:#022c22;--bg-input:#064e3b;--bg-bubble-ai:#064e3b;--bg-bubble-user:#22c55e;
---accent:#22c55e;--text-soft:#bbf7d0}
-body.theme-black{--bg-main:#000;--bg-sidebar:#0a0a0a;--bg-header:#111827;
---bg-chat:#000;--bg-input:#111827;--bg-bubble-ai:#111827;--bg-bubble-user:#3b82f6;
---accent:#3b82f6;--text-soft:#e5e7eb}
-body{background:var(--bg-main);height:100vh;display:flex;overflow:hidden;color:var(--text-main)}
-.sidebar{width:62px;background:var(--bg-sidebar);display:flex;flex-direction:column;padding:10px 6px;gap:12px;transition:.3s}
+body.theme-blue{--c1:#0b1120;--c2:#0f172a;--c3:#1e293b;--c4:#1f2937;--ai:#1e293b;--user:#3b82f6;--accent:#3b82f6;--t2:#e5e7eb}
+body.theme-red{--c1:#1a0b0b;--c2:#3b0f0f;--c3:#4c1d1d;--c4:#3f1f1f;--ai:#3f1f1f;--user:#ef4444;--accent:#ef4444;--t2:#fee2e2}
+body.theme-green{--c1:#022c22;--c2:#064e3b;--c3:#065f46;--c4:#064e3b;--ai:#064e3b;--user:#22c55e;--accent:#22c55e;--t2:#bbf7d0}
+body.theme-black{--c1:#000;--c2:#0a0a0a;--c3:#111827;--c4:#111827;--ai:#111827;--user:#3b82f6;--accent:#3b82f6;--t2:#e5e7eb}
+
+/* BODY */
+body{
+background:var(--c1);
+color:var(--t1);
+height:100vh;
+display:flex;
+overflow:hidden;
+}
+
+/* SPLASH */
+#splash{
+position:fixed;top:0;left:0;width:100%;height:100%;
+background:#000;display:flex;flex-direction:column;
+justify-content:center;align-items:center;z-index:9999;
+transition:1s;
+}
+#splash h1{font-size:40px;color:#fff}
+#splash p{color:#aaa;margin-top:10px}
+
+/* SIDEBAR */
+.sidebar{
+width:60px;background:var(--c2);
+display:flex;flex-direction:column;gap:12px;
+padding:10px 6px;transition:.3s;
+}
 .sidebar:hover{width:200px}
-.sidebar-icon{display:flex;align-items:center;gap:10px;padding:10px;background:#1e1f4d;border-radius:12px;cursor:pointer;white-space:nowrap;overflow:hidden}
+.sidebar-icon{
+display:flex;align-items:center;gap:10px;
+padding:10px;background:var(--c4);
+border-radius:12px;cursor:pointer;
+white-space:nowrap;overflow:hidden;
+}
 .sidebar-icon span{font-size:22px}
 .sidebar-text{opacity:0;transition:.3s}
 .sidebar:hover .sidebar-text{opacity:1}
-.settings-panel{position:fixed;right:-260px;top:0;width:260px;height:100%;background:var(--bg-sidebar);padding:20px;display:flex;flex-direction:column;gap:12px;transition:.3s;z-index:999}
+
+/* SETTINGS */
+.settings-panel{
+position:fixed;right:-260px;top:0;width:260px;height:100%;
+background:var(--c2);padding:20px;display:flex;
+flex-direction:column;gap:12px;transition:.3s;z-index:999;
+}
 .settings-panel.open{right:0}
 .settings-title{font-size:20px;font-weight:700;color:var(--accent)}
 .settings-section-title{font-size:14px}
-.settings-select{width:100%;padding:8px;border-radius:8px;border:none;background:#1e1f4d;color:var(--text-main)}
-.settings-item{padding:10px;background:#1e1f4d;border-radius:10px;font-size:14px;cursor:pointer}
+.settings-select{
+width:100%;padding:8px;border:none;
+border-radius:8px;background:var(--c4);color:var(--t1);
+}
+
+/* MAIN */
 .main{flex:1;display:flex;flex-direction:column;height:100vh}
-.header{padding:16px 22px;font-size:22px;font-weight:700;background:var(--bg-header);color:var(--text-soft)}
-.chat{flex:1;padding:20px;overflow-y:auto;background:var(--bg-chat)}
+.header{
+padding:16px 22px;font-size:22px;font-weight:700;
+background:var(--c3);color:var(--t2);
+}
+
+/* CHAT */
+.chat{
+flex:1;padding:20px;overflow-y:auto;background:var(--c1);
+}
 .msg-row{margin-bottom:16px;display:flex}
-.msg-bubble{max-width:80%;padding:12px 16px;border-radius:18px;font-size:16px;line-height:1.5;white-space:pre-wrap}
+.msg-bubble{
+max-width:80%;padding:12px 16px;border-radius:18px;
+font-size:16px;line-height:1.5;white-space:pre-wrap;
+}
 .user-row{justify-content:flex-end}
-.user-row .msg-bubble{background:var(--bg-bubble-user)}
-.ai-row .msg-bubble{background:var(--bg-bubble-ai);border:1px solid rgba(255,255,255,.1)}
+.user-row .msg-bubble{background:var(--user)}
+.ai-row .msg-bubble{background:var(--ai);border:1px solid rgba(255,255,255,.1)}
 .loading{opacity:.6;font-style:italic}
+
+/* INPUT */
 .input-bar{padding:10px 0;display:flex;justify-content:center}
-.input-box{width:94%;background:var(--bg-input);border:1px solid rgba(255,255,255,.18);padding:10px 16px;border-radius:30px;display:flex;gap:10px;align-items:center}
-#userInput{flex:1;background:transparent;border:none;outline:none;color:var(--text-main);font-size:18px}
-.send-btn{width:44px;height:44px;background:var(--accent);border:none;border-radius:50%;color:var(--text-main);font-size:22px;cursor:pointer}
+.input-box{
+width:94%;background:var(--c4);border:1px solid rgba(255,255,255,.18);
+padding:10px 16px;border-radius:30px;display:flex;gap:10px;align-items:center;
+}
+#userInput{
+flex:1;background:transparent;border:none;outline:none;
+color:var(--t1);font-size:18px;
+}
+.send-btn{
+width:44px;height:44px;background:var(--accent);
+border:none;border-radius:50%;color:var(--t1);
+font-size:22px;cursor:pointer;
+}
+
+/* MOBILE */
+@media(max-width:600px){
+.sidebar{width:58px}
+.sidebar:hover{width:58px}
+.sidebar-text{display:none}
+.msg-bubble{font-size:15px}
+#userInput{font-size:16px}
+.send-btn{width:40px;height:40px;font-size:20px}
+}
 </style>
 </head>
 
 <body class="theme-purple">
 
+<!-- SPLASH -->
+<div id="splash">
+<h1>Febl KI</h1>
+<p>Loading…</p>
+</div>
+
+<!-- SIDEBAR -->
 <div class="sidebar">
-    <div class="sidebar-icon" data-action="home"><span>🏠</span><p class="sidebar-text" id="txt_home">Home</p></div>
-    <div class="sidebar-icon" data-action="about"><span>👤</span><p class="sidebar-text" id="txt_about">Über Febl</p></div>
-    <div class="sidebar-icon" data-action="support"><span>💬</span><p class="sidebar-text" id="txt_support">Support</p></div>
-    <div class="sidebar-icon" data-action="clear"><span>🗑️</span><p class="sidebar-text" id="txt_clear">Chat löschen</p></div>
-    <div class="sidebar-icon" data-action="settings"><span>⚙️</span><p class="sidebar-text" id="txt_settings">Einstellungen</p></div>
+<div class="sidebar-icon" data-action="home"><span>🏠</span><p class="sidebar-text" id="txt_home">Home</p></div>
+<div class="sidebar-icon" data-action="about"><span>👤</span><p class="sidebar-text" id="txt_about">Über Febl</p></div>
+<div class="sidebar-icon" data-action="support"><span>💬</span><p class="sidebar-text" id="txt_support">Support</p></div>
+<div class="sidebar-icon" data-action="clear"><span>🗑️</span><p class="sidebar-text" id="txt_clear">Chat löschen</p></div>
+<div class="sidebar-icon" data-action="settings"><span>⚙️</span><p class="sidebar-text" id="txt_settings">Einstellungen</p></div>
 </div>
 
+<!-- SETTINGS -->
 <div id="settingsPanel" class="settings-panel">
-    <div class="settings-title" id="txt_settings_title">Einstellungen</div>
+<div class="settings-title" id="txt_settings_title">Einstellungen</div>
 
-    <div class="settings-section-title" id="txt_theme_title">Theme</div>
-    <select id="themeSelect" class="settings-select">
-        <option value="purple">Lila</option>
-        <option value="blue">Blau</option>
-        <option value="red">Rot</option>
-        <option value="green">Grün</option>
-        <option value="black">Schwarz</option>
-    </select>
+<div class="settings-section-title" id="txt_theme_title">Theme</div>
+<select id="themeSelect" class="settings-select">
+<option value="purple">Lila</option>
+<option value="blue">Blau</option>
+<option value="red">Rot</option>
+<option value="green">Grün</option>
+<option value="black">Schwarz</option>
+</select>
 
-    <div class="settings-section-title" id="txt_lang_title">Sprache</div>
-    <select id="langSelect" class="settings-select">
-        <option value="de">Deutsch</option>
-        <option value="en">English</option>
-    </select>
+<div class="settings-section-title" id="txt_lang_title">Sprache</div>
+<select id="langSelect" class="settings-select">
+<option value="de">Deutsch</option>
+<option value="en">English</option>
+</select>
 </div>
 
+<!-- MAIN -->
 <div class="main">
-    <div class="header" id="txt_header">Febl KI</div>
-    <div class="chat" id="chat"></div>
+<div class="header" id="txt_header">Febl KI</div>
+<div class="chat" id="chat"></div>
 
-    <div class="input-bar">
-        <div class="input-box">
-            <input id="userInput" type="text" placeholder="Nachricht eingeben…">
-            <button class="send-btn" id="sendBtn">➤</button>
-        </div>
-    </div>
+<div class="input-bar">
+<div class="input-box">
+<input id="userInput" type="text" placeholder="Nachricht eingeben…">
+<button class="send-btn" id="sendBtn">➤</button>
+</div>
+</div>
 </div>
 
 <script>
 const API_KEY="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";
-const MODEL="groq/compound";
+const MODEL="groq/compound-mini";
 const API_URL="https://api.groq.com/openai/v1/chat/completions";
 
 const chat=document.getElementById("chat");
@@ -107,6 +186,11 @@ const langSelect=document.getElementById("langSelect");
 let lang="de";
 let messages=[];
 
+/* SPLASH */
+setTimeout(()=>{document.getElementById("splash").style.opacity="0"},1200);
+setTimeout(()=>{document.getElementById("splash").style.display="none"},2200);
+
+/* LANGUAGE */
 function updateLanguage(){
 document.getElementById("txt_home").textContent=lang==="de"?"Home":"Home";
 document.getElementById("txt_about").textContent=lang==="de"?"Über Febl":"About Febl";
@@ -122,6 +206,7 @@ input.placeholder=lang==="de"?"Nachricht eingeben…":"Type a message…";
 
 function t(de,en){return lang==="de"?de:en}
 
+/* CHAT */
 function renderMessage(role,text){
 const row=document.createElement("div");
 row.className="msg-row "+(role==="user"?"user-row":"ai-row");
@@ -185,6 +270,7 @@ sendToAI(text);
 sendBtn.onclick=send;
 input.onkeydown=e=>{if(e.key==="Enter")send()};
 
+/* SIDEBAR */
 document.querySelectorAll(".sidebar-icon").forEach(icon=>{
 icon.onclick=()=>{
 const a=icon.dataset.action;
@@ -196,12 +282,9 @@ if(a==="settings")settingsPanel.classList.toggle("open");
 };
 });
 
+/* SETTINGS */
 themeSelect.onchange=e=>document.body.className="theme-"+e.target.value;
-
-langSelect.onchange=e=>{
-lang=e.target.value;
-updateLanguage();
-};
+langSelect.onchange=e=>{lang=e.target.value;updateLanguage()};
 
 document.body.onclick=e=>{
 if(!e.target.closest(".settings-panel")&&!e.target.closest(".sidebar-icon"))
