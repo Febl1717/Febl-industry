@@ -16,7 +16,7 @@ body{
     color:#e5e7eb;
 }
 
-/* DESKTOP – normales Layout */
+/* APP CONTAINER */
 .app{
     width:900px;
     height:90vh;
@@ -29,84 +29,96 @@ body{
     overflow:hidden;
 }
 
-/* HEADER – neues Design */
+/* MOBILE FULLSCREEN */
+@media(max-width:600px){
+    .app{
+        width:100%;
+        height:100vh;
+        border-radius:0;
+        border:none;
+        box-shadow:none;
+    }
+}
+
+/* GLOW HEADER */
 .header{
-    padding:18px 24px;
-    font-size:22px;
+    padding:22px 26px;
+    font-size:26px;
     font-weight:700;
-    border-bottom:1px solid rgba(255,255,255,0.08);
     display:flex;
     justify-content:space-between;
     align-items:center;
-    background:#111a2d;
+    background:#0f1b33;
+    border-bottom:1px solid rgba(255,255,255,0.1);
+    box-shadow:0 0 25px #1e3a8a;
 }
 
-/* Buttons */
+/* HEADER BUTTONS */
 .back-btn{
-    padding:12px 18px;
-    background:#4ea8ff;
+    padding:14px 20px;
+    background:#3b82f6;
     border:none;
-    border-radius:14px;
+    border-radius:16px;
     color:white;
-    font-size:18px;
+    font-size:20px;
     cursor:pointer;
     font-weight:600;
 }
 
 .menu-btn{
-    padding:12px 18px;
+    padding:14px 20px;
     background:#1f2937;
     border:none;
-    border-radius:14px;
+    border-radius:16px;
     color:white;
-    font-size:18px;
+    font-size:20px;
     cursor:pointer;
     font-weight:600;
 }
 
-/* Chat */
+/* CHAT */
 .chat{
     flex:1;
-    padding:24px;
+    padding:26px;
     overflow-y:auto;
 }
 
-/* Chat-Bubbles */
+/* CHAT BUBBLES */
 .msg-row{
-    margin-bottom:26px;
+    margin-bottom:30px;
     display:flex;
     align-items:flex-start;
-    gap:14px;
+    gap:18px;
 }
 
 .msg-label{
-    font-size:14px;
+    font-size:16px;
     opacity:0.7;
-    margin-bottom:6px;
+    margin-bottom:8px;
 }
 
 .msg-bubble{
-    max-width:75%;
-    padding:18px 22px;
-    border-radius:22px;
-    font-size:18px;
+    max-width:80%;
+    padding:22px 26px;
+    border-radius:26px;
+    font-size:22px;
     line-height:1.6;
     white-space:pre-wrap;
 }
 
-/* Avatare */
+/* AVATARS */
 .avatar{
-    width:42px;
-    height:42px;
+    width:50px;
+    height:50px;
     border-radius:999px;
     display:flex;
     justify-content:center;
     align-items:center;
-    font-size:20px;
+    font-size:26px;
     font-weight:700;
 }
 
-/* Nutzer */
+/* USER */
 .user-row{
     flex-direction:row-reverse;
 }
@@ -126,12 +138,12 @@ body{
     background:#22c55e;
 }
 
-/* Footer – neues Design */
+/* FOOTER */
 .footer{
-    padding:20px;
+    padding:26px;
     border-top:1px solid rgba(255,255,255,0.08);
     display:flex;
-    gap:14px;
+    gap:20px;
     background:#111a2d;
 }
 
@@ -139,26 +151,26 @@ body{
     flex:1;
     background:#0f172a;
     border:1px solid rgba(255,255,255,0.1);
-    border-radius:20px;
-    padding:18px;
-    font-size:18px;
+    border-radius:26px;
+    padding:26px;
+    font-size:24px;
     color:#e5e7eb;
 }
 
 .send-btn{
-    width:70px;
-    height:70px;
+    width:90px;
+    height:90px;
     background:#4ea8ff;
-    border-radius:20px;
+    border-radius:26px;
     border:none;
     color:white;
-    font-size:32px;
+    font-size:40px;
     cursor:pointer;
     font-weight:700;
 }
 
-/* INTRO */
-.intro{
+/* SPLASH SCREEN */
+.splash{
     position:fixed;
     inset:0;
     background:#0a0f1a;
@@ -166,97 +178,108 @@ body{
     justify-content:center;
     align-items:center;
     flex-direction:column;
-    z-index:999;
+    z-index:9999;
     color:white;
-    font-size:40px;
+    font-size:48px;
     opacity:1;
-    transition:opacity 0.6s ease;
+    transition:opacity 1s ease;
 }
 
-.intro.hidden{
+.splash.hidden{
     opacity:0;
     pointer-events:none;
 }
 
-/* ---------- HANDY: ULTRA APP DESIGN ---------- */
+/* APP MENU */
+.menu-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.6);
+    display:none;
+    z-index:9998;
+}
+
+.menu-panel{
+    position:fixed;
+    right:-300px;
+    top:0;
+    width:300px;
+    height:100%;
+    background:#111a2d;
+    box-shadow:-4px 0 20px rgba(0,0,0,0.5);
+    padding:30px;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+    transition:0.4s;
+    z-index:9999;
+}
+
+.menu-panel.open{
+    right:0;
+}
+
+.menu-btn-item{
+    padding:20px;
+    background:#1f2937;
+    border-radius:20px;
+    color:white;
+    font-size:22px;
+    font-weight:600;
+    cursor:pointer;
+    text-align:center;
+}
+
+/* MOBILE BOOST */
 @media(max-width:600px){
-
-    .app{
-        width:100%;
-        height:100vh;
-        border-radius:0;
-        border:none;
-        box-shadow:none;
-    }
-
     .header{
         padding:32px;
         font-size:34px;
     }
-
-    .back-btn,
-    .menu-btn{
+    .back-btn, .menu-btn{
         padding:26px 34px;
         font-size:28px;
         border-radius:26px;
     }
-
-    .chat{
-        padding:32px;
-    }
-
-    .msg-row{
-        margin-bottom:40px;
-        gap:26px;
-    }
-
-    .msg-label{
-        font-size:24px;
-    }
-
     .msg-bubble{
-        max-width:90%;
+        font-size:30px;
         padding:32px 36px;
         border-radius:32px;
-        font-size:30px;
     }
-
-    .avatar{
-        width:80px;
-        height:80px;
-        font-size:40px;
-    }
-
-    .footer{
-        padding:32px;
-        gap:26px;
-    }
-
     #userInput{
-        padding:32px;
         font-size:30px;
-        border-radius:28px;
+        padding:32px;
+        border-radius:32px;
     }
-
     .send-btn{
         width:120px;
         height:120px;
         font-size:50px;
         border-radius:32px;
     }
-
-    .intro{
-        font-size:50px;
+    .avatar{
+        width:80px;
+        height:80px;
+        font-size:40px;
     }
 }
 </style>
 </head>
 <body>
 
-<!-- Intro -->
-<div id="intro" class="intro">
-    <div>Hallo!</div>
-    <div style="font-size:26px;opacity:0.7;margin-top:10px;">Febl industry KI wird geladen…</div>
+<!-- SPLASH SCREEN -->
+<div id="splash" class="splash">
+    <div style="font-size:60px;font-weight:700;">Febl</div>
+    <div style="font-size:26px;opacity:0.7;margin-top:10px;">industry KI wird geladen…</div>
+</div>
+
+<!-- APP MENU -->
+<div id="menuOverlay" class="menu-overlay"></div>
+<div id="menuPanel" class="menu-panel">
+    <div class="menu-btn-item">Startseite</div>
+    <div class="menu-btn-item">Über Febl</div>
+    <div class="menu-btn-item">Einstellungen</div>
+    <div class="menu-btn-item">Support</div>
 </div>
 
 <div class="app">
@@ -279,19 +302,34 @@ const API_KEY = "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";
 const MODEL   = "groq/compound-mini";
 const API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
-const chat = document.getElementById("chat");
-const input = document.getElementById("userInput");
-const sendBtn = document.getElementById("sendBtn");
+/* SPLASH SCREEN */
+setTimeout(()=>{
+    const splash=document.getElementById("splash");
+    splash.classList.add("hidden");
+    setTimeout(()=>splash.style.display="none",1000);
+},2000);
 
-/* Intro fix */
-setTimeout(() => {
-    const intro = document.getElementById("intro");
-    intro.classList.add("hidden");
-    setTimeout(() => intro.style.display="none", 600);
-}, 1500);
+/* MENU */
+const menuBtn=document.getElementById("menuBtn");
+const menuPanel=document.getElementById("menuPanel");
+const menuOverlay=document.getElementById("menuOverlay");
 
-/* Chat-Verlauf */
-let messages = JSON.parse(localStorage.getItem("feblChatHistory") || "[]");
+menuBtn.onclick=()=>{
+    menuPanel.classList.add("open");
+    menuOverlay.style.display="block";
+};
+
+menuOverlay.onclick=()=>{
+    menuPanel.classList.remove("open");
+    menuOverlay.style.display="none";
+};
+
+/* CHAT */
+const chat=document.getElementById("chat");
+const input=document.getElementById("userInput");
+const sendBtn=document.getElementById("sendBtn");
+
+let messages=JSON.parse(localStorage.getItem("feblChatHistory")||"[]");
 
 function systemMessage(){
     return {
@@ -300,7 +338,6 @@ function systemMessage(){
     };
 }
 
-/* Startnachricht */
 if(!messages.length){
     addMessage("ai","Hallo! Wie kann ich dir helfen?");
 }else{
