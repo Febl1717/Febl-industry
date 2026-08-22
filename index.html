@@ -87,7 +87,30 @@ font-size:16px;line-height:1.5;white-space:pre-wrap;
 .user-row{justify-content:flex-end}
 .user-row .msg-bubble{background:var(--user)}
 .ai-row .msg-bubble{background:var(--ai);border:1px solid rgba(255,255,255,.1)}
-.loading{opacity:.6;font-style:italic}
+
+/* NEW LOADING ANIMATION (NO TEXT) */
+.loading{
+display:flex;
+gap:6px;
+padding:12px 16px;
+background:var(--ai);
+border-radius:18px;
+width:40px;
+}
+.loading div{
+width:8px;height:8px;
+background:#fff;
+border-radius:50%;
+animation:load 0.8s infinite;
+}
+.loading div:nth-child(2){animation-delay:0.2s}
+.loading div:nth-child(3){animation-delay:0.4s}
+
+@keyframes load{
+0%{opacity:0.2;transform:scale(1)}
+50%{opacity:1;transform:scale(1.4)}
+100%{opacity:0.2;transform:scale(1)}
+}
 
 /* INPUT */
 .input-bar{
@@ -233,12 +256,13 @@ messages.push({role,content:text});
 renderMessage(role,text);
 }
 
+/* NEW LOADING WITHOUT TEXT */
 function loading(){
 const row=document.createElement("div");
 row.className="msg-row ai-row";
 const bubble=document.createElement("div");
-bubble.className="msg-bubble loading";
-bubble.textContent=t("Febl schreibt…","Febl is typing…");
+bubble.className="loading";
+bubble.innerHTML="<div></div><div></div><div></div>";
 row.id="loadingBubble";
 row.appendChild(bubble);
 chat.appendChild(row);
