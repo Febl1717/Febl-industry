@@ -2,233 +2,63 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Febl KI – App Style</title>
+<title>Febl KI</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif}
-
 :root{
-    --bg-main:#0a0b1f;
-    --bg-sidebar:#13143a;
-    --bg-header:#1a1b4a;
-    --bg-chat:#0a0b1f;
-    --bg-input:#1e1f4d;
-    --bg-bubble-ai:#1e1f4d;
-    --bg-bubble-user:#7c3aed;
-    --accent:#7c3aed;
-    --text-main:#ffffff;
-    --text-soft:#e9d5ff;
-}
-
-body.theme-purple{
-    --bg-main:#0a0b1f;
-    --bg-sidebar:#13143a;
-    --bg-header:#1a1b4a;
-    --bg-chat:#0a0b1f;
-    --bg-input:#1e1f4d;
-    --bg-bubble-ai:#1e1f4d;
-    --bg-bubble-user:#7c3aed;
-    --accent:#7c3aed;
-    --text-soft:#e9d5ff;
-}
-body.theme-blue{
-    --bg-main:#0b1120;
-    --bg-sidebar:#0f172a;
-    --bg-header:#1e293b;
-    --bg-chat:#020617;
-    --bg-input:#1f2937;
-    --bg-bubble-ai:#1e293b;
-    --bg-bubble-user:#3b82f6;
-    --accent:#3b82f6;
-    --text-soft:#e5e7eb;
-}
-body.theme-red{
-    --bg-main:#1a0b0b;
-    --bg-sidebar:#3b0f0f;
-    --bg-header:#4c1d1d;
-    --bg-chat:#1a0b0b;
-    --bg-input:#3f1f1f;
-    --bg-bubble-ai:#3f1f1f;
-    --bg-bubble-user:#ef4444;
-    --accent:#ef4444;
-    --text-soft:#fee2e2;
-}
-body.theme-green{
-    --bg-main:#022c22;
-    --bg-sidebar:#064e3b;
-    --bg-header:#065f46;
-    --bg-chat:#022c22;
-    --bg-input:#064e3b;
-    --bg-bubble-ai:#064e3b;
-    --bg-bubble-user:#22c55e;
-    --accent:#22c55e;
-    --text-soft:#bbf7d0;
-}
-body.theme-black{
-    --bg-main:#000000;
-    --bg-sidebar:#0a0a0a;
-    --bg-header:#111827;
-    --bg-chat:#000000;
-    --bg-input:#111827;
-    --bg-bubble-ai:#111827;
-    --bg-bubble-user:#3b82f6;
-    --accent:#3b82f6;
-    --text-soft:#e5e7eb;
-}
-
-body{
-    background:var(--bg-main);
-    height:100vh;
-    display:flex;
-    overflow:hidden;
-    color:var(--text-main);
-}
-
-.sidebar{
-    width:62px;
-    background:var(--bg-sidebar);
-    display:flex;
-    flex-direction:column;
-    padding:10px 6px;
-    gap:12px;
-}
-.sidebar-icon{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:10px;
-    background:#1e1f4d;
-    border-radius:12px;
-    cursor:pointer;
-}
-.sidebar-icon span{
-    font-size:22px;
-}
-
-.settings-panel{
-    position:fixed;
-    right:-260px;
-    top:0;
-    width:260px;
-    height:100%;
-    background:var(--bg-sidebar);
-    padding:20px;
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-    transition:0.3s;
-}
-.settings-panel.open{
-    right:0;
-}
-.settings-title{
-    font-size:20px;
-    font-weight:700;
-    color:var(--accent);
-}
-.settings-section-title{
-    font-size:14px;
-}
-.settings-select{
-    width:100%;
-    padding:8px;
-    border-radius:8px;
-    border:none;
-    background:#1e1f4d;
-    color:var(--text-main);
-}
-.settings-item{
-    padding:10px;
-    background:#1e1f4d;
-    border-radius:10px;
-    font-size:14px;
-    cursor:pointer;
-}
-
-.main{
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    height:100vh;
-}
-
-.header{
-    padding:16px 22px;
-    font-size:22px;
-    font-weight:700;
-    background:var(--bg-header);
-    color:var(--text-soft);
-}
-
-.chat{
-    flex:1;
-    padding:20px;
-    overflow-y:auto;
-    background:var(--bg-chat);
-}
-
-.msg-row{
-    margin-bottom:16px;
-    display:flex;
-}
-.msg-bubble{
-    max-width:80%;
-    padding:12px 16px;
-    border-radius:18px;
-    font-size:16px;
-    line-height:1.5;
-    white-space:pre-wrap;
-}
-.user-row{
-    justify-content:flex-end;
-}
-.user-row .msg-bubble{
-    background:var(--bg-bubble-user);
-}
-.ai-row .msg-bubble{
-    background:var(--bg-bubble-ai);
-    border:1px solid rgba(255,255,255,0.1);
-}
-
-.input-bar{
-    padding:10px 0;
-    display:flex;
-    justify-content:center;
-}
-.input-box{
-    width:94%;
-    background:var(--bg-input);
-    border:1px solid rgba(255,255,255,0.18);
-    padding:10px 16px;
-    border-radius:30px;
-    display:flex;
-    gap:10px;
-    align-items:center;
-}
-#userInput{
-    flex:1;
-    background:transparent;
-    border:none;
-    outline:none;
-    color:var(--text-main);
-    font-size:18px;
-}
-.send-btn{
-    width:44px;
-    height:44px;
-    background:var(--accent);
-    border:none;
-    border-radius:50%;
-    color:var(--text-main);
-    font-size:22px;
-    cursor:pointer;
-}
+--bg-main:#0a0b1f;--bg-sidebar:#13143a;--bg-header:#1a1b4a;--bg-chat:#0a0b1f;
+--bg-input:#1e1f4d;--bg-bubble-ai:#1e1f4d;--bg-bubble-user:#7c3aed;
+--accent:#7c3aed;--text-main:#fff;--text-soft:#e9d5ff}
+body.theme-purple{}
+body.theme-blue{--bg-main:#0b1120;--bg-sidebar:#0f172a;--bg-header:#1e293b;
+--bg-chat:#020617;--bg-input:#1f2937;--bg-bubble-ai:#1e293b;--bg-bubble-user:#3b82f6;
+--accent:#3b82f6;--text-soft:#e5e7eb}
+body.theme-red{--bg-main:#1a0b0b;--bg-sidebar:#3b0f0f;--bg-header:#4c1d1d;
+--bg-chat:#1a0b0b;--bg-input:#3f1f1f;--bg-bubble-ai:#3f1f1f;--bg-bubble-user:#ef4444;
+--accent:#ef4444;--text-soft:#fee2e2}
+body.theme-green{--bg-main:#022c22;--bg-sidebar:#064e3b;--bg-header:#065f46;
+--bg-chat:#022c22;--bg-input:#064e3b;--bg-bubble-ai:#064e3b;--bg-bubble-user:#22c55e;
+--accent:#22c55e;--text-soft:#bbf7d0}
+body.theme-black{--bg-main:#000;--bg-sidebar:#0a0a0a;--bg-header:#111827;
+--bg-chat:#000;--bg-input:#111827;--bg-bubble-ai:#111827;--bg-bubble-user:#3b82f6;
+--accent:#3b82f6;--text-soft:#e5e7eb}
+body{background:var(--bg-main);height:100vh;display:flex;overflow:hidden;color:var(--text-main)}
+.sidebar{width:62px;background:var(--bg-sidebar);display:flex;flex-direction:column;padding:10px 6px;gap:12px;transition:.3s}
+.sidebar:hover{width:200px}
+.sidebar-icon{display:flex;align-items:center;gap:10px;padding:10px;background:#1e1f4d;border-radius:12px;cursor:pointer;white-space:nowrap;overflow:hidden}
+.sidebar-icon span{font-size:22px}
+.sidebar-text{opacity:0;transition:.3s}
+.sidebar:hover .sidebar-text{opacity:1}
+.settings-panel{position:fixed;right:-260px;top:0;width:260px;height:100%;background:var(--bg-sidebar);padding:20px;display:flex;flex-direction:column;gap:12px;transition:.3s;z-index:999}
+.settings-panel.open{right:0}
+.settings-title{font-size:20px;font-weight:700;color:var(--accent)}
+.settings-section-title{font-size:14px}
+.settings-select{width:100%;padding:8px;border-radius:8px;border:none;background:#1e1f4d;color:var(--text-main)}
+.settings-item{padding:10px;background:#1e1f4d;border-radius:10px;font-size:14px;cursor:pointer}
+.main{flex:1;display:flex;flex-direction:column;height:100vh}
+.header{padding:16px 22px;font-size:22px;font-weight:700;background:var(--bg-header);color:var(--text-soft)}
+.chat{flex:1;padding:20px;overflow-y:auto;background:var(--bg-chat)}
+.msg-row{margin-bottom:16px;display:flex}
+.msg-bubble{max-width:80%;padding:12px 16px;border-radius:18px;font-size:16px;line-height:1.5;white-space:pre-wrap}
+.user-row{justify-content:flex-end}
+.user-row .msg-bubble{background:var(--bg-bubble-user)}
+.ai-row .msg-bubble{background:var(--bg-bubble-ai);border:1px solid rgba(255,255,255,.1)}
+.loading{opacity:.6;font-style:italic}
+.input-bar{padding:10px 0;display:flex;justify-content:center}
+.input-box{width:94%;background:var(--bg-input);border:1px solid rgba(255,255,255,.18);padding:10px 16px;border-radius:30px;display:flex;gap:10px;align-items:center}
+#userInput{flex:1;background:transparent;border:none;outline:none;color:var(--text-main);font-size:18px}
+.send-btn{width:44px;height:44px;background:var(--accent);border:none;border-radius:50%;color:var(--text-main);font-size:22px;cursor:pointer}
 </style>
 </head>
 
 <body class="theme-purple">
 
 <div class="sidebar">
-    <div class="sidebar-icon" data-action="settings"><span>⚙️</span></div>
+    <div class="sidebar-icon" data-action="home"><span>🏠</span><p class="sidebar-text">Home</p></div>
+    <div class="sidebar-icon" data-action="about"><span>👤</span><p class="sidebar-text">Über Febl</p></div>
+    <div class="sidebar-icon" data-action="support"><span>💬</span><p class="sidebar-text">Support</p></div>
+    <div class="sidebar-icon" data-action="clear"><span>🗑️</span><p class="sidebar-text">Chat löschen</p></div>
+    <div class="sidebar-icon" data-action="settings"><span>⚙️</span><p class="sidebar-text">Einstellungen</p></div>
 </div>
 
 <div id="settingsPanel" class="settings-panel">
@@ -243,8 +73,11 @@ body{
         <option value="black">Schwarz</option>
     </select>
 
-    <div class="settings-section-title">Aktionen</div>
-    <div class="settings-item" id="clearChat">Chat löschen</div>
+    <div class="settings-section-title">Sprache</div>
+    <select id="langSelect" class="settings-select">
+        <option value="de">Deutsch</option>
+        <option value="en">English</option>
+    </select>
 </div>
 
 <div class="main">
@@ -260,93 +93,104 @@ body{
 </div>
 
 <script>
-const API_KEY = "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";
-const MODEL = "groq/compound-mini";
+const API_KEY = "DEIN_API_KEY_HIER";
+const MODEL = "llama-3.1-70b-versatile";
 const API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
-const chat = document.getElementById("chat");
-const input = document.getElementById("userInput");
-const sendBtn = document.getElementById("sendBtn");
-const settingsPanel = document.getElementById("settingsPanel");
-const themeSelect = document.getElementById("themeSelect");
-const clearChatBtn = document.getElementById("clearChat");
+const chat=document.getElementById("chat");
+const input=document.getElementById("userInput");
+const sendBtn=document.getElementById("sendBtn");
+const settingsPanel=document.getElementById("settingsPanel");
+const themeSelect=document.getElementById("themeSelect");
+const langSelect=document.getElementById("langSelect");
 
-let messages = [];
+let lang="de";
+let messages=[];
 
-function renderMessage(role, text){
-    const row = document.createElement("div");
-    row.className = "msg-row " + (role === "user" ? "user-row" : "ai-row");
-    const bubble = document.createElement("div");
-    bubble.className = "msg-bubble";
-    bubble.textContent = text;
-    row.appendChild(bubble);
-    chat.appendChild(row);
-    chat.scrollTop = chat.scrollHeight;
+function t(de,en){return lang==="de"?de:en}
+
+function renderMessage(role,text){
+const row=document.createElement("div");
+row.className="msg-row "+(role==="user"?"user-row":"ai-row");
+const bubble=document.createElement("div");
+bubble.className="msg-bubble";
+bubble.textContent=text;
+row.appendChild(bubble);
+chat.appendChild(row);
+chat.scrollTop=chat.scrollHeight;
 }
 
-function addMessage(role, text){
-    messages.push({ role, content: text });
-    renderMessage(role, text);
+function addMessage(role,text){
+messages.push({role,content:text});
+renderMessage(role,text);
 }
 
-addMessage("ai", "Hallo Felix! Wie kann ich dir helfen?");
+function loading(){
+const row=document.createElement("div");
+row.className="msg-row ai-row";
+const bubble=document.createElement("div");
+bubble.className="msg-bubble loading";
+bubble.textContent=t("Febl schreibt…","Febl is typing…");
+row.id="loadingBubble";
+row.appendChild(bubble);
+chat.appendChild(row);
+chat.scrollTop=chat.scrollHeight;
+}
+
+function removeLoading(){
+const el=document.getElementById("loadingBubble");
+if(el)el.remove();
+}
+
+addMessage("ai",t("Hallo Felix! Wie kann ich dir helfen?","Hello Felix! How can I help you?"));
 
 async function sendToAI(text){
-    const history = [
-        { role: "system", content: "Du antwortest freundlich, klar und hilfst dem Nutzer." },
-        ...messages.slice(-10),
-        { role: "user", content: text }
-    ];
-
-    const res = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + API_KEY
-        },
-        body: JSON.stringify({
-            model: MODEL,
-            messages: history
-        })
-    });
-
-    const data = await res.json();
-    const answer = data.choices[0].message.content;
-    addMessage("ai", answer);
+loading();
+const history=[
+{role:"system",content:t("Du antwortest freundlich und hilfst dem Nutzer.","You answer friendly and help the user.")},
+...messages.slice(-10),
+{role:"user",content:text}
+];
+const res=await fetch(API_URL,{
+method:"POST",
+headers:{"Content-Type":"application/json","Authorization":"Bearer "+API_KEY},
+body:JSON.stringify({model:MODEL,messages:history})
+});
+const data=await res.json();
+removeLoading();
+addMessage("ai",data.choices[0].message.content);
 }
 
 function send(){
-    const text = input.value.trim();
-    if (!text) return;
-    input.value = "";
-    addMessage("user", text);
-    sendToAI(text);
+const text=input.value.trim();
+if(!text)return;
+input.value="";
+addMessage("user",text);
+sendToAI(text);
 }
 
-sendBtn.onclick = send;
-input.onkeydown = e => {
-    if (e.key === "Enter") send();
-};
+sendBtn.onclick=send;
+input.onkeydown=e=>{if(e.key==="Enter")send()};
 
-document.querySelectorAll(".sidebar-icon").forEach(icon => {
-    icon.onclick = () => {
-        const action = icon.dataset.action;
-        if (action === "settings") {
-            settingsPanel.classList.toggle("open");
-        }
-    };
+document.querySelectorAll(".sidebar-icon").forEach(icon=>{
+icon.onclick=()=>{
+const a=icon.dataset.action;
+if(a==="home")window.location.href="https://febl-industry-3.jimdosite.com/";
+if(a==="about")window.location.href="https://febl-industry-3.jimdosite.com/ueber-mich/";
+if(a==="support")window.location.href="https://febl-industry-3.jimdosite.com/kontakt/";
+if(a==="clear"){messages=[];chat.innerHTML="";addMessage("ai",t("Chat gelöscht.","Chat cleared."))}
+if(a==="settings")settingsPanel.classList.toggle("open");
+};
 });
 
-themeSelect.onchange = e => {
-    const theme = e.target.value;
-    document.body.className = "theme-" + theme;
-};
+themeSelect.onchange=e=>document.body.className="theme-"+e.target.value;
+langSelect.onchange=e=>{lang=e.target.value};
 
-clearChatBtn.onclick = () => {
-    messages = [];
-    chat.innerHTML = "";
-    addMessage("ai", "Chat gelöscht. Neuer Start.");
+document.body.onclick=e=>{
+if(!e.target.closest(".settings-panel")&&!e.target.closest(".sidebar-icon"))
+settingsPanel.classList.remove("open");
 };
 </script>
+
 </body>
 </html>
