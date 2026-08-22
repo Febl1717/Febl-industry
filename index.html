@@ -112,44 +112,81 @@ animation:load 0.8s infinite;
 100%{opacity:0.2;transform:scale(1)}
 }
 
-/* INPUT */
+/* FLOATING INPUT BAR + GLOW */
 .input-bar{
-padding:10px 0;
+padding:12px 0;
 display:flex;
 justify-content:center;
-background:var(--c1);
+background:transparent;
 position:sticky;
-bottom:0;
+bottom:12px;
+z-index:50;
 }
+
 .input-box{
-width:94%;
+width:90%;
 background:var(--c4);
 border:1px solid rgba(255,255,255,.18);
-padding:10px 16px;
-border-radius:30px;
+padding:8px 18px;
+border-radius:32px 32px 22px 22px;
 display:flex;
 gap:10px;
 align-items:center;
+box-shadow:0 6px 22px rgba(0,0,0,0.45);
+transition:0.25s;
 }
+
+/* Glow beim Tippen */
+.input-box:focus-within{
+box-shadow:0 0 18px var(--accent), 0 6px 22px rgba(0,0,0,0.45);
+transform:scale(1.02);
+}
+
 #userInput{
-flex:1;background:transparent;border:none;outline:none;
-color:var(--t1);font-size:18px;
+flex:1;
+background:transparent;
+border:none;
+outline:none;
+color:var(--t1);
+font-size:18px;
+padding:6px 0;
+transition:0.15s;
 }
+
+#userInput:focus{
+transform:scale(1.03);
+}
+
+/* SEND BUTTON */
 .send-btn{
-width:44px;height:44px;background:var(--accent);
-border:none;border-radius:50%;color:var(--t1);
-font-size:22px;cursor:pointer;
+width:44px;height:44px;
+background:var(--accent);
+border:none;border-radius:50%;
+color:var(--t1);
+font-size:22px;
+cursor:pointer;
+transition:0.25s;
+}
+
+.send-btn:hover{
+transform:scale(1.1);
 }
 
 /* MOBILE */
 @media(max-width:600px){
-.sidebar{width:58px}
-.sidebar:hover{width:58px}
-.sidebar-text{display:none}
-.msg-bubble{font-size:15px}
-#userInput{font-size:16px}
-.send-btn{width:40px;height:40px;font-size:20px}
-.input-bar{padding:12px 0}
+.input-box{
+width:94%;
+padding:10px 20px;
+border-radius:36px 36px 26px 26px;
+}
+#userInput{
+font-size:20px;
+padding:8px 0;
+}
+.send-btn{
+width:52px;height:52px;
+font-size:26px;
+}
 }
 </style>
 </head>
@@ -274,10 +311,10 @@ const el=document.getElementById("loadingBubble");
 if(el)el.remove();
 }
 
-/* Startnachricht als assistant */
+/* Startnachricht */
 addMessage("assistant",t("Hallo Felix! Wie kann ich dir helfen?","Hello Felix! How can I help you?"));
 
-/* KI ANTWORTET IMMER – AUCH BEI FEHLER */
+/* KI ANTWORTET IMMER */
 async function sendToAI(text){
 loading();
 
@@ -306,19 +343,15 @@ top_p:1
 const data=await res.json();
 removeLoading();
 
-/* Wenn API Fehler zurückgibt → trotzdem antworten */
 if(data.error){
 addMessage("assistant","⚠️ Fehler: "+data.error.message);
 return;
 }
 
-/* Normale Antwort */
 addMessage("assistant",data.choices[0].message.content);
 
 }catch(err){
 removeLoading();
-
-/* Wenn Fetch komplett scheitert → trotzdem antworten */
 addMessage("assistant","⚠️ Netzwerkfehler: "+err.message);
 }
 }
