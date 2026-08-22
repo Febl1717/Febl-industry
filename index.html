@@ -2,14 +2,10 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Febl KI – Mobile App Style</title>
-
+<title>Febl KI – App Style</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif}
 
-/* ===========================
-   THEMES (FIXED)
-=========================== */
 :root{
     --bg-main:#0a0b1f;
     --bg-sidebar:#13143a;
@@ -19,13 +15,22 @@
     --bg-bubble-ai:#1e1f4d;
     --bg-bubble-user:#7c3aed;
     --accent:#7c3aed;
-    --accent-soft:#9d4edd;
     --text-main:#ffffff;
     --text-soft:#e9d5ff;
 }
 
-/* BLUE */
-.theme-blue{
+body.theme-purple{
+    --bg-main:#0a0b1f;
+    --bg-sidebar:#13143a;
+    --bg-header:#1a1b4a;
+    --bg-chat:#0a0b1f;
+    --bg-input:#1e1f4d;
+    --bg-bubble-ai:#1e1f4d;
+    --bg-bubble-user:#7c3aed;
+    --accent:#7c3aed;
+    --text-soft:#e9d5ff;
+}
+body.theme-blue{
     --bg-main:#0b1120;
     --bg-sidebar:#0f172a;
     --bg-header:#1e293b;
@@ -34,13 +39,9 @@
     --bg-bubble-ai:#1e293b;
     --bg-bubble-user:#3b82f6;
     --accent:#3b82f6;
-    --accent-soft:#60a5fa;
-    --text-main:#ffffff;
     --text-soft:#e5e7eb;
 }
-
-/* RED */
-.theme-red{
+body.theme-red{
     --bg-main:#1a0b0b;
     --bg-sidebar:#3b0f0f;
     --bg-header:#4c1d1d;
@@ -49,13 +50,9 @@
     --bg-bubble-ai:#3f1f1f;
     --bg-bubble-user:#ef4444;
     --accent:#ef4444;
-    --accent-soft:#f97373;
-    --text-main:#ffffff;
     --text-soft:#fee2e2;
 }
-
-/* GREEN */
-.theme-green{
+body.theme-green{
     --bg-main:#022c22;
     --bg-sidebar:#064e3b;
     --bg-header:#065f46;
@@ -64,13 +61,9 @@
     --bg-bubble-ai:#064e3b;
     --bg-bubble-user:#22c55e;
     --accent:#22c55e;
-    --accent-soft:#4ade80;
-    --text-main:#ecfdf5;
     --text-soft:#bbf7d0;
 }
-
-/* BLACK */
-.theme-black{
+body.theme-black{
     --bg-main:#000000;
     --bg-sidebar:#0a0a0a;
     --bg-header:#111827;
@@ -79,70 +72,78 @@
     --bg-bubble-ai:#111827;
     --bg-bubble-user:#3b82f6;
     --accent:#3b82f6;
-    --accent-soft:#60a5fa;
-    --text-main:#f9fafb;
     --text-soft:#e5e7eb;
 }
 
-/* ===========================
-   BODY (Mobile Safe Area)
-=========================== */
 body{
     background:var(--bg-main);
     height:100vh;
     display:flex;
     overflow:hidden;
     color:var(--text-main);
-    padding-bottom:env(safe-area-inset-bottom);
 }
 
-/* ===========================
-   SIDEBAR (Mobile Optimiert)
-=========================== */
 .sidebar{
     width:62px;
     background:var(--bg-sidebar);
-    border-right:1px solid rgba(255,255,255,0.08);
     display:flex;
     flex-direction:column;
     padding:10px 6px;
     gap:12px;
-    transition:0.3s;
-}
-.sidebar:hover{
-    width:200px;
 }
 .sidebar-icon{
     display:flex;
     align-items:center;
-    gap:10px;
+    justify-content:center;
     padding:10px;
     background:#1e1f4d;
     border-radius:12px;
     cursor:pointer;
-    transition:0.25s;
-    overflow:hidden;
-    white-space:nowrap;
 }
 .sidebar-icon span{
     font-size:22px;
 }
-.sidebar-icon:hover{
-    background:var(--accent);
-    transform:translateX(6px);
-}
-.sidebar-text{
-    opacity:0;
-    font-size:14px;
+
+.settings-panel{
+    position:fixed;
+    right:-260px;
+    top:0;
+    width:260px;
+    height:100%;
+    background:var(--bg-sidebar);
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
     transition:0.3s;
 }
-.sidebar:hover .sidebar-text{
-    opacity:1;
+.settings-panel.open{
+    right:0;
+}
+.settings-title{
+    font-size:20px;
+    font-weight:700;
+    color:var(--accent);
+}
+.settings-section-title{
+    font-size:14px;
+}
+.settings-select{
+    width:100%;
+    padding:8px;
+    border-radius:8px;
+    border:none;
+    background:#1e1f4d;
+    color:var(--text-main);
+}
+.settings-item{
+    padding:10px;
+    background:#1e1f4d;
+    border-radius:10px;
+    font-size:14px;
+    cursor:pointer;
 }
 
-/* ===========================
-   MAIN
-=========================== */
 .main{
     flex:1;
     display:flex;
@@ -150,234 +151,90 @@ body{
     height:100vh;
 }
 
-/* ===========================
-   HEADER (ChatGPT Style)
-=========================== */
 .header{
     padding:16px 22px;
     font-size:22px;
     font-weight:700;
     background:var(--bg-header);
-    border-bottom:1px solid rgba(255,255,255,0.1);
     color:var(--text-soft);
-    position:sticky;
-    top:0;
-    z-index:20;
 }
 
-/* ===========================
-   CHAT (Mobile Optimiert)
-=========================== */
 .chat{
     flex:1;
     padding:20px;
     overflow-y:auto;
-    scroll-behavior:smooth;
+    background:var(--bg-chat);
 }
 
-/* Bubble Animation */
-@keyframes bubbleIn{
-    from{
-        opacity:0;
-        transform:translateY(14px);
-    }
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
-
-/* Bubbles */
 .msg-row{
-    margin-bottom:20px;
+    margin-bottom:16px;
     display:flex;
-    align-items:flex-start;
-    gap:12px;
-    animation:bubbleIn 0.35s ease;
 }
 .msg-bubble{
     max-width:80%;
-    padding:14px 18px;
+    padding:12px 16px;
     border-radius:18px;
-    font-size:17px;
-    line-height:1.6;
+    font-size:16px;
+    line-height:1.5;
     white-space:pre-wrap;
 }
 .user-row{
-    flex-direction:row-reverse;
+    justify-content:flex-end;
 }
 .user-row .msg-bubble{
     background:var(--bg-bubble-user);
-    color:var(--text-main);
 }
 .ai-row .msg-bubble{
     background:var(--bg-bubble-ai);
     border:1px solid rgba(255,255,255,0.1);
 }
 
-/* ===========================
-   FLOATING INPUT BAR (ChatGPT Style)
-=========================== */
 .input-bar{
-    padding:0;
-    background:transparent;
+    padding:10px 0;
     display:flex;
     justify-content:center;
-    position:sticky;
-    bottom:12px;
-    z-index:50;
 }
-
-/* Schwebende Leiste */
 .input-box{
     width:94%;
     background:var(--bg-input);
     border:1px solid rgba(255,255,255,0.18);
-    box-shadow:0 6px 22px rgba(0,0,0,0.45);
-    padding:14px 22px;
-    border-radius:40px;
+    padding:10px 16px;
+    border-radius:30px;
     display:flex;
-    gap:12px;
+    gap:10px;
     align-items:center;
-    transition:0.25s;
 }
-.input-box:focus-within{
-    box-shadow:0 0 18px var(--accent), 0 6px 22px rgba(0,0,0,0.45);
-}
-
 #userInput{
     flex:1;
     background:transparent;
     border:none;
     outline:none;
     color:var(--text-main);
-    font-size:20px;
-    padding:10px 0;
-    transition:0.15s;
+    font-size:18px;
 }
-#userInput:focus{
-    transform:scale(1.015);
-}
-
-/* SEND BUTTON + RIPPLE */
 .send-btn{
-    width:56px;
-    height:56px;
+    width:44px;
+    height:44px;
     background:var(--accent);
     border:none;
     border-radius:50%;
     color:var(--text-main);
-    font-size:26px;
-    cursor:pointer;
-    position:relative;
-    overflow:hidden;
-    transition:0.25s;
-}
-.send-btn:hover{
-    background:var(--accent-soft);
-    transform:scale(1.08);
-}
-.send-btn::after{
-    content:"";
-    position:absolute;
-    width:10px;
-    height:10px;
-    background:white;
-    opacity:0.4;
-    border-radius:50%;
-    transform:scale(1);
-    pointer-events:none;
-    transition:0.4s;
-}
-.send-btn:active::after{
-    transform:scale(12);
-    opacity:0;
-}
-
-/* ===========================
-   SETTINGS PANEL
-=========================== */
-.settings-panel{
-    position:fixed;
-    right:-340px;
-    top:0;
-    width:340px;
-    height:100%;
-    background:var(--bg-sidebar);
-    box-shadow:-4px 0 20px rgba(0,0,0,0.5);
-    padding:24px;
-    display:flex;
-    flex-direction:column;
-    gap:16px;
-    transition:0.4s;
-    z-index:9999;
-}
-.settings-panel.open{
-    right:0;
-}
-.settings-title{
     font-size:22px;
-    font-weight:700;
-    color:var(--accent);
-}
-.settings-section-title{
-    font-size:16px;
-    margin-top:8px;
-    margin-bottom:4px;
-}
-.settings-select{
-    width:100%;
-    padding:10px;
-    border-radius:10px;
-    border:none;
-    background:#1e1f4d;
-    color:var(--text-main);
-    font-size:15px;
-}
-.settings-item{
-    padding:12px;
-    background:#1e1f4d;
-    border-radius:14px;
-    font-size:16px;
     cursor:pointer;
-    transition:0.25s;
-    margin-bottom:6px;
-}
-.settings-item:hover{
-    background:var(--accent);
 }
 </style>
 </head>
 
 <body class="theme-purple">
 
-<!-- SIDEBAR -->
 <div class="sidebar">
-    <div class="sidebar-icon" data-action="home"><span>🏠</span><p class="sidebar-text">Startseite</p></div>
-    <div class="sidebar-icon" data-action="about"><span>👤</span><p class="sidebar-text">Über Febl</p></div>
-    <div class="sidebar-icon" data-action="support"><span>💬</span><p class="sidebar-text">Support</p></div>
-    <div class="sidebar-icon" data-action="settings"><span>⚙️</span><p class="sidebar-text">Einstellungen</p></div>
+    <div class="sidebar-icon" data-action="settings"><span>⚙️</span></div>
 </div>
 
-<!-- SETTINGS PANEL -->
 <div id="settingsPanel" class="settings-panel">
-    <div class="settings-title" id="txt_settings_title">KI Einstellungen</div>
+    <div class="settings-title">Einstellungen</div>
 
-    <div class="settings-section-title" id="txt_style_title">Antwort‑Stil</div>
-    <select id="styleSelect" class="settings-select">
-        <option value="normal">Normal</option>
-        <option value="kurz">Kurz</option>
-        <option value="ausführlich">Ausführlich</option>
-        <option value="kreativ">Kreativ</option>
-    </select>
-
-    <div class="settings-section-title" id="txt_lang_title">Sprache</div>
-    <select id="langSelect" class="settings-select">
-        <option value="de">Deutsch</option>
-        <option value="en">English</option>
-    </select>
-
-    <div class="settings-section-title" id="txt_theme_title">Theme</div>
+    <div class="settings-section-title">Theme</div>
     <select id="themeSelect" class="settings-select">
         <option value="purple">Lila</option>
         <option value="blue">Blau</option>
@@ -386,374 +243,110 @@ body{
         <option value="black">Schwarz</option>
     </select>
 
-    <div class="settings-section-title" id="txt_actions_title">Aktionen</div>
-    <div class="settings-item" id="txt_clear_chat">Chat‑Verlauf löschen</div>
+    <div class="settings-section-title">Aktionen</div>
+    <div class="settings-item" id="clearChat">Chat löschen</div>
 </div>
 
-<!-- MAIN -->
 <div class="main">
-    <div class="header" id="txt_header">Chat</div>
+    <div class="header">Febl KI</div>
     <div class="chat" id="chat"></div>
 
     <div class="input-bar">
         <div class="input-box">
-            <input id="userInput" type="text" placeholder="Nachricht eingeben …">
+            <input id="userInput" type="text" placeholder="Nachricht eingeben…">
             <button class="send-btn" id="sendBtn">➤</button>
         </div>
     </div>
 </div>
-/* API CONFIG */
+
+<script>
 const API_KEY = "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";
-const MODEL   = "groq/compound-mini";
+const MODEL = "groq/compound-mini";
 const API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
-/* ELEMENTE */
 const chat = document.getElementById("chat");
 const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 const settingsPanel = document.getElementById("settingsPanel");
-const inputBar = document.querySelector(".input-bar");
+const themeSelect = document.getElementById("themeSelect");
+const clearChatBtn = document.getElementById("clearChat");
 
-/* STATE */
-let messages = JSON.parse(localStorage.getItem("feblChatHistory") || "[]");
-let answerStyle = localStorage.getItem("feblStyle") || "normal";
-let answerLang = localStorage.getItem("feblLang") || "de";
-let currentTheme = localStorage.getItem("feblTheme") || "purple";
+let messages = [];
 
-/* INIT SETTINGS */
-document.getElementById("styleSelect").value = answerStyle;
-document.getElementById("langSelect").value = answerLang;
-document.getElementById("themeSelect").value = currentTheme;
-
-/* APPLY SETTINGS */
-applyTheme(currentTheme);
-applyLanguage(answerLang);
-
-/* ===========================
-   SIDEBAR ACTIONS
-=========================== */
-document.querySelectorAll(".sidebar-icon").forEach(icon => {
-    icon.onclick = () => {
-        const action = icon.dataset.action;
-
-        if(action === "home")
-            window.location.href = "https://febl-industry-3.jimdosite.com/";
-
-        if(action === "about")
-            window.location.href = "https://febl-industry-3.jimdosite.com/ueber-mich/";
-
-        if(action === "support")
-            window.location.href = "https://febl-industry-3.jimdosite.com/kontakt/";
-
-        if(action === "settings")
-            openSettings();
-    };
-});
-
-/* ===========================
-   SETTINGS PANEL
-=========================== */
-function openSettings(){
-    settingsPanel.classList.add("open");
-}
-
-document.body.addEventListener("click", e => {
-    if(!e.target.closest(".settings-panel") && !e.target.closest(".sidebar-icon")){
-        settingsPanel.classList.remove("open");
-    }
-});
-
-/* ===========================
-   SETTINGS CHANGE
-=========================== */
-document.getElementById("styleSelect").onchange = e => {
-    answerStyle = e.target.value;
-    localStorage.setItem("feblStyle", answerStyle);
-};
-
-document.getElementById("langSelect").onchange = e => {
-    answerLang = e.target.value;
-    localStorage.setItem("feblLang", answerLang);
-    applyLanguage(answerLang);
-};
-
-document.getElementById("themeSelect").onchange = e => {
-    currentTheme = e.target.value;
-    localStorage.setItem("feblTheme", currentTheme);
-    applyTheme(currentTheme);
-};
-
-/* ===========================
-   LANGUAGE SYSTEM
-=========================== */
-function applyLanguage(lang){
-    if(lang === "de"){
-        document.getElementById("txt_header").textContent = "Chat";
-        document.getElementById("txt_settings_title").textContent = "KI Einstellungen";
-        document.getElementById("txt_style_title").textContent = "Antwort‑Stil";
-        document.getElementById("txt_lang_title").textContent = "Sprache";
-        document.getElementById("txt_theme_title").textContent = "Theme";
-        document.getElementById("txt_actions_title").textContent = "Aktionen";
-        document.getElementById("txt_clear_chat").textContent = "Chat‑Verlauf löschen";
-        input.placeholder = "Nachricht eingeben …";
-
-        document.querySelector('[data-action="home"] .sidebar-text').textContent = "Startseite";
-        document.querySelector('[data-action="about"] .sidebar-text').textContent = "Über Febl";
-        document.querySelector('[data-action="support"] .sidebar-text').textContent = "Support";
-        document.querySelector('[data-action="settings"] .sidebar-text').textContent = "Einstellungen";
-    }
-
-    if(lang === "en"){
-        document.getElementById("txt_header").textContent = "Chat";
-        document.getElementById("txt_settings_title").textContent = "AI Settings";
-        document.getElementById("txt_style_title").textContent = "Response Style";
-        document.getElementById("txt_lang_title").textContent = "Language";
-        document.getElementById("txt_theme_title").textContent = "Theme";
-        document.getElementById("txt_actions_title").textContent = "Actions";
-        document.getElementById("txt_clear_chat").textContent = "Clear Chat";
-        input.placeholder = "Type a message…";
-
-        document.querySelector('[data-action="home"] .sidebar-text').textContent = "Home";
-        document.querySelector('[data-action="about"] .sidebar-text').textContent = "About Febl";
-        document.querySelector('[data-action="support"] .sidebar-text').textContent = "Support";
-        document.querySelector('[data-action="settings"] .sidebar-text').textContent = "Settings";
-    }
-}
-
-/* ===========================
-   THEME SYSTEM (FIXED)
-=========================== */
-function applyTheme(theme){
-    const body = document.body;
-    body.classList.remove("theme-blue","theme-purple","theme-red","theme-green","theme-black");
-    body.classList.add("theme-" + theme);
-}
-    /* ===========================
-   BLOCK B — CHAT + API + ANIMATION
-=========================== */
-
-/* SYSTEM MESSAGE (Stil + Sprache) */
-function systemMessage(){
-    let styleText = "";
-
-    if(answerStyle === "kurz")
-        styleText = answerLang==="de" ? "Antworte kurz und knapp." : "Answer briefly and concisely.";
-
-    if(answerStyle === "ausführlich")
-        styleText = answerLang==="de" ? "Antworte ausführlich und detailliert." : "Answer in a detailed and extensive way.";
-
-    if(answerStyle === "kreativ")
-        styleText = answerLang==="de" ? "Antworte kreativ und locker." : "Answer creatively and casually.";
-
-    let langText = answerLang==="de"
-        ? "Du antwortest IMMER auf Deutsch und verwendest keine Namen."
-        : "You ALWAYS answer in English and do not use names.";
-
-    return {
-        role:"system",
-        content:`${langText} ${styleText}`
-    };
-}
-
-/* ===========================
-   CHAT INIT
-=========================== */
-if(!messages.length){
-    addMessage("ai", answerLang==="de" ? "Hallo! Wie kann ich dir helfen?" : "Hi! How can I help you?");
-}else{
-    messages.forEach(m => renderMessage(m.role==="user" ? "user" : "ai", m.content));
-}
-
-/* ===========================
-   MESSAGE HANDLING
-=========================== */
-function addMessage(role, text){
-    messages.push({
-        role: role === "user" ? "user" : "assistant",
-        content: text
-    });
-
-    localStorage.setItem("feblChatHistory", JSON.stringify(messages));
-    renderMessage(role, text);
-}
-
-/* ===========================
-   RENDER BUBBLE (mit Animation)
-=========================== */
 function renderMessage(role, text){
     const row = document.createElement("div");
     row.className = "msg-row " + (role === "user" ? "user-row" : "ai-row");
-
     const bubble = document.createElement("div");
     bubble.className = "msg-bubble";
     bubble.textContent = text;
-
     row.appendChild(bubble);
     chat.appendChild(row);
-
     chat.scrollTop = chat.scrollHeight;
 }
 
-/* ===========================
-   API CALL
-=========================== */
-async function sendToAPI(userText){
-    const history = [
-        systemMessage(),
-        ...messages.slice(-10),
-        {role:"user", content:userText}
-    ];
-
-    try{
-        const res = await fetch(API_URL,{
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json",
-                "Authorization":`Bearer ${API_KEY}`
-            },
-            body:JSON.stringify({
-                model:MODEL,
-                messages:history
-            })
-        });
-
-        const data = await res.json();
-
-        if(!res.ok){
-            addMessage("ai","API‑Fehler:\n" + JSON.stringify(data,null,2));
-            return;
-        }
-
-        addMessage("ai", data.choices[0].message.content);
-
-    }catch(e){
-        addMessage("ai","Fehler:\n" + e.message);
-    }
+function addMessage(role, text){
+    messages.push({ role, content: text });
+    renderMessage(role, text);
 }
 
-/* ===========================
-   SEND MESSAGE
-=========================== */
+addMessage("ai", "Hallo Felix! Wie kann ich dir helfen?");
+
+async function sendToAI(text){
+    const history = [
+        { role: "system", content: "Du antwortest freundlich, klar und hilfst dem Nutzer." },
+        ...messages.slice(-10),
+        { role: "user", content: text }
+    ];
+
+    const res = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + API_KEY
+        },
+        body: JSON.stringify({
+            model: MODEL,
+            messages: history
+        })
+    });
+
+    const data = await res.json();
+    const answer = data.choices[0].message.content;
+    addMessage("ai", answer);
+}
+
 function send(){
     const text = input.value.trim();
-    if(!text) return;
-
+    if (!text) return;
     input.value = "";
     addMessage("user", text);
-    sendToAPI(text);
+    sendToAI(text);
 }
 
 sendBtn.onclick = send;
 input.onkeydown = e => {
-    if(e.key === "Enter") send();
+    if (e.key === "Enter") send();
 };
 
-/* ===========================
-   CLEAR CHAT
-=========================== */
-document.getElementById("txt_clear_chat").onclick = clearChat;
+document.querySelectorAll(".sidebar-icon").forEach(icon => {
+    icon.onclick = () => {
+        const action = icon.dataset.action;
+        if (action === "settings") {
+            settingsPanel.classList.toggle("open");
+        }
+    };
+});
 
-function clearChat(){
-    localStorage.removeItem("feblChatHistory");
+themeSelect.onchange = e => {
+    const theme = e.target.value;
+    document.body.className = "theme-" + theme;
+};
+
+clearChatBtn.onclick = () => {
     messages = [];
     chat.innerHTML = "";
-    addMessage("ai", answerLang==="de" ? "Chat gelöscht. Hallo!" : "Chat cleared. Hi!");
-}
-    /* ===========================
-   BLOCK C — MOBILE PHYSIK + AUTO-HIDE
-=========================== */
-
-/* AUTO-HIDE INPUT BAR (ChatGPT App Style) */
-let lastScroll = 0;
-
-window.addEventListener("scroll", () => {
-    const current = window.scrollY;
-
-    // Nach unten scrollen → Input Bar verstecken
-    if(current > lastScroll + 10){
-        inputBar.style.transform = "translateY(90px)";
-        inputBar.style.opacity = "0";
-    }
-
-    // Nach oben scrollen → Input Bar zeigen
-    else{
-        inputBar.style.transform = "translateY(0)";
-        inputBar.style.opacity = "1";
-    }
-
-    lastScroll = current;
-});
-
-/* ===========================
-   AUTO-HIDE SETTINGS PANEL
-=========================== */
-let lastScrollSettings = 0;
-
-window.addEventListener("scroll", () => {
-    const current = window.scrollY;
-
-    if(settingsPanel.classList.contains("open")){
-        // Nach unten scrollen → Panel verstecken
-        if(current > lastScrollSettings + 10){
-            settingsPanel.style.right = "-340px";
-        }
-        // Nach oben scrollen → Panel zeigen
-        else{
-            settingsPanel.style.right = "0px";
-        }
-    }
-
-    lastScrollSettings = current;
-});
-
-/* ===========================
-   MOBILE SIDEBAR FIX
-=========================== */
-function fixSidebarForMobile(){
-    if(window.innerWidth < 600){
-        document.querySelector(".sidebar").style.width = "62px";
-        document.querySelector(".sidebar-text").style.display = "none";
-    } else {
-        document.querySelector(".sidebar-text").style.display = "block";
-    }
-}
-
-fixSidebarForMobile();
-window.addEventListener("resize", fixSidebarForMobile);
-
-/* ===========================
-   MOBILE CHAT HEIGHT FIX
-=========================== */
-function fixChatHeight(){
-    const headerHeight = document.querySelector(".header").offsetHeight;
-    const inputHeight = document.querySelector(".input-bar").offsetHeight;
-
-    chat.style.height = `calc(100vh - ${headerHeight}px - ${inputHeight}px - 10px)`;
-}
-
-fixChatHeight();
-window.addEventListener("resize", fixChatHeight);
-
-/* ===========================
-   SMOOTH MOBILE SCROLLING
-=========================== */
-chat.style.scrollBehavior = "smooth";
-
-/* ===========================
-   INPUT BAR ALWAYS ABOVE SAFE AREA
-=========================== */
-function fixSafeArea(){
-    inputBar.style.paddingBottom = "env(safe-area-inset-bottom)";
-}
-
-fixSafeArea();
-window.addEventListener("resize", fixSafeArea);
-
-/* ===========================
-   APP-FEELING: INPUT FOKUS SCROLL FIX
-=========================== */
-input.addEventListener("focus", () => {
-    setTimeout(() => {
-        chat.scrollTop = chat.scrollHeight;
-    }, 200);
-});
+    addMessage("ai", "Chat gelöscht. Neuer Start.");
+};
+</script>
+</body>
+</html>
