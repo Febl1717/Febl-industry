@@ -7,19 +7,101 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif}
 
+/* THEME VARIABLEN */
+:root{
+    --bg-main:#0a0b1f;
+    --bg-sidebar:#13143a;
+    --bg-header:#1a1b4a;
+    --bg-chat:#0a0b1f;
+    --bg-input:#1e1f4d;
+    --bg-bubble-ai:#1e1f4d;
+    --bg-bubble-user:#7c3aed;
+    --accent:#7c3aed;
+    --accent-soft:#9d4edd;
+    --text-main:#ffffff;
+    --text-soft:#e9d5ff;
+}
+
+/* THEMES */
+.theme-blue{
+    --bg-main:#0b1120;
+    --bg-sidebar:#0f172a;
+    --bg-header:#1e293b;
+    --bg-chat:#020617;
+    --bg-input:#1f2937;
+    --bg-bubble-ai:#1e293b;
+    --bg-bubble-user:#3b82f6;
+    --accent:#3b82f6;
+    --accent-soft:#60a5fa;
+    --text-main:#ffffff;
+    --text-soft:#e5e7eb;
+}
+.theme-purple{
+    --bg-main:#0a0b1f;
+    --bg-sidebar:#13143a;
+    --bg-header:#1a1b4a;
+    --bg-chat:#0a0b1f;
+    --bg-input:#1e1f4d;
+    --bg-bubble-ai:#1e1f4d;
+    --bg-bubble-user:#7c3aed;
+    --accent:#7c3aed;
+    --accent-soft:#9d4edd;
+    --text-main:#ffffff;
+    --text-soft:#e9d5ff;
+}
+.theme-red{
+    --bg-main:#1a0b0b;
+    --bg-sidebar:#3b0f0f;
+    --bg-header:#4c1d1d;
+    --bg-chat:#1a0b0b;
+    --bg-input:#3f1f1f;
+    --bg-bubble-ai:#3f1f1f;
+    --bg-bubble-user:#ef4444;
+    --accent:#ef4444;
+    --accent-soft:#f97373;
+    --text-main:#ffffff;
+    --text-soft:#fee2e2;
+}
+.theme-green{
+    --bg-main:#022c22;
+    --bg-sidebar:#064e3b;
+    --bg-header:#065f46;
+    --bg-chat:#022c22;
+    --bg-input:#064e3b;
+    --bg-bubble-ai:#064e3b;
+    --bg-bubble-user:#22c55e;
+    --accent:#22c55e;
+    --accent-soft:#4ade80;
+    --text-main:#ecfdf5;
+    --text-soft:#bbf7d0;
+}
+.theme-black{
+    --bg-main:#000000;
+    --bg-sidebar:#0a0a0a;
+    --bg-header:#111827;
+    --bg-chat:#000000;
+    --bg-input:#111827;
+    --bg-bubble-ai:#111827;
+    --bg-bubble-user:#3b82f6;
+    --accent:#3b82f6;
+    --accent-soft:#60a5fa;
+    --text-main:#f9fafb;
+    --text-soft:#e5e7eb;
+}
+
 /* Hintergrund */
 body{
-    background:#0a0b1f;
+    background:var(--bg-main);
     height:100vh;
     display:flex;
     overflow:hidden;
-    color:white;
+    color:var(--text-main);
 }
 
 /* --- SEITENLEISTE LINKS --- */
 .sidebar{
     width:260px;
-    background:#13143a;
+    background:var(--bg-sidebar);
     border-right:1px solid rgba(255,255,255,0.08);
     display:flex;
     flex-direction:column;
@@ -32,7 +114,7 @@ body{
     font-size:26px;
     font-weight:700;
     margin-bottom:10px;
-    color:#c084fc;
+    color:var(--accent);
 }
 
 .sidebar-btn{
@@ -40,7 +122,7 @@ body{
     background:#1e1f4d;
     border:none;
     border-radius:14px;
-    color:white;
+    color:var(--text-main);
     font-size:18px;
     cursor:pointer;
     text-align:left;
@@ -48,7 +130,7 @@ body{
 }
 
 .sidebar-btn:hover{
-    background:#7c3aed;
+    background:var(--accent);
     transform:translateX(6px);
 }
 
@@ -60,15 +142,15 @@ body{
     height:100vh;
 }
 
-/* HEADER MIT LILA GLOW */
+/* HEADER MIT GLOW */
 .header{
     padding:20px 26px;
     font-size:26px;
     font-weight:700;
-    background:#1a1b4a;
+    background:var(--bg-header);
     border-bottom:1px solid rgba(255,255,255,0.1);
-    box-shadow:0 0 25px #7c3aed;
-    color:#e9d5ff;
+    box-shadow:0 0 25px var(--accent);
+    color:var(--text-soft);
 }
 
 /* CHAT */
@@ -106,19 +188,19 @@ body{
 }
 
 .user-row .msg-bubble{
-    background:#7c3aed;
-    color:white;
+    background:var(--bg-bubble-user);
+    color:var(--text-main);
 }
 
 .ai-row .msg-bubble{
-    background:#1e1f4d;
+    background:var(--bg-bubble-ai);
     border:1px solid rgba(255,255,255,0.1);
 }
 
 /* --- EINGABE LEISTE UNTEN --- */
 .input-bar{
     padding:20px;
-    background:#1a1b4a;
+    background:var(--bg-header);
     border-top:1px solid rgba(255,255,255,0.1);
     display:flex;
     justify-content:center;
@@ -126,7 +208,7 @@ body{
 
 .input-box{
     width:90%;
-    background:#1e1f4d;
+    background:var(--bg-input);
     border:1px solid rgba(255,255,255,0.1);
     border-radius:30px;
     padding:18px 24px;
@@ -137,7 +219,7 @@ body{
 }
 
 .input-box:focus-within{
-    box-shadow:0 0 12px #7c3aed;
+    box-shadow:0 0 12px var(--accent);
 }
 
 #userInput{
@@ -145,35 +227,35 @@ body{
     background:transparent;
     border:none;
     outline:none;
-    color:white;
+    color:var(--text-main);
     font-size:20px;
 }
 
 .send-btn{
     width:60px;
     height:60px;
-    background:#7c3aed;
+    background:var(--accent);
     border:none;
     border-radius:50%;
-    color:white;
+    color:var(--text-main);
     font-size:26px;
     cursor:pointer;
     transition:0.25s;
 }
 
 .send-btn:hover{
-    background:#9d4edd;
+    background:var(--accent-soft);
     transform:scale(1.1);
 }
 
 /* --- EINSTELLUNGEN PANEL --- */
 .settings-panel{
     position:fixed;
-    right:-350px;
+    right:-380px;
     top:0;
-    width:350px;
+    width:380px;
     height:100%;
-    background:#13143a;
+    background:var(--bg-sidebar);
     box-shadow:-4px 0 20px rgba(0,0,0,0.5);
     padding:30px;
     display:flex;
@@ -190,20 +272,38 @@ body{
 .settings-title{
     font-size:26px;
     font-weight:700;
-    color:#c084fc;
+    color:var(--accent);
+}
+
+.settings-section-title{
+    font-size:18px;
+    margin-top:10px;
+    margin-bottom:6px;
 }
 
 .settings-item{
-    padding:18px;
+    padding:14px;
     background:#1e1f4d;
     border-radius:16px;
-    font-size:20px;
+    font-size:18px;
     cursor:pointer;
     transition:0.25s;
+    margin-bottom:8px;
 }
 
 .settings-item:hover{
-    background:#7c3aed;
+    background:var(--accent);
+}
+
+/* DROPDOWN */
+.settings-select{
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:none;
+    background:#1e1f4d;
+    color:var(--text-main);
+    font-size:16px;
 }
 
 /* --- MOBILE VERSION --- */
@@ -252,16 +352,22 @@ body{
         height:80px;
         font-size:34px;
     }
+
+    .settings-panel{
+        width:100%;
+    }
 }
 </style>
 </head>
-<body>
+<body class="theme-purple">
 
 <!-- SEITENLEISTE -->
 <div class="sidebar">
     <div class="sidebar-title">Febl KI</div>
 
-    <button class="sidebar-btn" onclick="window.location.href='https://febl-industry-3.jimdosite.com/'">Startseite</button>
+    <button class="sidebar-btn" onclick="window.location.href='https://febl-industry-3.jimdosite.com/'">
+        Startseite
+    </button>
 
     <button class="sidebar-btn" onclick="window.location.href='https://febl-industry-3.jimdosite.com/ueber-mich/'">
         Über Febl
@@ -280,10 +386,31 @@ body{
 <div id="settingsPanel" class="settings-panel">
     <div class="settings-title">KI Einstellungen</div>
 
-    <div class="settings-item">Antwort‑Stil ändern</div>
-    <div class="settings-item">Sprache ändern</div>
-    <div class="settings-item">Chat‑Verlauf löschen</div>
-    <div class="settings-item">Theme ändern</div>
+    <div class="settings-section-title">Antwort‑Stil</div>
+    <select id="styleSelect" class="settings-select">
+        <option value="normal">Normal</option>
+        <option value="kurz">Kurz</option>
+        <option value="ausführlich">Ausführlich</option>
+        <option value="kreativ">Kreativ</option>
+    </select>
+
+    <div class="settings-section-title">Sprache</div>
+    <select id="langSelect" class="settings-select">
+        <option value="de">Deutsch</option>
+        <option value="en">Englisch</option>
+    </select>
+
+    <div class="settings-section-title">Theme</div>
+    <select id="themeSelect" class="settings-select">
+        <option value="purple">Lila</option>
+        <option value="blue">Blau</option>
+        <option value="red">Rot</option>
+        <option value="green">Grün</option>
+        <option value="black">Schwarz</option>
+    </select>
+
+    <div class="settings-section-title">Aktionen</div>
+    <div class="settings-item" onclick="clearChat()">Chat‑Verlauf löschen</div>
 </div>
 
 <!-- MAIN -->
@@ -311,32 +438,78 @@ const API_URL = "https://api.groq.com/openai/v1/chat/completions";
 function openSettings(){
     document.getElementById("settingsPanel").classList.add("open");
 }
-document.body.onclick=e=>{
+document.body.addEventListener("click",e=>{
     if(!e.target.closest(".settings-panel") && !e.target.closest(".sidebar-btn")){
         document.getElementById("settingsPanel").classList.remove("open");
     }
+});
+
+/* STATE */
+let messages=JSON.parse(localStorage.getItem("feblChatHistory")||"[]");
+let answerStyle=localStorage.getItem("feblStyle")||"normal";
+let answerLang=localStorage.getItem("feblLang")||"de";
+let currentTheme=localStorage.getItem("feblTheme")||"purple";
+
+/* INIT SETTINGS UI */
+document.getElementById("styleSelect").value=answerStyle;
+document.getElementById("langSelect").value=answerLang;
+document.getElementById("themeSelect").value=currentTheme;
+applyTheme(currentTheme);
+
+/* SETTINGS CHANGE */
+document.getElementById("styleSelect").onchange=e=>{
+    answerStyle=e.target.value;
+    localStorage.setItem("feblStyle",answerStyle);
+};
+document.getElementById("langSelect").onchange=e=>{
+    answerLang=e.target.value;
+    localStorage.setItem("feblLang",answerLang);
+};
+document.getElementById("themeSelect").onchange=e=>{
+    currentTheme=e.target.value;
+    localStorage.setItem("feblTheme",currentTheme);
+    applyTheme(currentTheme);
 };
 
-/* CHAT */
+function applyTheme(theme){
+    const body=document.body;
+    body.classList.remove("theme-blue","theme-purple","theme-red","theme-green","theme-black");
+    if(theme==="blue")body.classList.add("theme-blue");
+    if(theme==="purple")body.classList.add("theme-purple");
+    if(theme==="red")body.classList.add("theme-red");
+    if(theme==="green")body.classList.add("theme-green");
+    if(theme==="black")body.classList.add("theme-black");
+}
+
+/* SYSTEM MESSAGE */
+function systemMessage(){
+    let styleText="";
+    if(answerStyle==="kurz")styleText="Antworte kurz und knapp.";
+    if(answerStyle==="ausführlich")styleText="Antworte ausführlich und detailliert.";
+    if(answerStyle==="kreativ")styleText="Antworte kreativ und locker.";
+
+    let langText=answerLang==="de"
+        ?"Du antwortest IMMER auf Deutsch und verwendest keine Namen."
+        :"You ALWAYS answer in English and do not use names.";
+
+    return {
+        role:"system",
+        content:`${langText} ${styleText}`
+    };
+}
+
+/* CHAT INIT */
 const chat=document.getElementById("chat");
 const input=document.getElementById("userInput");
 const sendBtn=document.getElementById("sendBtn");
 
-let messages=JSON.parse(localStorage.getItem("feblChatHistory")||"[]");
-
-function systemMessage(){
-    return {
-        role:"system",
-        content:`Du bist Febl industry KI. Du antwortest IMMER auf Deutsch und verwendest keine Namen.`
-    };
-}
-
 if(!messages.length){
-    addMessage("ai","Hallo! Wie kann ich dir helfen?");
+    addMessage("ai",answerLang==="de"?"Hallo! Wie kann ich dir helfen?":"Hi! How can I help you?");
 }else{
     messages.forEach(m=>renderMessage(m.role==="user"?"user":"ai",m.content));
 }
 
+/* CHAT FUNKTIONEN */
 function addMessage(role,text){
     messages.push({role:role==="user"?"user":"assistant",content:text});
     localStorage.setItem("feblChatHistory",JSON.stringify(messages));
@@ -391,6 +564,14 @@ function send(){
 
 sendBtn.onclick=send;
 input.onkeydown=e=>{if(e.key==="Enter")send()};
+
+/* CHAT LÖSCHEN */
+function clearChat(){
+    localStorage.removeItem("feblChatHistory");
+    messages=[];
+    chat.innerHTML="";
+    addMessage("ai",answerLang==="de"?"Chat gelöscht. Hallo!":"Chat cleared. Hi!");
+}
 </script>
 
 </body>
