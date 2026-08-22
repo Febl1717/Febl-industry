@@ -9,15 +9,15 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif}
 :root{
 --c1:#0a0b1f;--c2:#13143a;--c3:#1a1b4a;--c4:#1e1f4d;
---ai:#1e1f4d;--user:#7c3aed;--accent:#7c3aed;
+--assistant:#1e1f4d;--user:#7c3aed;--accent:#7c3aed;
 --t1:#fff;--t2:#e9d5ff;
 }
 
 body.theme-purple{}
-body.theme-blue{--c1:#0b1120;--c2:#0f172a;--c3:#1e293b;--c4:#1f2937;--ai:#1e293b;--user:#3b82f6;--accent:#3b82f6;--t2:#e5e7eb}
-body.theme-red{--c1:#1a0b0b;--c2:#3b0f0f;--c3:#4c1d1d;--c4:#3f1f1f;--ai:#3f1f1f;--user:#ef4444;--accent:#ef4444;--t2:#fee2e2}
-body.theme-green{--c1:#022c22;--c2:#064e3b;--c3:#065f46;--c4:#064e3b;--ai:#064e3b;--user:#22c55e;--accent:#22c55e;--t2:#bbf7d0}
-body.theme-black{--c1:#000;--c2:#0a0a0a;--c3:#111827;--c4:#111827;--ai:#111827;--user:#3b82f6;--accent:#3b82f6;--t2:#e5e7eb}
+body.theme-blue{--c1:#0b1120;--c2:#0f172a;--c3:#1e293b;--c4:#1f2937;--assistant:#1e293b;--user:#3b82f6;--accent:#3b82f6;--t2:#e5e7eb}
+body.theme-red{--c1:#1a0b0b;--c2:#3b0f0f;--c3:#4c1d1d;--c4:#3f1f1f;--assistant:#3f1f1f;--user:#ef4444;--accent:#ef4444;--t2:#fee2e2}
+body.theme-green{--c1:#022c22;--c2:#064e3b;--c3:#065f46;--c4:#064e3b;--assistant:#064e3b;--user:#22c55e;--accent:#22c55e;--t2:#bbf7d0}
+body.theme-black{--c1:#000;--c2:#0a0a0a;--c3:#111827;--c4:#111827;--assistant:#111827;--user:#3b82f6;--accent:#3b82f6;--t2:#e5e7eb}
 
 body{
 background:var(--c1);
@@ -86,14 +86,14 @@ font-size:16px;line-height:1.5;white-space:pre-wrap;
 }
 .user-row{justify-content:flex-end}
 .user-row .msg-bubble{background:var(--user)}
-.ai-row .msg-bubble{background:var(--ai);border:1px solid rgba(255,255,255,.1)}
+.assistant-row .msg-bubble{background:var(--assistant);border:1px solid rgba(255,255,255,.1)}
 
 /* LOADING DOTS */
 .loading{
 display:flex;
 gap:6px;
 padding:12px 16px;
-background:var(--ai);
+background:var(--assistant);
 border-radius:18px;
 width:40px;
 }
@@ -242,7 +242,7 @@ function t(de,en){return lang==="de"?de:en}
 /* CHAT */
 function renderMessage(role,text){
 const row=document.createElement("div");
-row.className="msg-row "+(role==="user"?"user-row":"ai-row");
+row.className="msg-row "+(role==="user"?"user-row":"assistant-row");
 const bubble=document.createElement("div");
 bubble.className="msg-bubble";
 bubble.textContent=text;
@@ -259,7 +259,7 @@ renderMessage(role,text);
 /* LOADING DOTS */
 function loading(){
 const row=document.createElement("div");
-row.className="msg-row ai-row";
+row.className="msg-row assistant-row";
 const bubble=document.createElement("div");
 bubble.className="loading";
 bubble.innerHTML="<div></div><div></div><div></div>";
@@ -274,16 +274,17 @@ const el=document.getElementById("loadingBubble");
 if(el)el.remove();
 }
 
-addMessage("ai",t("Hallo Felix! Wie kann ich dir helfen?","Hello Felix! How can I help you?"));
+/* Startnachricht als assistant */
+addMessage("assistant",t("Hallo Felix! Wie kann ich dir helfen?","Hello Felix! How can I help you?"));
 
-/* ⭐ FIX: KI ANTWORTET IMMER – AUCH BEI FEHLER ⭐ */
+/* KI ANTWORTET IMMER – AUCH BEI FEHLER */
 async function sendToAI(text){
 loading();
 
 try{
 const history=[
 {role:"system",content:t("Du antwortest freundlich und hilfst dem Nutzer.","You answer friendly and help the user.")},
-...messages.slice(-10),
+...messages,
 {role:"user",content:text}
 ];
 
@@ -307,18 +308,18 @@ removeLoading();
 
 /* Wenn API Fehler zurückgibt → trotzdem antworten */
 if(data.error){
-addMessage("ai","⚠️ Fehler: "+data.error.message);
+addMessage("assistant","⚠️ Fehler: "+data.error.message);
 return;
 }
 
 /* Normale Antwort */
-addMessage("ai",data.choices[0].message.content);
+addMessage("assistant",data.choices[0].message.content);
 
 }catch(err){
 removeLoading();
 
 /* Wenn Fetch komplett scheitert → trotzdem antworten */
-addMessage("ai","⚠️ Netzwerkfehler: "+err.message);
+addMessage("assistant","⚠️ Netzwerkfehler: "+err.message);
 }
 }
 
@@ -340,7 +341,11 @@ const a=icon.dataset.action;
 if(a==="home")window.location.href="https://febl-industry-3.jimdosite.com/";
 if(a==="about")window.location.href="https://febl-industry-3.jimdosite.com/ueber-mich/";
 if(a==="support")window.location.href="https://febl-industry-3.jimdosite.com/kontakt/";
-if(a==="clear"){messages=[];chat.innerHTML="";addMessage("ai",t("Chat gelöscht.","Chat cleared."))}
+if(a==="clear"){
+messages=[];
+chat.innerHTML="";
+addMessage("assistant",t("Chat gelöscht.","Chat cleared."));
+}
 if(a==="settings")settingsPanel.classList.toggle("open");
 };
 });
