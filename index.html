@@ -9,17 +9,17 @@
 
 /* Hintergrund */
 body{
-    background:#0a0f1a;
+    background:#0a0b1f;
     height:100vh;
     display:flex;
     overflow:hidden;
     color:white;
 }
 
-/* --- SEITENLEISTE LINKS (COPILOT STYLE) --- */
+/* --- SEITENLEISTE LINKS --- */
 .sidebar{
     width:260px;
-    background:#0f1b33;
+    background:#13143a;
     border-right:1px solid rgba(255,255,255,0.08);
     display:flex;
     flex-direction:column;
@@ -32,11 +32,12 @@ body{
     font-size:26px;
     font-weight:700;
     margin-bottom:10px;
+    color:#c084fc;
 }
 
 .sidebar-btn{
     padding:16px;
-    background:#1f2937;
+    background:#1e1f4d;
     border:none;
     border-radius:14px;
     color:white;
@@ -47,7 +48,7 @@ body{
 }
 
 .sidebar-btn:hover{
-    background:#3b82f6;
+    background:#7c3aed;
     transform:translateX(6px);
 }
 
@@ -59,14 +60,15 @@ body{
     height:100vh;
 }
 
-/* HEADER MIT GLOW */
+/* HEADER MIT LILA GLOW */
 .header{
     padding:20px 26px;
     font-size:26px;
     font-weight:700;
-    background:#0f1b33;
+    background:#1a1b4a;
     border-bottom:1px solid rgba(255,255,255,0.1);
-    box-shadow:0 0 25px #1e3a8a;
+    box-shadow:0 0 25px #7c3aed;
+    color:#e9d5ff;
 }
 
 /* CHAT */
@@ -104,19 +106,19 @@ body{
 }
 
 .user-row .msg-bubble{
-    background:#4ea8ff;
+    background:#7c3aed;
     color:white;
 }
 
 .ai-row .msg-bubble{
-    background:#1b2436;
+    background:#1e1f4d;
     border:1px solid rgba(255,255,255,0.1);
 }
 
-/* --- EINGABE LEISTE UNTEN (COPILOT STYLE) --- */
+/* --- EINGABE LEISTE UNTEN --- */
 .input-bar{
     padding:20px;
-    background:#0f1b33;
+    background:#1a1b4a;
     border-top:1px solid rgba(255,255,255,0.1);
     display:flex;
     justify-content:center;
@@ -124,7 +126,7 @@ body{
 
 .input-box{
     width:90%;
-    background:#1f2937;
+    background:#1e1f4d;
     border:1px solid rgba(255,255,255,0.1);
     border-radius:30px;
     padding:18px 24px;
@@ -135,7 +137,7 @@ body{
 }
 
 .input-box:focus-within{
-    box-shadow:0 0 12px #3b82f6;
+    box-shadow:0 0 12px #7c3aed;
 }
 
 #userInput{
@@ -150,7 +152,7 @@ body{
 .send-btn{
     width:60px;
     height:60px;
-    background:#3b82f6;
+    background:#7c3aed;
     border:none;
     border-radius:50%;
     color:white;
@@ -160,8 +162,48 @@ body{
 }
 
 .send-btn:hover{
-    background:#60a5fa;
+    background:#9d4edd;
     transform:scale(1.1);
+}
+
+/* --- EINSTELLUNGEN PANEL --- */
+.settings-panel{
+    position:fixed;
+    right:-350px;
+    top:0;
+    width:350px;
+    height:100%;
+    background:#13143a;
+    box-shadow:-4px 0 20px rgba(0,0,0,0.5);
+    padding:30px;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+    transition:0.4s;
+    z-index:9999;
+}
+
+.settings-panel.open{
+    right:0;
+}
+
+.settings-title{
+    font-size:26px;
+    font-weight:700;
+    color:#c084fc;
+}
+
+.settings-item{
+    padding:18px;
+    background:#1e1f4d;
+    border-radius:16px;
+    font-size:20px;
+    cursor:pointer;
+    transition:0.25s;
+}
+
+.settings-item:hover{
+    background:#7c3aed;
 }
 
 /* --- MOBILE VERSION --- */
@@ -220,9 +262,28 @@ body{
     <div class="sidebar-title">Febl KI</div>
 
     <button class="sidebar-btn" onclick="window.location.href='https://febl-industry-3.jimdosite.com/'">Startseite</button>
-    <button class="sidebar-btn">Über Febl</button>
-    <button class="sidebar-btn">Einstellungen</button>
-    <button class="sidebar-btn">Support</button>
+
+    <button class="sidebar-btn" onclick="window.location.href='https://febl-industry-3.jimdosite.com/ueber-mich/'">
+        Über Febl
+    </button>
+
+    <button class="sidebar-btn" onclick="window.location.href='https://febl-industry-3.jimdosite.com/kontakt/'">
+        Support
+    </button>
+
+    <button class="sidebar-btn" onclick="openSettings()">
+        Einstellungen
+    </button>
+</div>
+
+<!-- EINSTELLUNGEN PANEL -->
+<div id="settingsPanel" class="settings-panel">
+    <div class="settings-title">KI Einstellungen</div>
+
+    <div class="settings-item">Antwort‑Stil ändern</div>
+    <div class="settings-item">Sprache ändern</div>
+    <div class="settings-item">Chat‑Verlauf löschen</div>
+    <div class="settings-item">Theme ändern</div>
 </div>
 
 <!-- MAIN -->
@@ -246,6 +307,17 @@ const API_KEY = "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";
 const MODEL   = "groq/compound-mini";
 const API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
+/* EINSTELLUNGEN PANEL */
+function openSettings(){
+    document.getElementById("settingsPanel").classList.add("open");
+}
+document.body.onclick=e=>{
+    if(!e.target.closest(".settings-panel") && !e.target.closest(".sidebar-btn")){
+        document.getElementById("settingsPanel").classList.remove("open");
+    }
+};
+
+/* CHAT */
 const chat=document.getElementById("chat");
 const input=document.getElementById("userInput");
 const sendBtn=document.getElementById("sendBtn");
