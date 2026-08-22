@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Febl KI – Copilot Style</title>
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif}
 
@@ -20,6 +21,8 @@
     --text-main:#ffffff;
     --text-soft:#e9d5ff;
 }
+
+/* BLUE */
 .theme-blue{
     --bg-main:#0b1120;
     --bg-sidebar:#0f172a;
@@ -33,6 +36,8 @@
     --text-main:#ffffff;
     --text-soft:#e5e7eb;
 }
+
+/* PURPLE */
 .theme-purple{
     --bg-main:#0a0b1f;
     --bg-sidebar:#13143a;
@@ -46,6 +51,8 @@
     --text-main:#ffffff;
     --text-soft:#e9d5ff;
 }
+
+/* RED */
 .theme-red{
     --bg-main:#1a0b0b;
     --bg-sidebar:#3b0f0f;
@@ -59,6 +66,8 @@
     --text-main:#ffffff;
     --text-soft:#fee2e2;
 }
+
+/* GREEN */
 .theme-green{
     --bg-main:#022c22;
     --bg-sidebar:#064e3b;
@@ -72,6 +81,8 @@
     --text-main:#ecfdf5;
     --text-soft:#bbf7d0;
 }
+
+/* BLACK */
 .theme-black{
     --bg-main:#000000;
     --bg-sidebar:#0a0a0a;
@@ -105,7 +116,6 @@ body{
     padding:14px 8px;
     gap:14px;
     transition:0.3s;
-    position:relative;
 }
 .sidebar:hover{
     width:240px;
@@ -164,12 +174,25 @@ body{
     overflow-y:auto;
 }
 
+/* CHAT BUBBLE ANIMATION (SLIDE-UP + FADE-IN) */
+@keyframes bubbleIn{
+    from{
+        opacity:0;
+        transform:translateY(14px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
 /* BUBBLES */
 .msg-row{
     margin-bottom:20px;
     display:flex;
     align-items:flex-start;
     gap:12px;
+    animation:bubbleIn 0.35s ease;
 }
 .msg-bubble{
     max-width:75%;
@@ -178,11 +201,6 @@ body{
     font-size:17px;
     line-height:1.6;
     white-space:pre-wrap;
-    animation:fadeIn 0.3s ease;
-}
-@keyframes fadeIn{
-    from{opacity:0;transform:translateY(10px);}
-    to{opacity:1;transform:translateY(0);}
 }
 .user-row{
     flex-direction:row-reverse;
@@ -196,35 +214,32 @@ body{
     border:1px solid rgba(255,255,255,0.1);
 }
 
-/* Neue größere & zur Mitte hin dünnere Eingabeleiste */
+/* FLOATING INPUT BAR */
 .input-bar{
-    padding:12px;
-    background:var(--bg-header);
-    border-top:1px solid rgba(255,255,255,0.1);
+    padding:0;
+    background:transparent;
     display:flex;
     justify-content:center;
+    position:sticky;
+    bottom:12px;
+    z-index:50;
 }
 
-/* WICHTIG: zur Mitte hin dünner durch asymmetrische Radien */
+/* Schwebende Leiste */
 .input-box{
     width:94%;
     background:var(--bg-input);
     border:1px solid rgba(255,255,255,0.18);
-
-    /* oben dünner, unten leicht dicker → moderner Dip‑Effekt */
-    padding:10px 18px;
-
-    /* asymmetrische Rundung → Mitte wirkt dünner */
-    border-radius:32px 32px 22px 22px;
-
+    box-shadow:0 6px 22px rgba(0,0,0,0.45);
+    padding:12px 20px;
+    border-radius:36px 36px 24px 24px;
     display:flex;
     gap:12px;
     align-items:center;
     transition:0.25s;
 }
-
 .input-box:focus-within{
-    box-shadow:0 0 16px var(--accent);
+    box-shadow:0 0 18px var(--accent), 0 6px 22px rgba(0,0,0,0.45);
 }
 
 #userInput{
@@ -233,54 +248,79 @@ body{
     border:none;
     outline:none;
     color:var(--text-main);
-
-    /* größer, aber nicht fett */
     font-size:18px;
-    padding:6px 0;
+    padding:8px 0;
+    transition:0.15s;
+}
+#userInput:focus{
+    transform:scale(1.015);
 }
 
-/* SEND BUTTON */
+/* SEND BUTTON + RIPPLE */
 .send-btn{
-    width:44px;
-    height:44px;
+    width:48px;
+    height:48px;
     background:var(--accent);
     border:none;
     border-radius:50%;
     color:var(--text-main);
     font-size:20px;
     cursor:pointer;
+    position:relative;
+    overflow:hidden;
     transition:0.25s;
 }
-
 .send-btn:hover{
     background:var(--accent-soft);
     transform:scale(1.08);
 }
+.send-btn::after{
+    content:"";
+    position:absolute;
+    width:10px;
+    height:10px;
+    background:white;
+    opacity:0.4;
+    border-radius:50%;
+    transform:scale(1);
+    pointer-events:none;
+    transition:0.4s;
+}
+.send-btn:active::after{
+    transform:scale(12);
+    opacity:0;
+}
 
-/* MOBILE – perfekt angepasst */
+/* MOBILE */
 @media(max-width:600px){
-
-    .input-bar{
-        padding:14px;
+    .sidebar{
+        width:70px;
     }
-
+    .sidebar:hover{
+        width:70px;
+    }
+    .sidebar-text{
+        display:none;
+    }
+    .settings-panel{
+        width:100%;
+    }
     .input-box{
         width:96%;
-        padding:12px 20px;
-        border-radius:36px 36px 24px 24px; /* stärkerer Dip für Handy */
+        padding:14px 22px;
+        border-radius:40px 40px 26px 26px;
     }
-
     #userInput{
         font-size:20px;
-        padding:8px 0;
+        padding:10px 0;
     }
-
     .send-btn{
-        width:52px;
-        height:52px;
-        font-size:24px;
+        width:56px;
+        height:56px;
+        font-size:26px;
     }
 }
+
 /* SETTINGS PANEL */
 .settings-panel{
     position:fixed;
@@ -331,40 +371,17 @@ body{
 .settings-item:hover{
     background:var(--accent);
 }
-
-/* MOBILE */
-@media(max-width:600px){
-    .sidebar{
-        width:70px;
-    }
-    .sidebar:hover{
-        width:70px;
-    }
-    .sidebar-text{
-        display:none;
-    }
-    .settings-panel{
-        width:100%;
-    }
-}
 </style>
 </head>
+
 <body class="theme-purple">
 
 <!-- SIDEBAR -->
-<div class="sidebar" id="sidebar">
-    <div class="sidebar-icon" data-action="home">
-        <span>🏠</span><p class="sidebar-text">Startseite</p>
-    </div>
-    <div class="sidebar-icon" data-action="about">
-        <span>👤</span><p class="sidebar-text">Über Febl</p>
-    </div>
-    <div class="sidebar-icon" data-action="support">
-        <span>💬</span><p class="sidebar-text">Support</p>
-    </div>
-    <div class="sidebar-icon" data-action="settings">
-        <span>⚙️</span><p class="sidebar-text">Einstellungen</p>
-    </div>
+<div class="sidebar">
+    <div class="sidebar-icon" data-action="home"><span>🏠</span><p class="sidebar-text">Startseite</p></div>
+    <div class="sidebar-icon" data-action="about"><span>👤</span><p class="sidebar-text">Über Febl</p></div>
+    <div class="sidebar-icon" data-action="support"><span>💬</span><p class="sidebar-text">Support</p></div>
+    <div class="sidebar-icon" data-action="settings"><span>⚙️</span><p class="sidebar-text">Einstellungen</p></div>
 </div>
 
 <!-- SETTINGS PANEL -->
@@ -401,7 +418,6 @@ body{
 <!-- MAIN -->
 <div class="main">
     <div class="header" id="txt_header">Chat</div>
-
     <div class="chat" id="chat"></div>
 
     <div class="input-bar">
@@ -412,21 +428,34 @@ body{
     </div>
 </div>
 
-<script>
+    <script>
+/* ===========================
+   API CONFIG
+=========================== */
 const API_KEY = "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";
 const MODEL   = "groq/compound-mini";
 const API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
+/* ===========================
+   ELEMENTE
+=========================== */
 const chat = document.getElementById("chat");
 const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 const settingsPanel = document.getElementById("settingsPanel");
+const inputBar = document.querySelector(".input-bar");
 
+/* ===========================
+   STATE
+=========================== */
 let messages = JSON.parse(localStorage.getItem("feblChatHistory") || "[]");
 let answerStyle = localStorage.getItem("feblStyle") || "normal";
 let answerLang = localStorage.getItem("feblLang") || "de";
 let currentTheme = localStorage.getItem("feblTheme") || "purple";
 
+/* ===========================
+   INIT SETTINGS
+=========================== */
 document.getElementById("styleSelect").value = answerStyle;
 document.getElementById("langSelect").value = answerLang;
 document.getElementById("themeSelect").value = currentTheme;
@@ -434,52 +463,63 @@ document.getElementById("themeSelect").value = currentTheme;
 applyTheme(currentTheme);
 applyLanguage(answerLang);
 
-/* SIDEBAR ACTIONS */
+/* ===========================
+   SIDEBAR ACTIONS
+=========================== */
 document.querySelectorAll(".sidebar-icon").forEach(icon => {
     icon.onclick = () => {
         const action = icon.dataset.action;
-        if(action === "home"){
+
+        if(action === "home")
             window.location.href = "https://febl-industry-3.jimdosite.com/";
-        }
-        if(action === "about"){
+
+        if(action === "about")
             window.location.href = "https://febl-industry-3.jimdosite.com/ueber-mich/";
-        }
-        if(action === "support"){
+
+        if(action === "support")
             window.location.href = "https://febl-industry-3.jimdosite.com/kontakt/";
-        }
-        if(action === "settings"){
+
+        if(action === "settings")
             openSettings();
-        }
     };
 });
 
-/* SETTINGS PANEL */
+/* ===========================
+   SETTINGS PANEL
+=========================== */
 function openSettings(){
     settingsPanel.classList.add("open");
 }
+
 document.body.addEventListener("click", e => {
     if(!e.target.closest(".settings-panel") && !e.target.closest(".sidebar-icon")){
         settingsPanel.classList.remove("open");
     }
 });
 
-/* SETTINGS CHANGE */
+/* ===========================
+   SETTINGS CHANGE
+=========================== */
 document.getElementById("styleSelect").onchange = e => {
     answerStyle = e.target.value;
     localStorage.setItem("feblStyle", answerStyle);
 };
+
 document.getElementById("langSelect").onchange = e => {
     answerLang = e.target.value;
     localStorage.setItem("feblLang", answerLang);
     applyLanguage(answerLang);
 };
+
 document.getElementById("themeSelect").onchange = e => {
     currentTheme = e.target.value;
     localStorage.setItem("feblTheme", currentTheme);
     applyTheme(currentTheme);
 };
 
-/* LANGUAGE SYSTEM */
+/* ===========================
+   LANGUAGE SYSTEM
+=========================== */
 function applyLanguage(lang){
     if(lang === "de"){
         document.getElementById("txt_header").textContent = "Chat";
@@ -496,6 +536,7 @@ function applyLanguage(lang){
         document.querySelector('[data-action="support"] .sidebar-text').textContent = "Support";
         document.querySelector('[data-action="settings"] .sidebar-text').textContent = "Einstellungen";
     }
+
     if(lang === "en"){
         document.getElementById("txt_header").textContent = "Chat";
         document.getElementById("txt_settings_title").textContent = "AI Settings";
@@ -513,23 +554,33 @@ function applyLanguage(lang){
     }
 }
 
-/* THEME SYSTEM */
+/* ===========================
+   THEME SYSTEM
+=========================== */
 function applyTheme(theme){
     const body = document.body;
     body.classList.remove("theme-blue","theme-purple","theme-red","theme-green","theme-black");
     body.classList.add("theme-" + theme);
 }
 
-/* SYSTEM MESSAGE */
+/* ===========================
+   SYSTEM MESSAGE
+=========================== */
 function systemMessage(){
     let styleText = "";
-    if(answerStyle === "kurz") styleText = answerLang==="de"?"Antworte kurz und knapp.":"Answer briefly and concisely.";
-    if(answerStyle === "ausführlich") styleText = answerLang==="de"?"Antworte ausführlich und detailliert.":"Answer in a detailed and extensive way.";
-    if(answerStyle === "kreativ") styleText = answerLang==="de"?"Antworte kreativ und locker.":"Answer creatively and casually.";
+
+    if(answerStyle === "kurz")
+        styleText = answerLang==="de" ? "Antworte kurz und knapp." : "Answer briefly and concisely.";
+
+    if(answerStyle === "ausführlich")
+        styleText = answerLang==="de" ? "Antworte ausführlich und detailliert." : "Answer in a detailed and extensive way.";
+
+    if(answerStyle === "kreativ")
+        styleText = answerLang==="de" ? "Antworte kreativ und locker." : "Answer creatively and casually.";
 
     let langText = answerLang==="de"
-        ?"Du antwortest IMMER auf Deutsch und verwendest keine Namen."
-        :"You ALWAYS answer in English and do not use names.";
+        ? "Du antwortest IMMER auf Deutsch und verwendest keine Namen."
+        : "You ALWAYS answer in English and do not use names.";
 
     return {
         role:"system",
@@ -537,35 +588,49 @@ function systemMessage(){
     };
 }
 
-/* CHAT INIT */
+/* ===========================
+   CHAT INIT
+=========================== */
 if(!messages.length){
-    addMessage("ai",answerLang==="de"?"Hallo! Wie kann ich dir helfen?":"Hi! How can I help you?");
+    addMessage("ai", answerLang==="de" ? "Hallo! Wie kann ich dir helfen?" : "Hi! How can I help you?");
 }else{
-    messages.forEach(m=>renderMessage(m.role==="user"?"user":"ai",m.content));
+    messages.forEach(m => renderMessage(m.role==="user" ? "user" : "ai", m.content));
 }
 
-/* CHAT FUNKTIONEN */
-function addMessage(role,text){
-    messages.push({role:role==="user"?"user":"assistant",content:text});
-    localStorage.setItem("feblChatHistory",JSON.stringify(messages));
-    renderMessage(role,text);
+/* ===========================
+   CHAT FUNCTIONS
+=========================== */
+function addMessage(role, text){
+    messages.push({role: role==="user" ? "user" : "assistant", content: text});
+    localStorage.setItem("feblChatHistory", JSON.stringify(messages));
+    renderMessage(role, text);
 }
-function renderMessage(role,text){
-    const row=document.createElement("div");
-    row.className="msg-row "+(role==="user"?"user-row":"ai-row");
-    const bubble=document.createElement("div");
-    bubble.className="msg-bubble";
-    bubble.textContent=text;
+
+function renderMessage(role, text){
+    const row = document.createElement("div");
+    row.className = "msg-row " + (role==="user" ? "user-row" : "ai-row");
+
+    const bubble = document.createElement("div");
+    bubble.className = "msg-bubble";
+    bubble.textContent = text;
+
     row.appendChild(bubble);
     chat.appendChild(row);
-    chat.scrollTop=chat.scrollHeight;
+    chat.scrollTop = chat.scrollHeight;
 }
 
-/* API CALL */
+/* ===========================
+   API CALL
+=========================== */
 async function sendToAPI(userText){
-    const history=[systemMessage(),...messages.slice(-10),{role:"user",content:userText}];
+    const history = [
+        systemMessage(),
+        ...messages.slice(-10),
+        {role:"user", content:userText}
+    ];
+
     try{
-        const res=await fetch(API_URL,{
+        const res = await fetch(API_URL,{
             method:"POST",
             headers:{
                 "Content-Type":"application/json",
@@ -576,36 +641,64 @@ async function sendToAPI(userText){
                 messages:history
             })
         });
-        const data=await res.json();
+
+        const data = await res.json();
+
         if(!res.ok){
-            addMessage("ai","API‑Fehler:\n"+JSON.stringify(data,null,2));
+            addMessage("ai","API‑Fehler:\n" + JSON.stringify(data,null,2));
             return;
         }
-        addMessage("ai",data.choices[0].message.content);
+
+        addMessage("ai", data.choices[0].message.content);
+
     }catch(e){
-        addMessage("ai","Fehler:\n"+e.message);
+        addMessage("ai","Fehler:\n" + e.message);
     }
 }
 
-/* SEND */
+/* ===========================
+   SEND
+=========================== */
 function send(){
-    const text=input.value.trim();
-    if(!text)return;
-    input.value="";
-    addMessage("user",text);
+    const text = input.value.trim();
+    if(!text) return;
+
+    input.value = "";
+    addMessage("user", text);
     sendToAPI(text);
 }
-sendBtn.onclick=send;
-input.onkeydown=e=>{if(e.key==="Enter")send()};
 
-/* CLEAR CHAT */
+sendBtn.onclick = send;
+input.onkeydown = e => { if(e.key==="Enter") send(); };
+
+/* ===========================
+   CLEAR CHAT
+=========================== */
 document.getElementById("txt_clear_chat").onclick = clearChat;
+
 function clearChat(){
     localStorage.removeItem("feblChatHistory");
-    messages=[];
-    chat.innerHTML="";
-    addMessage("ai",answerLang==="de"?"Chat gelöscht. Hallo!":"Chat cleared. Hi!");
+    messages = [];
+    chat.innerHTML = "";
+    addMessage("ai", answerLang==="de" ? "Chat gelöscht. Hallo!" : "Chat cleared. Hi!");
 }
+
+/* ===========================
+   AUTO-HIDE INPUT BAR
+=========================== */
+let lastScroll = 0;
+
+window.addEventListener("scroll", () => {
+    const current = window.scrollY;
+
+    if(current > lastScroll + 10){
+        inputBar.style.transform = "translateY(80px)";
+        inputBar.style.opacity = "0";
+    } else {
+        inputBar.style.transform = "translateY(0)";
+        inputBar.style.opacity = "1";
+    }
+
+    lastScroll = current;
+});
 </script>
-</body>
-</html>
