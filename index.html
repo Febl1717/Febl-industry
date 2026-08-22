@@ -112,18 +112,15 @@ animation:load 0.8s infinite;
 100%{opacity:0.2;transform:scale(1)}
 }
 
-/* FLOATING INPUT BAR (PC + Mobile) */
+/* INPUT */
 .input-bar{
 padding:10px 0;
 display:flex;
 justify-content:center;
-background:transparent;
+background:var(--c1);
 position:sticky;
-bottom:10px;
-z-index:50;
+bottom:0;
 }
-
-/* MOBILE VERSION LIKE BEFORE */
 .input-box{
 width:94%;
 background:var(--c4);
@@ -133,56 +130,26 @@ border-radius:30px;
 display:flex;
 gap:10px;
 align-items:center;
-box-shadow:0 6px 22px rgba(0,0,0,0.45);
-transition:0.25s;
 }
-
-/* Glow beim Tippen */
-.input-box:focus-within{
-box-shadow:0 0 14px var(--accent), 0 6px 22px rgba(0,0,0,0.45);
-}
-
-/* INPUT */
 #userInput{
-flex:1;
-background:transparent;
-border:none;
-outline:none;
-color:var(--t1);
-font-size:18px;
-padding:6px 0;
+flex:1;background:transparent;border:none;outline:none;
+color:var(--t1);font-size:18px;
 }
-
-/* SEND BUTTON */
 .send-btn{
-width:44px;height:44px;
-background:var(--accent);
-border:none;border-radius:50%;
-color:var(--t1);
-font-size:22px;
-cursor:pointer;
-transition:0.25s;
-}
-
-.send-btn:hover{
-transform:scale(1.1);
+width:44px;height:44px;background:var(--accent);
+border:none;border-radius:50%;color:var(--t1);
+font-size:22px;cursor:pointer;
 }
 
 /* MOBILE */
 @media(max-width:600px){
-.input-box{
-width:94%;
-padding:10px 16px;
-border-radius:30px;
-}
-#userInput{
-font-size:18px;
-padding:6px 0;
-}
-.send-btn{
-width:44px;height:44px;
-font-size:22px;
-}
+.sidebar{width:58px}
+.sidebar:hover{width:58px}
+.sidebar-text{display:none}
+.msg-bubble{font-size:15px}
+#userInput{font-size:16px}
+.send-btn{width:40px;height:40px;font-size:20px}
+.input-bar{padding:12px 0}
 }
 </style>
 </head>
@@ -239,8 +206,8 @@ font-size:22px;
 
 <script>
 const API_KEY="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";
-const MODEL="groq/compound";
-const API_URL="lehttps://api.groq.com/openai/v1/chat/completions";
+const MODEL="groq/compound-mini";
+const API_URL="https://api.groq.com/openai/v1/chat/completions";
 
 const chat=document.getElementById("chat");
 const input=document.getElementById("userInput");
@@ -307,10 +274,10 @@ const el=document.getElementById("loadingBubble");
 if(el)el.remove();
 }
 
-/* Startnachricht */
+/* Startnachricht als assistant */
 addMessage("assistant",t("Hallo Felix! Wie kann ich dir helfen?","Hello Felix! How can I help you?"));
 
-/* KI ANTWORTET IMMER */
+/* KI ANTWORTET IMMER – AUCH BEI FEHLER */
 async function sendToAI(text){
 loading();
 
@@ -339,15 +306,19 @@ top_p:1
 const data=await res.json();
 removeLoading();
 
+/* Wenn API Fehler zurückgibt → trotzdem antworten */
 if(data.error){
 addMessage("assistant","⚠️ Fehler: "+data.error.message);
 return;
 }
 
+/* Normale Antwort */
 addMessage("assistant",data.choices[0].message.content);
 
 }catch(err){
 removeLoading();
+
+/* Wenn Fetch komplett scheitert → trotzdem antworten */
 addMessage("assistant","⚠️ Netzwerkfehler: "+err.message);
 }
 }
