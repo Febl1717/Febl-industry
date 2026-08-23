@@ -7,9 +7,11 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif}
+
 :root{
 --c1:#0a0b1f;--c2:#13143a;--c3:#1a1b4a;--c4:#1e1f4d;
---assistant:#1e1f4d;--user:#7c3aed;--accent:#7c3aed;--t1:#fff;--t2:#e9d5ff;
+--assistant:#1e1f4d;--user:#7c3aed;--accent:#7c3aed;
+--t1:#fff;--t2:#e9d5ff;
 }
 
 body{background:var(--c1);color:var(--t1);height:100vh;display:flex;overflow:hidden}
@@ -83,6 +85,7 @@ body{background:var(--c1);color:var(--t1);height:100vh;display:flex;overflow:hid
 <div class="sidebar-icon" data-action="about" id="btn_about">👤</div>
 <div class="sidebar-icon" data-action="support" id="btn_support">💬</div>
 <div class="sidebar-icon" data-action="newchat" id="btn_newchat">➕</div>
+<div class="sidebar-icon" data-action="deletechat" id="btn_deletechat">🗑️</div>
 <div class="sidebar-icon" data-action="settings" id="btn_settings">⚙️</div>
 </div>
 
@@ -99,7 +102,6 @@ body{background:var(--c1);color:var(--t1);height:100vh;display:flex;overflow:hid
 <option value="de">Deutsch</option>
 <option value="en">English</option>
 </select>
-<button class="settings-btn" id="clearChatBtn">Chat löschen</button>
 </div>
 
 <div class="main">
@@ -110,14 +112,14 @@ body{background:var(--c1);color:var(--t1);height:100vh;display:flex;overflow:hid
 <div class="input-box">
 <button class="upload-btn" id="uploadBtn">📎</button>
 <input id="fileInput" type="file" style="display:none">
-<input id="userInput" type="text" placeholder="Nachricht eingeben…" id="input_placeholder">
+<input id="userInput" type="text" placeholder="Nachricht eingeben…">
 <button class="send-btn" id="sendBtn">➤</button>
 </div>
 </div>
 </div>
 
 <script>
-const API_KEY="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";
+  const API_KEY="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";
 const MODEL="groq/compound-mini";
 const API_URL="https://api.groq.com/openai/v1/chat/completions";
 
@@ -131,22 +133,24 @@ home:"🏠",
 about:"👤",
 support:"💬",
 newchat:"➕",
+deletechat:"🗑️",
 settings:"⚙️",
 header:"Febl KI",
 settings_title:"Einstellungen",
 placeholder:"Nachricht eingeben…",
-clear:"Chat löschen"
+chat:"Chat "
 },
 en:{
 home:"🏠",
 about:"👤",
 support:"💬",
 newchat:"➕",
+deletechat:"🗑️",
 settings:"⚙️",
 header:"Febl AI",
 settings_title:"Settings",
 placeholder:"Type a message…",
-clear:"Clear chat"
+chat:"Chat "
 }
 };
 
@@ -155,21 +159,61 @@ document.getElementById("btn_home").textContent=ui[lang].home;
 document.getElementById("btn_about").textContent=ui[lang].about;
 document.getElementById("btn_support").textContent=ui[lang].support;
 document.getElementById("btn_newchat").textContent=ui[lang].newchat;
+document.getElementById("btn_deletechat").textContent=ui[lang].deletechat;
 document.getElementById("btn_settings").textContent=ui[lang].settings;
 document.getElementById("txt_header").textContent=ui[lang].header;
 document.getElementById("txt_settings_title").textContent=ui[lang].settings_title;
 document.getElementById("userInput").placeholder=ui[lang].placeholder;
-document.getElementById("clearChatBtn").textContent=ui[lang].clear;
 renderTabs();
 renderChat();
 }
 
 function applyTheme(t){
-if(t==="purple"){document.body.className="theme-purple"}
-if(t==="blue"){document.body.className="theme-blue"}
-if(t==="red"){document.body.className="theme-red"}
-if(t==="green"){document.body.className="theme-green"}
-if(t==="black"){document.body.className="theme-black"}
+if(t==="purple"){
+document.documentElement.style.setProperty("--c1","#0a0b1f");
+document.documentElement.style.setProperty("--c2","#13143a");
+document.documentElement.style.setProperty("--c3","#1a1b4a");
+document.documentElement.style.setProperty("--c4","#1e1f4d");
+document.documentElement.style.setProperty("--assistant","#1e1f4d");
+document.documentElement.style.setProperty("--user","#7c3aed");
+document.documentElement.style.setProperty("--accent","#7c3aed");
+}
+if(t==="blue"){
+document.documentElement.style.setProperty("--c1","#001a33");
+document.documentElement.style.setProperty("--c2","#00264d");
+document.documentElement.style.setProperty("--c3","#003366");
+document.documentElement.style.setProperty("--c4","#004080");
+document.documentElement.style.setProperty("--assistant","#004080");
+document.documentElement.style.setProperty("--user","#3399ff");
+document.documentElement.style.setProperty("--accent","#3399ff");
+}
+if(t==="red"){
+document.documentElement.style.setProperty("--c1","#330000");
+document.documentElement.style.setProperty("--c2","#4d0000");
+document.documentElement.style.setProperty("--c3","#660000");
+document.documentElement.style.setProperty("--c4","#800000");
+document.documentElement.style.setProperty("--assistant","#800000");
+document.documentElement.style.setProperty("--user","#ff3333");
+document.documentElement.style.setProperty("--accent","#ff3333");
+}
+if(t==="green"){
+document.documentElement.style.setProperty("--c1","#00261a");
+document.documentElement.style.setProperty("--c2","#003322");
+document.documentElement.style.setProperty("--c3","#004d33");
+document.documentElement.style.setProperty("--c4","#006644");
+document.documentElement.style.setProperty("--assistant","#006644");
+document.documentElement.style.setProperty("--user","#33cc99");
+document.documentElement.style.setProperty("--accent","#33cc99");
+}
+if(t==="black"){
+document.documentElement.style.setProperty("--c1","#000000");
+document.documentElement.style.setProperty("--c2","#0d0d0d");
+document.documentElement.style.setProperty("--c3","#1a1a1a");
+document.documentElement.style.setProperty("--c4","#262626");
+document.documentElement.style.setProperty("--assistant","#262626");
+document.documentElement.style.setProperty("--user","#3b82f6");
+document.documentElement.style.setProperty("--accent","#3b82f6");
+}
 }
 
 function newChat(){
@@ -179,13 +223,25 @@ renderTabs();
 renderChat();
 }
 
+function deleteChat(){
+if(chats.length>1){
+chats.splice(activeChat,1);
+activeChat=0;
+renderTabs();
+renderChat();
+}else{
+chats[0]=[];
+renderChat();
+}
+}
+
 function renderTabs(){
 const tabs=document.getElementById("chatTabs");
 tabs.innerHTML="";
 chats.forEach((c,i)=>{
 const t=document.createElement("div");
 t.className="chat-tab"+(i===activeChat?" active":"");
-t.textContent=(lang==="de"?"Chat ":"Chat ")+(i+1);
+t.textContent=ui[lang].chat+(i+1);
 t.onclick=()=>{activeChat=i;renderTabs();renderChat()};
 tabs.appendChild(t);
 });
@@ -291,13 +347,13 @@ if(a==="home")window.location.href="https://febl-industry-3.jimdosite.com/";
 if(a==="about")window.location.href="https://febl-industry-3.jimdosite.com/ueber-mich/";
 if(a==="support")window.location.href="https://febl-industry-3.jimdosite.com/kontakt/";
 if(a==="newchat")newChat();
+if(a==="deletechat")deleteChat();
 if(a==="settings")document.getElementById("settingsPanel").classList.toggle("open");
 };
 });
 
 document.getElementById("themeSelect").onchange=e=>applyTheme(e.target.value);
 document.getElementById("langSelect").onchange=e=>{lang=e.target.value;applyLanguage()};
-document.getElementById("clearChatBtn").onclick=()=>{chats[activeChat]=[];renderChat()};
 
 setTimeout(()=>{document.getElementById("intro").style.opacity="0"},1200);
 setTimeout(()=>{document.getElementById("intro").style.display="none"},2200);
@@ -326,8 +382,8 @@ requestAnimationFrame(animate);
 animate();
 
 newChat();
-addMessage("assistant",lang==="de"?"Hallo Felix! Wie kann ich dir helfen?":"Hello Felix! How can I help you?");
 applyLanguage();
+addMessage("assistant",lang==="de"?"Hallo Felix! Wie kann ich dir helfen?":"Hello Felix! How can I help you?");
 </script>
 
 </body>
