@@ -50,16 +50,23 @@ body{background:var(--c1);color:var(--t1);height:100vh;display:flex;flex-directi
 .bottom-sheet{position:fixed;left:0;right:0;bottom:-100%;background:var(--c2);padding:20px;border-radius:20px 20px 0 0;transition:.3s;z-index:999}
 .bottom-sheet.open{bottom:0}
 
-.sheet-btn{width:100%;padding:14px;background:var(--c4);border-radius:12px;color:#fff;font-size:18px;margin-bottom:10px;text-align:center}
-
 .tabs-sheet{position:fixed;left:0;right:0;bottom:-100%;background:var(--c2);padding:20px;border-radius:20px 20px 0 0;transition:.3s;z-index:999}
 .tabs-sheet.open{bottom:0}
+
+.sheet-btn{width:100%;padding:14px;background:var(--c4);border-radius:12px;color:#fff;font-size:18px;margin-bottom:10px;text-align:center}
 
 .tab-item{padding:14px;background:var(--c4);border-radius:12px;color:#fff;font-size:18px;margin-bottom:10px;text-align:center}
 
 @media(min-width:700px){
-.header{display:none}
-.bottom-sheet,.tabs-sheet{display:none}
+  .bottom-sheet{
+    width:300px;height:100%;right:-300px;left:auto;top:0;bottom:0;border-radius:0;
+  }
+  .bottom-sheet.open{right:0}
+
+  .tabs-sheet{
+    width:300px;height:100%;left:-300px;top:0;bottom:0;border-radius:0;
+  }
+  .tabs-sheet.open{left:0}
 }
 </style>
 </head>
@@ -112,203 +119,234 @@ let theme="purple";
 let chats=[];
 let activeChat=0;
 
+function safeInit(){
+  if(!Array.isArray(chats)) chats=[[]];
+  if(chats.length===0) chats=[[]];
+  if(activeChat<0) activeChat=0;
+  if(activeChat>=chats.length) activeChat=0;
+  if(!Array.isArray(chats[activeChat])) chats[activeChat]=[];
+}
+
 const ui={
 de:{header:"Febl KI",placeholder:"Nachricht eingeben…",chat:"Chat ",newchat:"Neuer Chat",delete:"Chat löschen",lang:"Sprache",theme:"Theme",home:"Home",about:"Über Febl",support:"Support"},
 en:{header:"Febl AI",placeholder:"Type a message…",chat:"Chat ",newchat:"New chat",delete:"Delete chat",lang:"Language",theme:"Theme",home:"Home",about:"About Febl",support:"Support"}
 };
 
 function saveAll(){
-localStorage.setItem("febl_chats",JSON.stringify(chats));
-localStorage.setItem("febl_lang",lang);
-localStorage.setItem("febl_theme",theme);
-localStorage.setItem("febl_activeChat",activeChat);
+  localStorage.setItem("febl_chats",JSON.stringify(chats));
+  localStorage.setItem("febl_lang",lang);
+  localStorage.setItem("febl_theme",theme);
+  localStorage.setItem("febl_activeChat",activeChat);
 }
 
 function loadAll(){
-const c=localStorage.getItem("febl_chats");
-const l=localStorage.getItem("febl_lang");
-const t=localStorage.getItem("febl_theme");
-const a=localStorage.getItem("febl_activeChat");
+  const c=localStorage.getItem("febl_chats");
+  const l=localStorage.getItem("febl_lang");
+  const t=localStorage.getItem("febl_theme");
+  const a=localStorage.getItem("febl_activeChat");
 
-if(c)chats=JSON.parse(c); else chats=[[]];
-if(l)lang=l;
-if(t)theme=t;
-if(a)activeChat=parseInt(a);
+  if(c) chats=JSON.parse(c);
+  if(l) lang=l;
+  if(t) theme=t;
+  if(a) activeChat=parseInt(a);
 
-applyTheme(theme);
-applyLanguage();
-renderChat();
-renderTabs();
+  safeInit();
+  applyTheme(theme);
+  applyLanguage();
+  renderTabs();
+  renderChat();
 }
 
 function applyLanguage(){
-document.getElementById("txt_header").textContent=ui[lang].header;
-document.getElementById("userInput").placeholder=ui[lang].placeholder;
+  document.getElementById("txt_header").textContent=ui[lang].header;
+  document.getElementById("userInput").placeholder=ui[lang].placeholder;
 
-document.getElementById("btn_newchat").textContent=ui[lang].newchat;
-document.getElementById("btn_deletechat").textContent=ui[lang].delete;
-document.getElementById("btn_lang").textContent=ui[lang].lang;
-document.getElementById("btn_theme").textContent=ui[lang].theme;
-document.getElementById("btn_home").textContent=ui[lang].home;
-document.getElementById("btn_about").textContent=ui[lang].about;
-document.getElementById("btn_support").textContent=ui[lang].support;
+  document.getElementById("btn_newchat").textContent=ui[lang].newchat;
+  document.getElementById("btn_deletechat").textContent=ui[lang].delete;
+  document.getElementById("btn_lang").textContent=ui[lang].lang;
+  document.getElementById("btn_theme").textContent=ui[lang].theme;
+  document.getElementById("btn_home").textContent=ui[lang].home;
+  document.getElementById("btn_about").textContent=ui[lang].about;
+  document.getElementById("btn_support").textContent=ui[lang].support;
 
-document.getElementById("tabs_newchat").textContent=ui[lang].newchat;
+  document.getElementById("tabs_newchat").textContent=ui[lang].newchat;
 
-renderTabs();
-saveAll();
-}
-
-function applyTheme(t){
-theme=t;
-
-if(t==="purple"){
-set("--c1","#0a0b1f");set("--c2","#13143a");set("--c3","#1a1b4a");set("--c4","#1e1f4d");
-set("--assistant","#1e1f4d");set("--user","#7c3aed");set("--accent","#7c3aed");
-}
-if(t==="blue"){
-set("--c1","#001a33");set("--c2","#00264d");set("--c3","#003366");set("--c4","#004080");
-set("--assistant","#004080");set("--user","#3399ff");set("--accent","#3399ff");
-}
-if(t==="red"){
-set("--c1","#330000");set("--c2","#4d0000");set("--c3","#660000");set("--c4","#800000");
-set("--assistant","#800000");set("--user","#ff3333");set("--accent","#ff3333");
-}
-if(t==="green"){
-set("--c1","#00261a");set("--c2","#003322");set("--c3","#004d33");set("--c4","#006644");
-set("--assistant","#006644");set("--user","#33cc99");set("--accent","#33cc99");
-}
-if(t==="black"){
-set("--c1","#000");set("--c2","#0d0d0d");set("--c3","#1a1a1a");set("--c4","#262626");
-set("--assistant","#262626");set("--user","#3b82f6");set("--accent","#3b82f6");
-}
-
-saveAll();
+  renderTabs();
+  saveAll();
 }
 
 function set(v,x){document.documentElement.style.setProperty(v,x)}
 
+function applyTheme(t){
+  theme=t;
+
+  if(t==="purple"){
+    set("--c1","#0a0b1f");set("--c2","#13143a");set("--c3","#1a1b4a");set("--c4","#1e1f4d");
+    set("--assistant","#1e1f4d");set("--user","#7c3aed");set("--accent","#7c3aed");
+  }
+  if(t==="blue"){
+    set("--c1","#001a33");set("--c2","#00264d");set("--c3","#003366");set("--c4","#004080");
+    set("--assistant","#004080");set("--user","#3399ff");set("--accent","#3399ff");
+  }
+  if(t==="red"){
+    set("--c1","#330000");set("--c2","#4d0000");set("--c3","#660000");set("--c4","#800000");
+    set("--assistant","#800000");set("--user","#ff3333");set("--accent","#ff3333");
+  }
+  if(t==="green"){
+    set("--c1","#00261a");set("--c2","#003322");set("--c3","#004d33");set("--c4","#006644");
+    set("--assistant","#006644");set("--user","#33cc99");set("--accent","#33cc99");
+  }
+  if(t==="black"){
+    set("--c1","#000");set("--c2","#0d0d0d");set("--c3","#1a1a1a");set("--c4","#262626");
+    set("--assistant","#262626");set("--user","#3b82f6");set("--accent","#3b82f6");
+  }
+
+  saveAll();
+}
+
 function newChat(){
-chats.push([]);
-activeChat=chats.length-1;
-renderTabs();
-renderChat();
-saveAll();
+  chats.push([]);
+  activeChat=chats.length-1;
+  safeInit();
+  renderTabs();
+  renderChat();
+  saveAll();
 }
 
 function deleteChat(){
-if(chats.length>1){
-chats.splice(activeChat,1);
-activeChat=0;
-}else chats[0]=[];
-renderTabs();
-renderChat();
-saveAll();
+  if(chats.length>1){
+    chats.splice(activeChat,1);
+    activeChat=0;
+  } else {
+    chats[0]=[];
+  }
+  safeInit();
+  renderTabs();
+  renderChat();
+  saveAll();
 }
 
 function renderTabs(){
-const list=document.getElementById("tabsList");
-list.innerHTML="";
-chats.forEach((c,i)=>{
-const div=document.createElement("div");
-div.className="tab-item";
-div.textContent=ui[lang].chat+(i+1);
-div.onclick=()=>{activeChat=i;closeTabs();renderTabs();renderChat();saveAll()};
-list.appendChild(div);
-});
+  safeInit();
+  const list=document.getElementById("tabsList");
+  list.innerHTML="";
+  chats.forEach((c,i)=>{
+    const div=document.createElement("div");
+    div.className="tab-item";
+    div.textContent=ui[lang].chat+(i+1);
+    div.onclick=()=>{activeChat=i;closeTabs();renderTabs();renderChat();saveAll()};
+    list.appendChild(div);
+  });
 }
 
 function renderChat(){
-const chat=document.getElementById("chat");
-chat.innerHTML="";
-chats[activeChat].forEach(m=>{
-const row=document.createElement("div");
-row.className="msg-row "+(m.role==="user"?"user-row":"assistant-row");
-const bubble=document.createElement("div");
-bubble.className="msg-bubble";
-bubble.textContent=m.content;
-row.appendChild(bubble);
-chat.appendChild(row);
-});
-chat.scrollTop=chat.scrollHeight;
+  safeInit();
+  const chat=document.getElementById("chat");
+  chat.innerHTML="";
+  chats[activeChat].forEach(m=>{
+    const row=document.createElement("div");
+    row.className="msg-row "+(m.role==="user"?"user-row":"assistant-row");
+    const bubble=document.createElement("div");
+    bubble.className="msg-bubble";
+    bubble.textContent=m.content;
+    row.appendChild(bubble);
+    chat.appendChild(row);
+  });
+  chat.scrollTop=chat.scrollHeight;
 }
 
 function addMessage(role,text){
-chats[activeChat].push({role,content:text});
-renderChat();
-saveAll();
+  safeInit();
+  chats[activeChat].push({role,content:text});
+  renderChat();
+  saveAll();
 }
 
 function loading(){
-const chat=document.getElementById("chat");
-const row=document.createElement("div");
-row.className="msg-row assistant-row";
-row.id="loadingBubble";
-const bubble=document.createElement("div");
-bubble.className="msg-bubble";
-bubble.textContent="…";
-row.appendChild(bubble);
-chat.appendChild(row);
-chat.scrollTop=chat.scrollHeight;
+  const chat=document.getElementById("chat");
+  const row=document.createElement("div");
+  row.className="msg-row assistant-row";
+  row.id="loadingBubble";
+  const bubble=document.createElement("div");
+  bubble.className="msg-bubble";
+  bubble.textContent="…";
+  row.appendChild(bubble);
+  chat.appendChild(row);
+  chat.scrollTop=chat.scrollHeight;
 }
 
 function removeLoading(){
-const el=document.getElementById("loadingBubble");
-if(el)el.remove();
+  const el=document.getElementById("loadingBubble");
+  if(el)el.remove();
 }
 
 async function sendToAI(text){
-loading();
-try{
-const history=[
-{role:"system",content:lang==="de"?"Du antwortest freundlich und hilfst.":"You respond friendly and helpful."},
-...chats[activeChat],
-{role:"user",content:text}
-];
+  loading();
+  try{
+    const history=[
+      {role:"system",content:lang==="de"?"Du antwortest freundlich und hilfst.":"You respond friendly and helpful."},
+      ...(chats[activeChat]||[]),
+      {role:"user",content:text}
+    ];
 
-const res=await fetch(API_URL,{
-method:"POST",
-headers:{"Content-Type":"application/json","Authorization":"Bearer "+API_KEY},
-body:JSON.stringify({model:MODEL,messages:history})
-});
+    const res=await fetch(API_URL,{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+API_KEY},
+      body:JSON.stringify({model:MODEL,messages:history})
+    });
 
-const data=await res.json();
-removeLoading();
-addMessage("assistant",data.choices[0].message.content);
-}catch(e){
-removeLoading();
-addMessage("assistant","Fehler: "+e.message);
-}
+    const data=await res.json();
+    removeLoading();
+    addMessage("assistant",data.choices[0].message.content);
+  }catch(e){
+    removeLoading();
+    addMessage("assistant","Fehler: "+e.message);
+  }
 }
 
 document.getElementById("sendBtn").onclick=()=>{
-const t=document.getElementById("userInput").value.trim();
-if(!t)return;
-document.getElementById("userInput").value="";
-addMessage("user",t);
-sendToAI(t);
+  const t=document.getElementById("userInput").value.trim();
+  if(!t)return;
+  document.getElementById("userInput").value="";
+  addMessage("user",t);
+  sendToAI(t);
 };
 
 document.getElementById("userInput").onkeydown=e=>{
-if(e.key==="Enter")document.getElementById("sendBtn").click();
+  if(e.key==="Enter")document.getElementById("sendBtn").click();
 };
 
 document.getElementById("uploadBtn").onclick=()=>document.getElementById("fileInput").click();
 
 document.getElementById("fileInput").onchange=e=>{
-const f=e.target.files[0];
-if(!f)return;
-addMessage("user","📎 "+f.name);
-sendToAI("Analysiere Datei: "+f.name);
+  const f=e.target.files[0];
+  if(!f)return;
+  addMessage("user","📎 "+f.name);
+  sendToAI("Analysiere Datei: "+f.name);
 };
 
-document.getElementById("menuBtn").onclick=()=>openMenu();
-document.getElementById("tabsBtn").onclick=()=>openTabs();
-
-function openMenu(){document.getElementById("menuSheet").classList.add("open")}
+function openMenu(){document.getElementById("menuSheet").classList.toggle("open")}
 function closeMenu(){document.getElementById("menuSheet").classList.remove("open")}
-function openTabs(){document.getElementById("tabsSheet").classList.add("open")}
+function openTabs(){document.getElementById("tabsSheet").classList.toggle("open")}
 function closeTabs(){document.getElementById("tabsSheet").classList.remove("open")}
+
+document.getElementById("menuBtn").onclick=openMenu;
+document.getElementById("tabsBtn").onclick=openTabs;
+
+document.addEventListener("click",e=>{
+  const menu=document.getElementById("menuSheet");
+  const tabs=document.getElementById("tabsSheet");
+  const menuBtn=document.getElementById("menuBtn");
+  const tabsBtn=document.getElementById("tabsBtn");
+
+  if(!menu.contains(e.target) && e.target!==menuBtn){
+    menu.classList.remove("open");
+  }
+
+  if(!tabs.contains(e.target) && e.target!==tabsBtn){
+    tabs.classList.remove("open");
+  }
+});
 
 document.getElementById("btn_newchat").onclick=()=>{newChat();closeMenu()};
 document.getElementById("btn_deletechat").onclick=()=>{deleteChat();closeMenu()};
@@ -330,21 +368,21 @@ canvas.height=window.innerHeight;
 
 let particles=[];
 for(let i=0;i<60;i++){
-particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*3+1,dx:(Math.random()-0.5)*0.6,dy:(Math.random()-0.5)*0.6});
+  particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*3+1,dx:(Math.random()-0.5)*0.6,dy:(Math.random()-0.5)*0.6});
 }
 
 function animate(){
-ctx.clearRect(0,0,canvas.width,canvas.height);
-particles.forEach(p=>{
-ctx.beginPath();
-ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-ctx.fillStyle="rgba(255,255,255,0.3)";
-ctx.fill();
-p.x+=p.dx;p.y+=p.dy;
-if(p.x<0||p.x>canvas.width)p.dx*=-1;
-if(p.y<0||p.y>canvas.height)p.dy*=-1;
-});
-requestAnimationFrame(animate);
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particles.forEach(p=>{
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle="rgba(255,255,255,0.3)";
+    ctx.fill();
+    p.x+=p.dx;p.y+=p.dy;
+    if(p.x<0||p.x>canvas.width)p.dx*=-1;
+    if(p.y<0||p.y>canvas.height)p.dy*=-1;
+  });
+  requestAnimationFrame(animate);
 }
 animate();
 
