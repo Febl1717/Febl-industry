@@ -21,7 +21,7 @@ body{background:linear-gradient(180deg,var(--c1),#05050a);color:var(--t1);displa
 .header-left{display:flex;align-items:center;gap:10px}
 .header-btn{width:44px;height:44px;border-radius:12px;background:var(--glass);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--t1);cursor:pointer;backdrop-filter:blur(6px);transition:transform .18s,box-shadow .18s}
 .header-btn:active{transform:scale(.98)}
-.header-title{font-weight:700;font-size:18px;color:var(--t2)}
+.header-title{font-weight:700;font-size:18px;color:var(--t2);max-width:60vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .header-right{display:flex;align-items:center;gap:8px}
 .container{display:flex;flex:1;position:relative;z-index:2;overflow:hidden}
 .chat{flex:1;overflow-y:auto;padding:18px 14px;display:flex;flex-direction:column;gap:8px}
@@ -179,7 +179,7 @@ function loadAll(){
   renderTabs();
   renderChat();
   renderTodos();
-  const av=localStorage.getItem("febl_avatar"); if(av){ const img=document.getElementById("miniAvatar"); img.src=av; img.style.display="block"; document.getElementById("avatarPreview").style.backgroundImage=`url(${av})`; document.getElementById("avatarPreview").dataset.src=av; document.getElementById("avatarPreview").textContent=""; }
+  const av=localStorage.getItem("febl_avatar"); if(av){ const img=document.getElementById("miniAvatar"); img.src=av; img.style.display="block"; const ap=document.getElementById("avatarPreview"); ap.style.backgroundImage=`url(${av})`; ap.dataset.src=av; ap.textContent=""; }
 }
 function applyLanguage(){
   document.getElementById("txt_header").textContent = lang==="de" ? "Febl KI" : "Febl AI";
@@ -246,9 +246,34 @@ function renderTabs(){
     const div=document.createElement("div");
     div.className="tab-item";
     div.textContent = (i===activeChat ? "● " : "") + (lang==="de" ? "Chat " : "Chat ") + (i+1);
-    div.onclick = ()=>{ activeChat=i; closeTabs(); renderTabs(); renderChat(); saveAll(); };
+    div.onclick = ()=>{ activeChat=i; closeTabs(); renderTabs(); renderChat(); saveAll(); updateHeader(); };
     list.appendChild(div);
   });
+}
+function deriveTitleFromChat(chat){
+  if(!Array.isArray(chat) || chat.length===0) return null;
+  for(let i=chat.length-1;i>=0;i--){
+    const m=chat[i];
+    if(!m || !m.content) continue;
+    const txt=String(m.content).trim();
+    if(txt.length===0) continue;
+    const short = txt.split("\n")[0].slice(0,40);
+    return short + (short.length>=40 ? "…" : "");
+  }
+  return null;
+}
+function updateHeader(){
+  safeInit();
+  const name = (document.getElementById("nameInput") && document.getElementById("nameInput").value) || "";
+  const titleEl = document.getElementById("txt_header");
+  const chatTitle = deriveTitleFromChat(chats[activeChat]);
+  if(chatTitle){
+    titleEl.textContent = chatTitle;
+  } else if(name){
+    titleEl.textContent = name;
+  } else {
+    titleEl.textContent = (lang==="de" ? "Chat " : "Chat ") + (activeChat+1);
+  }
 }
 function renderChat(){
   safeInit();
@@ -267,6 +292,7 @@ function renderChat(){
     chatEl.appendChild(row);
   });
   chatEl.scrollTop = chatEl.scrollHeight;
+  updateHeader();
 }
 function addMessage(role,text){
   safeInit();
@@ -320,6 +346,7 @@ function setAvatarFromFile(file){
     document.getElementById("miniAvatar").src=data; document.getElementById("miniAvatar").style.display="block";
     const av=document.getElementById("avatarPreview"); av.style.backgroundImage=`url(${data})`; av.dataset.src=data; av.textContent="";
     saveAll();
+    updateHeader();
   };
   reader.readAsDataURL(file);
 }
@@ -376,6 +403,7 @@ async function sendToAIStream(text){
         assistantText += chunk;
         bubble.textContent = assistantText;
         chatEl.scrollTop = chatEl.scrollHeight;
+        updateHeader();
       }
     }
     removeLoading();
@@ -414,9 +442,9 @@ document.addEventListener("click",e=>{
   if(tabs && !tabs.contains(e.target) && e.target!==tabsBtn) tabs.classList.remove("open");
   if(side && sideOpen && !side.contains(e.target) && e.target!==document.getElementById("btn_todo")) side.classList.remove("open");
 });
-document.getElementById("btn_newchat")?.addEventListener("click",()=>{ newChat(); document.getElementById("menuSheet").classList.remove("open"); });
-document.getElementById("tabs_newchat")?.addEventListener("click",()=>{ newChat(); document.getElementById("tabsSheet").classList.remove("open"); });
-document.getElementById("btn_deletechat")?.addEventListener("click",()=>{ deleteChat(); document.getElementById("menuSheet").classList.remove("open"); });
+document.getElementById("btn_newchat")?.addEventListener("click",()=>{ newChat(); document.getElementById("menuSheet").classList.remove("open"); updateHeader(); });
+document.getElementById("tabs_newchat")?.addEventListener("click",()=>{ newChat(); document.getElementById("tabsSheet").classList.remove("open"); updateHeader(); });
+document.getElementById("btn_deletechat")?.addEventListener("click",()=>{ deleteChat(); document.getElementById("menuSheet").classList.remove("open"); updateHeader(); });
 document.getElementById("btn_todo")?.addEventListener("click",()=>{
   const side=document.getElementById("sidePanel"); side.classList.toggle("open"); document.getElementById("menuSheet").classList.remove("open");
 });
@@ -442,11 +470,16 @@ document.getElementById("avatarBtn")?.addEventListener("click",()=> document.get
 document.getElementById("avatarUpload")?.addEventListener("change",e=>{
   const f=e.target.files && e.target.files[0]; if(!f) return; setAvatarFromFile(f);
 });
-document.getElementById("nameInput")?.addEventListener("change",e=>{ const v=e.target.value||""; document.getElementById("avatarPreview").textContent = v? v.charAt(0).toUpperCase() : "F"; saveAll(); });
-document.getElementById("btn_profile")?.addEventListener("click",()=>{ document.getElementById("sidePanel").classList.toggle("open"); document.getElementById("menuSheet").classList.remove("open"); });
+document.getElementById("nameInput")?.addEventListener("input",e=>{
+  const v=e.target.value||"";
+  document.getElementById("avatarPreview").textContent = v? v.charAt(0).toUpperCase() : "F";
+  saveAll();
+  updateHeader();
+});
+document.getElementById("btn_profile")?.addEventListener("click",()=>{ document.getElementById("sidePanel").classList.toggle("open"); document.getElementById("menuSheet").classList.remove("open"); updateHeader(); });
 document.getElementById("btn_about")?.addEventListener("click",()=>{ alert("Febl KI — Mobile & Desktop App"); document.getElementById("menuSheet").classList.remove("open"); });
 document.getElementById("btn_support")?.addEventListener("click",()=>{ window.location.href="https://febl-industry-3.jimdosite.com/kontakt/"; });
-document.getElementById("btn_deletechat")?.addEventListener("dblclick",()=>{ chats=[]; chats=[[]]; activeChat=0; saveAll(); renderTabs(); renderChat(); });
+document.getElementById("btn_deletechat")?.addEventListener("dblclick",()=>{ chats=[]; chats=[[]]; activeChat=0; saveAll(); renderTabs(); renderChat(); updateHeader(); });
 const emojis = ["😀","😄","😅","😂","😊","😉","😍","🤔","😴","😎","👍","🙏","🔥","✨","🎉","💡","✅","❌","📎","📝"];
 const picker=document.getElementById("emojiPicker");
 emojis.forEach(e=>{
@@ -495,11 +528,6 @@ function periodicCleanup(){
   saveAll();
 }
 setInterval(periodicCleanup,1000*60*60);
-function resizeCanvas(){
-  const el=document.getElementById("particles");
-  el.width = window.innerWidth;
-  el.height = window.innerHeight;
-}
 (function initParticles(){
   const canvas = document.getElementById("particles");
   canvas.style.position="fixed"; canvas.style.left="0"; canvas.style.top="0"; canvas.style.width="100%"; canvas.style.height="100%"; canvas.style.zIndex="0";
@@ -526,6 +554,7 @@ function resizeCanvas(){
 })();
 loadAll();
 addMessage("assistant", lang==="de" ? "Hallo Felix! Wie kann ich dir helfen?" : "Hello Felix! How can I help you?");
+updateHeader();
 </script>
 </body>
 </html>
