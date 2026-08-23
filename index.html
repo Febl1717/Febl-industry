@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Febl KI</title>
 
 <style>
@@ -14,7 +14,7 @@
 --t1:#fff;--t2:#e9d5ff;
 }
 
-body{background:var(--c1);color:var(--t1);height:100vh;display:flex;overflow:hidden}
+body{background:var(--c1);color:var(--t1);height:100vh;display:flex;flex-direction:column;overflow:hidden}
 
 #intro{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:flex;justify-content:center;align-items:center;flex-direction:column;z-index:9999;transition:1s}
 #intro h1{font-size:48px;color:#fff;animation:introZoom 1.4s ease}
@@ -22,89 +22,59 @@ body{background:var(--c1);color:var(--t1);height:100vh;display:flex;overflow:hid
 
 #particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
 
-.sidebar-chats{width:180px;background:var(--c2);display:flex;flex-direction:column;gap:10px;padding:12px;overflow-y:auto}
-.chat-tab{padding:10px;background:var(--c4);border-radius:10px;cursor:pointer;color:#fff}
-.chat-tab.active{background:var(--accent)}
+.header{height:60px;background:var(--c3);display:flex;align-items:center;justify-content:space-between;padding:0 16px;color:var(--t2);font-size:20px;font-weight:600}
 
-.sidebar{width:60px;background:var(--c2);display:flex;flex-direction:column;gap:12px;padding:10px 6px}
-.sidebar-icon{display:flex;align-items:center;gap:10px;padding:10px;background:var(--c4);border-radius:12px;cursor:pointer;color:#fff}
+.header-btn{width:40px;height:40px;border-radius:10px;background:var(--c4);display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;cursor:pointer}
 
-.settings-panel{position:fixed;right:-300px;top:0;width:300px;height:100%;background:var(--c2);padding:20px;display:flex;flex-direction:column;gap:20px;transition:.3s;z-index:999}
-.settings-panel.open{right:0}
-.settings-title{font-size:22px;font-weight:700;color:var(--accent)}
-.settings-select{width:100%;padding:10px;border:none;border-radius:10px;background:var(--c4);color:#fff;font-size:16px}
+.chat{flex:1;overflow-y:auto;padding:16px;z-index:1}
 
-.main{flex:1;display:flex;flex-direction:column;height:100vh;z-index:1}
-.header{padding:16px 22px;font-size:22px;font-weight:700;background:var(--c3);color:var(--t2)}
-
-.chat{flex:1;padding:20px;overflow-y:auto;background:transparent;position:relative;z-index:1}
 .msg-row{margin-bottom:16px;display:flex;animation:bubbleIn .25s ease}
 @keyframes bubbleIn{0%{transform:translateY(10px);opacity:0}100%{transform:translateY(0);opacity:1}}
+
 .msg-bubble{max-width:80%;padding:12px 16px;border-radius:18px;font-size:16px;line-height:1.5;white-space:pre-wrap}
+
 .user-row{justify-content:flex-end}
 .user-row .msg-bubble{background:var(--user)}
+
 .assistant-row .msg-bubble{background:var(--assistant);border:1px solid rgba(255,255,255,.1)}
 
-.loading{display:flex;gap:6px;padding:12px 16px;background:var(--assistant);border-radius:18px;width:40px}
-.loading div{width:8px;height:8px;background:#fff;border-radius:50%;animation:load .8s infinite}
-.loading div:nth-child(2){animation-delay:.2s}
-.loading div:nth-child(3){animation-delay:.4s}
-@keyframes load{0%{opacity:.2;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}100%{opacity:.2;transform:scale(1)}}
+.input-bar{padding:10px;background:var(--c1);display:flex;justify-content:center}
+.input-box{width:95%;background:var(--c4);border-radius:30px;padding:10px 16px;display:flex;gap:10px;align-items:center}
 
-.input-bar{padding:10px 0;display:flex;justify-content:center;background:transparent;position:sticky;bottom:10px;z-index:50}
-.input-box{width:94%;background:var(--c4);border:1px solid rgba(255,255,255,.18);padding:10px 16px;border-radius:30px;display:flex;gap:10px;align-items:center;box-shadow:0 6px 22px rgba(0,0,0,.45);transition:.25s}
-.input-box:focus-within{box-shadow:0 0 14px var(--accent),0 6px 22px rgba(0,0,0,.45)}
+#userInput{flex:1;background:transparent;border:none;outline:none;color:var(--t1);font-size:18px}
 
-#userInput{flex:1;background:transparent;border:none;outline:none;color:var(--t1);font-size:18px;padding:6px 0}
-
-.send-btn{width:44px;height:44px;background:var(--accent);border:none;border-radius:50%;color:var(--t1);font-size:22px;cursor:pointer;transition:.25s}
-.send-btn:hover{transform:scale(1.1)}
+.send-btn{width:44px;height:44px;background:var(--accent);border:none;border-radius:50%;color:#fff;font-size:22px;cursor:pointer}
 
 .upload-btn{width:44px;height:44px;background:#444;border:none;border-radius:50%;color:#fff;font-size:22px;cursor:pointer}
 
-@media(max-width:600px){
-.sidebar-chats{display:none}
-.sidebar{width:58px}
-.input-box{width:94%;padding:10px 16px;border-radius:30px}
-#userInput{font-size:18px;padding:6px 0}
-.send-btn{width:44px;height:44px;font-size:22px}
+.bottom-sheet{position:fixed;left:0;right:0;bottom:-100%;background:var(--c2);padding:20px;border-radius:20px 20px 0 0;transition:.3s;z-index:999}
+.bottom-sheet.open{bottom:0}
+
+.sheet-btn{width:100%;padding:14px;background:var(--c4);border-radius:12px;color:#fff;font-size:18px;margin-bottom:10px;text-align:center}
+
+.tabs-sheet{position:fixed;left:0;right:0;bottom:-100%;background:var(--c2);padding:20px;border-radius:20px 20px 0 0;transition:.3s;z-index:999}
+.tabs-sheet.open{bottom:0}
+
+.tab-item{padding:14px;background:var(--c4);border-radius:12px;color:#fff;font-size:18px;margin-bottom:10px;text-align:center}
+
+@media(min-width:700px){
+.header{display:none}
+.bottom-sheet,.tabs-sheet{display:none}
 }
 </style>
 </head>
 
-<body class="theme-purple">
+<body>
 
 <div id="intro"><h1>Febl KI</h1></div>
 <canvas id="particles"></canvas>
 
-<div class="sidebar-chats" id="chatTabs"></div>
-
-<div class="sidebar">
-<div class="sidebar-icon" data-action="home" id="btn_home">🏠</div>
-<div class="sidebar-icon" data-action="about" id="btn_about">👤</div>
-<div class="sidebar-icon" data-action="support" id="btn_support">💬</div>
-<div class="sidebar-icon" data-action="newchat" id="btn_newchat">➕</div>
-<div class="sidebar-icon" data-action="deletechat" id="btn_deletechat">🗑️</div>
-<div class="sidebar-icon" data-action="settings" id="btn_settings">⚙️</div>
+<div class="header">
+<div class="header-btn" id="menuBtn">☰</div>
+<div id="txt_header">Febl KI</div>
+<div class="header-btn" id="tabsBtn">⋮</div>
 </div>
 
-<div id="settingsPanel" class="settings-panel">
-<div class="settings-title" id="txt_settings_title">Einstellungen</div>
-<select id="themeSelect" class="settings-select">
-<option value="purple">Lila</option>
-<option value="blue">Blau</option>
-<option value="red">Rot</option>
-<option value="green">Grün</option>
-<option value="black">Schwarz</option>
-</select>
-<select id="langSelect" class="settings-select">
-<option value="de">Deutsch</option>
-<option value="en">English</option>
-</select>
-</div>
-
-<div class="main">
-<div class="header" id="txt_header">Febl KI</div>
 <div class="chat" id="chat"></div>
 
 <div class="input-bar">
@@ -115,21 +85,36 @@ body{background:var(--c1);color:var(--t1);height:100vh;display:flex;overflow:hid
 <button class="send-btn" id="sendBtn">➤</button>
 </div>
 </div>
+
+<div class="bottom-sheet" id="menuSheet">
+<div class="sheet-btn" id="btn_newchat">Neuer Chat</div>
+<div class="sheet-btn" id="btn_deletechat">Chat löschen</div>
+<div class="sheet-btn" id="btn_lang">Sprache</div>
+<div class="sheet-btn" id="btn_theme">Theme</div>
+<div class="sheet-btn" id="btn_home">Home</div>
+<div class="sheet-btn" id="btn_about">Über Febl</div>
+<div class="sheet-btn" id="btn_support">Support</div>
+<div class="sheet-btn">Version 1.0</div>
+</div>
+
+<div class="tabs-sheet" id="tabsSheet">
+<div id="tabsList"></div>
+<div class="sheet-btn" id="tabs_newchat">Neuer Chat</div>
 </div>
 
 <script>
 const API_KEY="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";
-const MODEL="groq/compound-mini";
+  const MODEL="groq/compound-mini";
 const API_URL="https://api.groq.com/openai/v1/chat/completions";
 
 let lang="de";
+let theme="purple";
 let chats=[];
 let activeChat=0;
-let theme="purple";
 
 const ui={
-de:{home:"🏠",about:"👤",support:"💬",newchat:"➕",deletechat:"🗑️",settings:"⚙️",header:"Febl KI",settings_title:"Einstellungen",placeholder:"Nachricht eingeben…",chat:"Chat "},
-en:{home:"🏠",about:"👤",support:"💬",newchat:"➕",deletechat:"🗑️",settings:"⚙️",header:"Febl AI",settings_title:"Settings",placeholder:"Type a message…",chat:"Chat "}
+de:{header:"Febl KI",placeholder:"Nachricht eingeben…",chat:"Chat ",newchat:"Neuer Chat",delete:"Chat löschen",lang:"Sprache",theme:"Theme",home:"Home",about:"Über Febl",support:"Support"},
+en:{header:"Febl AI",placeholder:"Type a message…",chat:"Chat ",newchat:"New chat",delete:"Delete chat",lang:"Language",theme:"Theme",home:"Home",about:"About Febl",support:"Support"}
 };
 
 function saveAll(){
@@ -140,88 +125,68 @@ localStorage.setItem("febl_activeChat",activeChat);
 }
 
 function loadAll(){
-const savedChats=localStorage.getItem("febl_chats");
-const savedLang=localStorage.getItem("febl_lang");
-const savedTheme=localStorage.getItem("febl_theme");
-const savedActive=localStorage.getItem("febl_activeChat");
+const c=localStorage.getItem("febl_chats");
+const l=localStorage.getItem("febl_lang");
+const t=localStorage.getItem("febl_theme");
+const a=localStorage.getItem("febl_activeChat");
 
-if(savedChats)chats=JSON.parse(savedChats);
-else chats=[[]];
-
-if(savedLang)lang=savedLang;
-if(savedTheme)theme=savedTheme;
-if(savedActive)activeChat=parseInt(savedActive);
+if(c)chats=JSON.parse(c); else chats=[[]];
+if(l)lang=l;
+if(t)theme=t;
+if(a)activeChat=parseInt(a);
 
 applyTheme(theme);
 applyLanguage();
-renderTabs();
 renderChat();
+renderTabs();
 }
 
 function applyLanguage(){
+document.getElementById("txt_header").textContent=ui[lang].header;
+document.getElementById("userInput").placeholder=ui[lang].placeholder;
+
+document.getElementById("btn_newchat").textContent=ui[lang].newchat;
+document.getElementById("btn_deletechat").textContent=ui[lang].delete;
+document.getElementById("btn_lang").textContent=ui[lang].lang;
+document.getElementById("btn_theme").textContent=ui[lang].theme;
 document.getElementById("btn_home").textContent=ui[lang].home;
 document.getElementById("btn_about").textContent=ui[lang].about;
 document.getElementById("btn_support").textContent=ui[lang].support;
-document.getElementById("btn_newchat").textContent=ui[lang].newchat;
-document.getElementById("btn_deletechat").textContent=ui[lang].deletechat;
-document.getElementById("btn_settings").textContent=ui[lang].settings;
-document.getElementById("txt_header").textContent=ui[lang].header;
-document.getElementById("txt_settings_title").textContent=ui[lang].settings_title;
-document.getElementById("userInput").placeholder=ui[lang].placeholder;
+
+document.getElementById("tabs_newchat").textContent=ui[lang].newchat;
+
 renderTabs();
-renderChat();
 saveAll();
 }
 
 function applyTheme(t){
 theme=t;
+
 if(t==="purple"){
-document.documentElement.style.setProperty("--c1","#0a0b1f");
-document.documentElement.style.setProperty("--c2","#13143a");
-document.documentElement.style.setProperty("--c3","#1a1b4a");
-document.documentElement.style.setProperty("--c4","#1e1f4d");
-document.documentElement.style.setProperty("--assistant","#1e1f4d");
-document.documentElement.style.setProperty("--user","#7c3aed");
-document.documentElement.style.setProperty("--accent","#7c3aed");
+set("--c1","#0a0b1f");set("--c2","#13143a");set("--c3","#1a1b4a");set("--c4","#1e1f4d");
+set("--assistant","#1e1f4d");set("--user","#7c3aed");set("--accent","#7c3aed");
 }
 if(t==="blue"){
-document.documentElement.style.setProperty("--c1","#001a33");
-document.documentElement.style.setProperty("--c2","#00264d");
-document.documentElement.style.setProperty("--c3","#003366");
-document.documentElement.style.setProperty("--c4","#004080");
-document.documentElement.style.setProperty("--assistant","#004080");
-document.documentElement.style.setProperty("--user","#3399ff");
-document.documentElement.style.setProperty("--accent","#3399ff");
+set("--c1","#001a33");set("--c2","#00264d");set("--c3","#003366");set("--c4","#004080");
+set("--assistant","#004080");set("--user","#3399ff");set("--accent","#3399ff");
 }
 if(t==="red"){
-document.documentElement.style.setProperty("--c1","#330000");
-document.documentElement.style.setProperty("--c2","#4d0000");
-document.documentElement.style.setProperty("--c3","#660000");
-document.documentElement.style.setProperty("--c4","#800000");
-document.documentElement.style.setProperty("--assistant","#800000");
-document.documentElement.style.setProperty("--user","#ff3333");
-document.documentElement.style.setProperty("--accent","#ff3333");
+set("--c1","#330000");set("--c2","#4d0000");set("--c3","#660000");set("--c4","#800000");
+set("--assistant","#800000");set("--user","#ff3333");set("--accent","#ff3333");
 }
 if(t==="green"){
-document.documentElement.style.setProperty("--c1","#00261a");
-document.documentElement.style.setProperty("--c2","#003322");
-document.documentElement.style.setProperty("--c3","#004d33");
-document.documentElement.style.setProperty("--c4","#006644");
-document.documentElement.style.setProperty("--assistant","#006644");
-document.documentElement.style.setProperty("--user","#33cc99");
-document.documentElement.style.setProperty("--accent","#33cc99");
+set("--c1","#00261a");set("--c2","#003322");set("--c3","#004d33");set("--c4","#006644");
+set("--assistant","#006644");set("--user","#33cc99");set("--accent","#33cc99");
 }
 if(t==="black"){
-document.documentElement.style.setProperty("--c1","#000000");
-document.documentElement.style.setProperty("--c2","#0d0d0d");
-document.documentElement.style.setProperty("--c3","#1a1a1a");
-document.documentElement.style.setProperty("--c4","#262626");
-document.documentElement.style.setProperty("--assistant","#262626");
-document.documentElement.style.setProperty("--user","#3b82f6");
-document.documentElement.style.setProperty("--accent","#3b82f6");
+set("--c1","#000");set("--c2","#0d0d0d");set("--c3","#1a1a1a");set("--c4","#262626");
+set("--assistant","#262626");set("--user","#3b82f6");set("--accent","#3b82f6");
 }
+
 saveAll();
 }
+
+function set(v,x){document.documentElement.style.setProperty(v,x)}
 
 function newChat(){
 chats.push([]);
@@ -235,23 +200,21 @@ function deleteChat(){
 if(chats.length>1){
 chats.splice(activeChat,1);
 activeChat=0;
-}else{
-chats[0]=[];
-}
+}else chats[0]=[];
 renderTabs();
 renderChat();
 saveAll();
 }
 
 function renderTabs(){
-const tabs=document.getElementById("chatTabs");
-tabs.innerHTML="";
+const list=document.getElementById("tabsList");
+list.innerHTML="";
 chats.forEach((c,i)=>{
-const t=document.createElement("div");
-t.className="chat-tab"+(i===activeChat?" active":"");
-t.textContent=ui[lang].chat+(i+1);
-t.onclick=()=>{activeChat=i;renderTabs();renderChat();saveAll()};
-tabs.appendChild(t);
+const div=document.createElement("div");
+div.className="tab-item";
+div.textContent=ui[lang].chat+(i+1);
+div.onclick=()=>{activeChat=i;closeTabs();renderTabs();renderChat();saveAll()};
+list.appendChild(div);
 });
 }
 
@@ -282,8 +245,8 @@ const row=document.createElement("div");
 row.className="msg-row assistant-row";
 row.id="loadingBubble";
 const bubble=document.createElement("div");
-bubble.className="loading";
-bubble.innerHTML="<div></div><div></div><div></div>";
+bubble.className="msg-bubble";
+bubble.textContent="…";
 row.appendChild(bubble);
 chat.appendChild(row);
 chat.scrollTop=chat.scrollHeight;
@@ -298,83 +261,78 @@ async function sendToAI(text){
 loading();
 try{
 const history=[
-{role:"system",content:lang==="de"?"Du antwortest freundlich und hilfst dem Nutzer.":"You answer friendly and help the user."},
+{role:"system",content:lang==="de"?"Du antwortest freundlich und hilfst.":"You respond friendly and helpful."},
 ...chats[activeChat],
 {role:"user",content:text}
 ];
+
 const res=await fetch(API_URL,{
 method:"POST",
 headers:{"Content-Type":"application/json","Authorization":"Bearer "+API_KEY},
-body:JSON.stringify({model:MODEL,messages:history,temperature:0.7,max_tokens:1024,top_p:1})
+body:JSON.stringify({model:MODEL,messages:history})
 });
+
 const data=await res.json();
 removeLoading();
-if(data.error){addMessage("assistant","⚠️ "+data.error.message);return;}
 addMessage("assistant",data.choices[0].message.content);
-}catch(err){
+}catch(e){
 removeLoading();
-addMessage("assistant","⚠️ Netzwerkfehler: "+err.message);
+addMessage("assistant","Fehler: "+e.message);
 }
 }
 
 document.getElementById("sendBtn").onclick=()=>{
-const text=document.getElementById("userInput").value.trim();
-if(!text)return;
+const t=document.getElementById("userInput").value.trim();
+if(!t)return;
 document.getElementById("userInput").value="";
-addMessage("user",text);
-sendToAI(text);
+addMessage("user",t);
+sendToAI(t);
 };
 
 document.getElementById("userInput").onkeydown=e=>{
 if(e.key==="Enter")document.getElementById("sendBtn").click();
 };
 
-document.getElementById("uploadBtn").onclick=()=>{
-document.getElementById("fileInput").click();
-};
+document.getElementById("uploadBtn").onclick=()=>document.getElementById("fileInput").click();
 
 document.getElementById("fileInput").onchange=e=>{
-const file=e.target.files[0];
-if(!file)return;
-addMessage("user","📎 "+file.name);
-sendToAI("Analysiere diese Datei: "+file.name);
+const f=e.target.files[0];
+if(!f)return;
+addMessage("user","📎 "+f.name);
+sendToAI("Analysiere Datei: "+f.name);
 };
 
-document.getElementById("chat").ondrop=e=>{
-e.preventDefault();
-const file=e.dataTransfer.files[0];
-if(!file)return;
-addMessage("user","📎 "+file.name);
-sendToAI("Analysiere dieses Bild: "+file.name);
-};
-document.getElementById("chat").ondragover=e=>e.preventDefault();
+document.getElementById("menuBtn").onclick=()=>openMenu();
+document.getElementById("tabsBtn").onclick=()=>openTabs();
 
-document.querySelectorAll(".sidebar-icon").forEach(icon=>{
-icon.onclick=()=>{
-const a=icon.dataset.action;
-if(a==="home")window.location.href="https://febl-industry-3.jimdosite.com/";
-if(a==="about")window.location.href="https://febl-industry-3.jimdosite.com/ueber-mich/";
-if(a==="support")window.location.href="https://febl-industry-3.jimdosite.com/kontakt/";
-if(a==="newchat")newChat();
-if(a==="deletechat")deleteChat();
-if(a==="settings")document.getElementById("settingsPanel").classList.toggle("open");
-};
-});
+function openMenu(){document.getElementById("menuSheet").classList.add("open")}
+function closeMenu(){document.getElementById("menuSheet").classList.remove("open")}
+function openTabs(){document.getElementById("tabsSheet").classList.add("open")}
+function closeTabs(){document.getElementById("tabsSheet").classList.remove("open")}
 
-document.getElementById("themeSelect").onchange=e=>applyTheme(e.target.value);
-document.getElementById("langSelect").onchange=e=>{lang=e.target.value;applyLanguage()};
+document.getElementById("btn_newchat").onclick=()=>{newChat();closeMenu()};
+document.getElementById("btn_deletechat").onclick=()=>{deleteChat();closeMenu()};
+document.getElementById("btn_lang").onclick=()=>{lang=lang==="de"?"en":"de";applyLanguage();closeMenu()};
+document.getElementById("btn_theme").onclick=()=>{theme=theme==="purple"?"blue":"purple";applyTheme(theme);closeMenu()};
+document.getElementById("btn_home").onclick=()=>window.location.href="https://febl-industry-3.jimdosite.com/";
+document.getElementById("btn_about").onclick=()=>window.location.href="https://febl-industry-3.jimdosite.com/ueber-mich/";
+document.getElementById("btn_support").onclick=()=>window.location.href="https://febl-industry-3.jimdosite.com/kontakt/";
 
-setTimeout(()=>{document.getElementById("intro").style.opacity="0"},1200);
-setTimeout(()=>{document.getElementById("intro").style.display="none"},2200);
+document.getElementById("tabs_newchat").onclick=()=>{newChat();closeTabs()};
+
+setTimeout(()=>document.getElementById("intro").style.opacity="0",1200);
+setTimeout(()=>document.getElementById("intro").style.display="none",2200);
 
 const canvas=document.getElementById("particles");
 const ctx=canvas.getContext("2d");
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
+
 let particles=[];
 for(let i=0;i<60;i++){
 particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*3+1,dx:(Math.random()-0.5)*0.6,dy:(Math.random()-0.5)*0.6});
 }
+
 function animate(){
 ctx.clearRect(0,0,canvas.width,canvas.height);
 particles.forEach(p=>{
