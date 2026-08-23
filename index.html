@@ -28,20 +28,6 @@ body{
   flex-direction:column;
 }
 
-/* FIX: Intro blockiert NICHT mehr */
-#intro{
-  position:fixed;
-  inset:0;
-  background:#000;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:999999;
-  opacity:1;
-  transition:opacity .5s ease;
-  pointer-events:none; /* WICHTIG */
-}
-
 /* HEADER */
 .header{
   height:60px;
@@ -50,7 +36,6 @@ body{
   align-items:center;
   justify-content:space-between;
   padding:0 16px;
-  z-index:10;
 }
 
 .header-title{
@@ -145,7 +130,6 @@ body{
   padding:20px;
   border-radius:20px 20px 0 0;
   transition:.3s;
-  z-index:20;
 }
 .bottom-sheet.open{bottom:0}
 
@@ -168,7 +152,6 @@ body{
   padding:20px;
   border-radius:20px 20px 0 0;
   transition:.3s;
-  z-index:20;
 }
 .tabs-sheet.open{bottom:0}
 
@@ -184,9 +167,6 @@ body{
 </head>
 
 <body>
-
-<!-- INTRO FIX -->
-<div id="intro"><h1 style="color:#fff;font-size:32px">Febl KI</h1></div>
 
 <div class="header">
   <div class="header-btn" id="menuBtn">☰</div>
@@ -216,30 +196,19 @@ body{
 </div>
 
 <script>
-/* INTRO FIX */
-document.addEventListener("DOMContentLoaded",()=>{
-  const intro=document.getElementById("intro");
-  intro.style.opacity="0";
-  setTimeout(()=>intro.style.display="none",600);
-});
   <script>
 /* ===========================
-   BASIS VARIABLEN
+   GROQ API
+=========================== */
+const API_KEY = "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";  
+const API_URL = "https://api.groq.com/openai/v1/chat/completions";
+const MODEL = "groq/compound-mini";
+
+/* ===========================
+   CHAT STORAGE
 =========================== */
 let chats = [[]];
 let activeChat = 0;
-
-/* ===========================
-   INTRO FIX
-=========================== */
-document.addEventListener("DOMContentLoaded", () => {
-  const intro = document.getElementById("intro");
-  intro.style.opacity = "0";
-  setTimeout(() => intro.style.display = "none", 600);
-
-  renderChat();
-  updateHeader();
-});
 
 /* ===========================
    HEADER UPDATE
@@ -259,7 +228,7 @@ function updateHeader() {
 }
 
 /* ===========================
-   CHAT RENDER
+   RENDER CHAT
 =========================== */
 function renderChat() {
   const chatEl = document.getElementById("chat");
@@ -282,11 +251,73 @@ function renderChat() {
 }
 
 /* ===========================
-   MESSAGE ADD
+   ADD MESSAGE
 =========================== */
 function addMessage(role, text) {
   chats[activeChat].push({ role, content: text });
   renderChat();
+}
+
+/* ===========================
+   STREAMING FROM GROQ
+=========================== */
+async function sendToGroqStream(userText) {
+  addMessage("user", userText);
+
+  // Loading bubble
+  const chatEl = document.getElementById("chat");
+  const row = document.createElement("div");
+  row.className = "msg-row assistant-row";
+  const bubble = document.createElement("div");
+  bubble.className = "msg-bubble";
+  bubble.textContent = "…";
+  row.appendChild(bubble);
+  chatEl.appendChild(row);
+  chatEl.scrollTop = chatEl.scrollHeight;
+
+  try {
+    const history = [
+      { role: "system", content: "Du bist eine hilfreiche KI." },
+      ...chats[activeChat],
+      { role: "user", content: userText }
+    ];
+
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + API_KEY,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: MODEL,
+        messages: history,
+        stream: true
+      })
+    });
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+
+    let fullText = "";
+    let done = false;
+
+    while (!done) {
+      const { value, done: doneReading } = await reader.read();
+      done = doneReading;
+
+      if (value) {
+        const chunk = decoder.decode(value);
+        fullText += chunk;
+        bubble.textContent = fullText;
+        chatEl.scrollTop = chatEl.scrollHeight;
+      }
+    }
+
+    addMessage("assistant", fullText);
+
+  } catch (err) {
+    bubble.textContent = "Fehler: " + err.message;
+  }
 }
 
 /* ===========================
@@ -298,12 +329,7 @@ document.getElementById("sendBtn").onclick = () => {
   if (!text) return;
 
   input.value = "";
-  addMessage("user", text);
-
-  // KI‑Antwort (Fake für jetzt)
-  setTimeout(() => {
-    addMessage("assistant", "Antwort auf: " + text);
-  }, 300);
+  sendToGroqStream(text);
 };
 
 /* ===========================
@@ -328,7 +354,7 @@ document.getElementById("tabsBtn").onclick = () => {
 };
 
 /* ===========================
-   NEUER CHAT
+   NEW CHAT
 =========================== */
 document.getElementById("btn_newchat").onclick = () => {
   chats.push([]);
@@ -349,7 +375,7 @@ document.getElementById("tabs_newchat").onclick = () => {
 };
 
 /* ===========================
-   CHAT LÖSCHEN
+   DELETE CHAT
 =========================== */
 document.getElementById("btn_deletechat").onclick = () => {
   if (chats.length > 1) {
@@ -366,7 +392,7 @@ document.getElementById("btn_deletechat").onclick = () => {
 };
 
 /* ===========================
-   TABS RENDER
+   RENDER TABS
 =========================== */
 function renderTabs() {
   const list = document.getElementById("tabsList");
@@ -403,4 +429,11 @@ document.addEventListener("click", e => {
     tabs.classList.remove("open");
   }
 });
+
+/* ===========================
+   INIT
+=========================== */
+renderTabs();
+renderChat();
+updateHeader();
 </script>
