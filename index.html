@@ -33,7 +33,6 @@ body{background:var(--c1);color:var(--t1);height:100vh;display:flex;overflow:hid
 .settings-panel.open{right:0}
 .settings-title{font-size:22px;font-weight:700;color:var(--accent)}
 .settings-select{width:100%;padding:10px;border:none;border-radius:10px;background:var(--c4);color:#fff;font-size:16px}
-.settings-btn{padding:12px;background:var(--accent);border:none;border-radius:10px;color:#fff;font-size:16px;cursor:pointer}
 
 .main{flex:1;display:flex;flex-direction:column;height:100vh;z-index:1}
 .header{padding:16px 22px;font-size:22px;font-weight:700;background:var(--c3);color:var(--t2)}
@@ -119,40 +118,45 @@ body{background:var(--c1);color:var(--t1);height:100vh;display:flex;overflow:hid
 </div>
 
 <script>
-  const API_KEY="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";
+const API_KEY="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";
 const MODEL="groq/compound-mini";
 const API_URL="https://api.groq.com/openai/v1/chat/completions";
 
 let lang="de";
 let chats=[];
 let activeChat=0;
+let theme="purple";
 
 const ui={
-de:{
-home:"🏠",
-about:"👤",
-support:"💬",
-newchat:"➕",
-deletechat:"🗑️",
-settings:"⚙️",
-header:"Febl KI",
-settings_title:"Einstellungen",
-placeholder:"Nachricht eingeben…",
-chat:"Chat "
-},
-en:{
-home:"🏠",
-about:"👤",
-support:"💬",
-newchat:"➕",
-deletechat:"🗑️",
-settings:"⚙️",
-header:"Febl AI",
-settings_title:"Settings",
-placeholder:"Type a message…",
-chat:"Chat "
-}
+de:{home:"🏠",about:"👤",support:"💬",newchat:"➕",deletechat:"🗑️",settings:"⚙️",header:"Febl KI",settings_title:"Einstellungen",placeholder:"Nachricht eingeben…",chat:"Chat "},
+en:{home:"🏠",about:"👤",support:"💬",newchat:"➕",deletechat:"🗑️",settings:"⚙️",header:"Febl AI",settings_title:"Settings",placeholder:"Type a message…",chat:"Chat "}
 };
+
+function saveAll(){
+localStorage.setItem("febl_chats",JSON.stringify(chats));
+localStorage.setItem("febl_lang",lang);
+localStorage.setItem("febl_theme",theme);
+localStorage.setItem("febl_activeChat",activeChat);
+}
+
+function loadAll(){
+const savedChats=localStorage.getItem("febl_chats");
+const savedLang=localStorage.getItem("febl_lang");
+const savedTheme=localStorage.getItem("febl_theme");
+const savedActive=localStorage.getItem("febl_activeChat");
+
+if(savedChats)chats=JSON.parse(savedChats);
+else chats=[[]];
+
+if(savedLang)lang=savedLang;
+if(savedTheme)theme=savedTheme;
+if(savedActive)activeChat=parseInt(savedActive);
+
+applyTheme(theme);
+applyLanguage();
+renderTabs();
+renderChat();
+}
 
 function applyLanguage(){
 document.getElementById("btn_home").textContent=ui[lang].home;
@@ -166,9 +170,11 @@ document.getElementById("txt_settings_title").textContent=ui[lang].settings_titl
 document.getElementById("userInput").placeholder=ui[lang].placeholder;
 renderTabs();
 renderChat();
+saveAll();
 }
 
 function applyTheme(t){
+theme=t;
 if(t==="purple"){
 document.documentElement.style.setProperty("--c1","#0a0b1f");
 document.documentElement.style.setProperty("--c2","#13143a");
@@ -214,6 +220,7 @@ document.documentElement.style.setProperty("--assistant","#262626");
 document.documentElement.style.setProperty("--user","#3b82f6");
 document.documentElement.style.setProperty("--accent","#3b82f6");
 }
+saveAll();
 }
 
 function newChat(){
@@ -221,18 +228,19 @@ chats.push([]);
 activeChat=chats.length-1;
 renderTabs();
 renderChat();
+saveAll();
 }
 
 function deleteChat(){
 if(chats.length>1){
 chats.splice(activeChat,1);
 activeChat=0;
-renderTabs();
-renderChat();
 }else{
 chats[0]=[];
-renderChat();
 }
+renderTabs();
+renderChat();
+saveAll();
 }
 
 function renderTabs(){
@@ -242,7 +250,7 @@ chats.forEach((c,i)=>{
 const t=document.createElement("div");
 t.className="chat-tab"+(i===activeChat?" active":"");
 t.textContent=ui[lang].chat+(i+1);
-t.onclick=()=>{activeChat=i;renderTabs();renderChat()};
+t.onclick=()=>{activeChat=i;renderTabs();renderChat();saveAll()};
 tabs.appendChild(t);
 });
 }
@@ -265,6 +273,7 @@ chat.scrollTop=chat.scrollHeight;
 function addMessage(role,text){
 chats[activeChat].push({role,content:text});
 renderChat();
+saveAll();
 }
 
 function loading(){
@@ -381,8 +390,7 @@ requestAnimationFrame(animate);
 }
 animate();
 
-newChat();
-applyLanguage();
+loadAll();
 addMessage("assistant",lang==="de"?"Hallo Felix! Wie kann ich dir helfen?":"Hello Felix! How can I help you?");
 </script>
 
