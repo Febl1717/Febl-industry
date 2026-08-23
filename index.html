@@ -13,109 +13,57 @@
 --t1:#fff;--t2:#e9d5ff;
 }
 
-body{
-background:var(--c1);
-color:var(--t1);
-height:100vh;
-display:flex;
-overflow:hidden;
-}
+body{background:var(--c1);color:var(--t1);height:100vh;display:flex;overflow:hidden}
 
-#intro{
-position:fixed;top:0;left:0;width:100%;height:100%;
-background:#000;display:flex;justify-content:center;align-items:center;
-flex-direction:column;z-index:9999;transition:1s;
-}
+#intro{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:flex;justify-content:center;align-items:center;flex-direction:column;z-index:9999;transition:1s}
 #intro h1{font-size:48px;color:#fff;animation:introZoom 1.4s ease}
 @keyframes introZoom{0%{transform:scale(0.4);opacity:0}100%{transform:scale(1);opacity:1}}
 
-#particles{
-position:fixed;top:0;left:0;width:100%;height:100%;
-pointer-events:none;z-index:0;
-}
+#particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
 
-.sidebar-chats{
-width:200px;background:var(--c2);
-display:flex;flex-direction:column;gap:10px;padding:12px;
-overflow-y:auto;
-}
-.chat-tab{
-padding:10px;background:var(--c4);border-radius:10px;cursor:pointer;
-}
+.sidebar-chats{width:180px;background:var(--c2);display:flex;flex-direction:column;gap:10px;padding:12px;overflow-y:auto}
+.chat-tab{padding:10px;background:var(--c4);border-radius:10px;cursor:pointer}
 .chat-tab.active{background:var(--accent)}
 
-.sidebar{
-width:60px;background:var(--c2);
-display:flex;flex-direction:column;gap:12px;padding:10px 6px;
-}
-.sidebar-icon{
-display:flex;align-items:center;gap:10px;padding:10px;
-background:var(--c4);border-radius:12px;cursor:pointer;
-}
+.sidebar{width:60px;background:var(--c2);display:flex;flex-direction:column;gap:12px;padding:10px 6px}
+.sidebar-icon{display:flex;align-items:center;gap:10px;padding:10px;background:var(--c4);border-radius:12px;cursor:pointer;color:#fff}
 
-.settings-panel{
-position:fixed;right:-260px;top:0;width:260px;height:100%;
-background:var(--c2);padding:20px;display:flex;flex-direction:column;gap:12px;
-transition:.3s;z-index:999;
-}
+.settings-panel{position:fixed;right:-300px;top:0;width:300px;height:100%;background:var(--c2);padding:20px;display:flex;flex-direction:column;gap:20px;transition:.3s;z-index:999}
 .settings-panel.open{right:0}
+.settings-title{font-size:22px;font-weight:700;color:var(--accent)}
+.settings-select{width:100%;padding:10px;border:none;border-radius:10px;background:var(--c4);color:#fff;font-size:16px}
 
 .main{flex:1;display:flex;flex-direction:column;height:100vh;z-index:1}
 .header{padding:16px 22px;font-size:22px;font-weight:700;background:var(--c3);color:var(--t2)}
 
-.chat{
-flex:1;padding:20px;overflow-y:auto;background:transparent;
-position:relative;z-index:1;
-}
+.chat{flex:1;padding:20px;overflow-y:auto;background:transparent;position:relative;z-index:1}
 .msg-row{margin-bottom:16px;display:flex;animation:bubbleIn .25s ease}
 @keyframes bubbleIn{0%{transform:translateY(10px);opacity:0}100%{transform:translateY(0);opacity:1}}
-.msg-bubble{
-max-width:80%;padding:12px 16px;border-radius:18px;font-size:16px;line-height:1.5;
-white-space:pre-wrap;
-}
+.msg-bubble{max-width:80%;padding:12px 16px;border-radius:18px;font-size:16px;line-height:1.5;white-space:pre-wrap}
 .user-row{justify-content:flex-end}
 .user-row .msg-bubble{background:var(--user)}
 .assistant-row .msg-bubble{background:var(--assistant);border:1px solid rgba(255,255,255,.1)}
 
-.loading{
-display:flex;gap:6px;padding:12px 16px;background:var(--assistant);
-border-radius:18px;width:40px;
-}
-.loading div{
-width:8px;height:8px;background:#fff;border-radius:50%;animation:load .8s infinite;
-}
+.loading{display:flex;gap:6px;padding:12px 16px;background:var(--assistant);border-radius:18px;width:40px}
+.loading div{width:8px;height:8px;background:#fff;border-radius:50%;animation:load .8s infinite}
 .loading div:nth-child(2){animation-delay:.2s}
 .loading div:nth-child(3){animation-delay:.4s}
 @keyframes load{0%{opacity:.2;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}100%{opacity:.2;transform:scale(1)}}
 
-.input-bar{
-padding:10px 0;display:flex;justify-content:center;background:transparent;
-position:sticky;bottom:10px;z-index:50;
-}
-.input-box{
-width:94%;background:var(--c4);border:1px solid rgba(255,255,255,.18);
-padding:10px 16px;border-radius:30px;display:flex;gap:10px;align-items:center;
-box-shadow:0 6px 22px rgba(0,0,0,.45);transition:.25s;
-}
+.input-bar{padding:10px 0;display:flex;justify-content:center;background:transparent;position:sticky;bottom:10px;z-index:50}
+.input-box{width:94%;background:var(--c4);border:1px solid rgba(255,255,255,.18);padding:10px 16px;border-radius:30px;display:flex;gap:10px;align-items:center;box-shadow:0 6px 22px rgba(0,0,0,.45);transition:.25s}
 .input-box:focus-within{box-shadow:0 0 14px var(--accent),0 6px 22px rgba(0,0,0,.45)}
 
-#userInput{
-flex:1;background:transparent;border:none;outline:none;color:var(--t1);
-font-size:18px;padding:6px 0;
-}
+#userInput{flex:1;background:transparent;border:none;outline:none;color:var(--t1);font-size:18px;padding:6px 0}
 
-.send-btn{
-width:44px;height:44px;background:var(--accent);border:none;border-radius:50%;
-color:var(--t1);font-size:22px;cursor:pointer;transition:.25s;
-}
+.send-btn{width:44px;height:44px;background:var(--accent);border:none;border-radius:50%;color:var(--t1);font-size:22px;cursor:pointer;transition:.25s}
 .send-btn:hover{transform:scale(1.1)}
 
-.upload-btn{
-width:44px;height:44px;background:#444;border:none;border-radius:50%;
-color:#fff;font-size:22px;cursor:pointer;
-}
+.upload-btn{width:44px;height:44px;background:#444;border:none;border-radius:50%;color:#fff;font-size:22px;cursor:pointer}
 
 @media(max-width:600px){
+.sidebar-chats{display:none}
+.sidebar{width:58px}
 .input-box{width:94%;padding:10px 16px;border-radius:30px}
 #userInput{font-size:18px;padding:6px 0}
 .send-btn{width:44px;height:44px;font-size:22px}
@@ -131,19 +79,23 @@ color:#fff;font-size:22px;cursor:pointer;
 <div class="sidebar-chats" id="chatTabs"></div>
 
 <div class="sidebar">
-<div class="sidebar-icon" data-action="newchat"><span>➕</span></div>
-<div class="sidebar-icon" data-action="settings"><span>⚙️</span></div>
+<div class="sidebar-icon" data-action="home">🏠</div>
+<div class="sidebar-icon" data-action="about">👤</div>
+<div class="sidebar-icon" data-action="support">💬</div>
+<div class="sidebar-icon" data-action="newchat">➕</div>
+<div class="sidebar-icon" data-action="settings">⚙️</div>
 </div>
 
 <div id="settingsPanel" class="settings-panel">
-<select id="themeSelect">
+<div class="settings-title">Einstellungen</div>
+<select id="themeSelect" class="settings-select">
 <option value="purple">Lila</option>
 <option value="blue">Blau</option>
 <option value="red">Rot</option>
 <option value="green">Grün</option>
 <option value="black">Schwarz</option>
 </select>
-<select id="langSelect">
+<select id="langSelect" class="settings-select">
 <option value="de">Deutsch</option>
 <option value="en">English</option>
 </select>
@@ -178,6 +130,7 @@ activeChat=chats.length-1;
 renderTabs();
 renderChat();
 }
+
 function renderTabs(){
 const tabs=document.getElementById("chatTabs");
 tabs.innerHTML="";
@@ -189,6 +142,7 @@ t.onclick=()=>{activeChat=i;renderTabs();renderChat()};
 tabs.appendChild(t);
 });
 }
+
 function renderChat(){
 const chat=document.getElementById("chat");
 chat.innerHTML="";
@@ -259,9 +213,7 @@ sendToAI(text);
 };
 
 document.getElementById("userInput").onkeydown=e=>{
-if(e.key==="Enter"){
-document.getElementById("sendBtn").click();
-}
+if(e.key==="Enter")document.getElementById("sendBtn").click();
 };
 
 document.getElementById("uploadBtn").onclick=()=>{
@@ -287,6 +239,9 @@ document.getElementById("chat").ondragover=e=>e.preventDefault();
 document.querySelectorAll(".sidebar-icon").forEach(icon=>{
 icon.onclick=()=>{
 const a=icon.dataset.action;
+if(a==="home")window.location.href="https://febl-industry-3.jimdosite.com/";
+if(a==="about")window.location.href="https://febl-industry-3.jimdosite.com/ueber-mich/";
+if(a==="support")window.location.href="https://febl-industry-3.jimdosite.com/kontakt/";
 if(a==="newchat")newChat();
 if(a==="settings")document.getElementById("settingsPanel").classList.toggle("open");
 };
@@ -298,6 +253,7 @@ document.body.className="theme-"+e.target.value;
 
 document.getElementById("langSelect").onchange=e=>{
 lang=e.target.value;
+document.getElementById("txt_header").textContent=lang==="de"?"Febl KI":"Febl AI";
 };
 
 setTimeout(()=>{document.getElementById("intro").style.opacity="0"},1200);
