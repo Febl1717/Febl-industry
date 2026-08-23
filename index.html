@@ -9,8 +9,7 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif}
 :root{
 --c1:#0a0b1f;--c2:#13143a;--c3:#1a1b4a;--c4:#1e1f4d;
---assistant:#1e1f4d;--user:#7c3aed;--accent:#7c3aed;
---t1:#fff;--t2:#e9d5ff;
+--assistant:#1e1f4d;--user:#7c3aed;--accent:#7c3aed;--t1:#fff;--t2:#e9d5ff;
 }
 
 body{background:var(--c1);color:var(--t1);height:100vh;display:flex;overflow:hidden}
@@ -22,7 +21,7 @@ body{background:var(--c1);color:var(--t1);height:100vh;display:flex;overflow:hid
 #particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
 
 .sidebar-chats{width:180px;background:var(--c2);display:flex;flex-direction:column;gap:10px;padding:12px;overflow-y:auto}
-.chat-tab{padding:10px;background:var(--c4);border-radius:10px;cursor:pointer}
+.chat-tab{padding:10px;background:var(--c4);border-radius:10px;cursor:pointer;color:#fff}
 .chat-tab.active{background:var(--accent)}
 
 .sidebar{width:60px;background:var(--c2);display:flex;flex-direction:column;gap:12px;padding:10px 6px}
@@ -32,6 +31,7 @@ body{background:var(--c1);color:var(--t1);height:100vh;display:flex;overflow:hid
 .settings-panel.open{right:0}
 .settings-title{font-size:22px;font-weight:700;color:var(--accent)}
 .settings-select{width:100%;padding:10px;border:none;border-radius:10px;background:var(--c4);color:#fff;font-size:16px}
+.settings-btn{padding:12px;background:var(--accent);border:none;border-radius:10px;color:#fff;font-size:16px;cursor:pointer}
 
 .main{flex:1;display:flex;flex-direction:column;height:100vh;z-index:1}
 .header{padding:16px 22px;font-size:22px;font-weight:700;background:var(--c3);color:var(--t2)}
@@ -79,15 +79,15 @@ body{background:var(--c1);color:var(--t1);height:100vh;display:flex;overflow:hid
 <div class="sidebar-chats" id="chatTabs"></div>
 
 <div class="sidebar">
-<div class="sidebar-icon" data-action="home">🏠</div>
-<div class="sidebar-icon" data-action="about">👤</div>
-<div class="sidebar-icon" data-action="support">💬</div>
-<div class="sidebar-icon" data-action="newchat">➕</div>
-<div class="sidebar-icon" data-action="settings">⚙️</div>
+<div class="sidebar-icon" data-action="home" id="btn_home">🏠</div>
+<div class="sidebar-icon" data-action="about" id="btn_about">👤</div>
+<div class="sidebar-icon" data-action="support" id="btn_support">💬</div>
+<div class="sidebar-icon" data-action="newchat" id="btn_newchat">➕</div>
+<div class="sidebar-icon" data-action="settings" id="btn_settings">⚙️</div>
 </div>
 
 <div id="settingsPanel" class="settings-panel">
-<div class="settings-title">Einstellungen</div>
+<div class="settings-title" id="txt_settings_title">Einstellungen</div>
 <select id="themeSelect" class="settings-select">
 <option value="purple">Lila</option>
 <option value="blue">Blau</option>
@@ -99,6 +99,7 @@ body{background:var(--c1);color:var(--t1);height:100vh;display:flex;overflow:hid
 <option value="de">Deutsch</option>
 <option value="en">English</option>
 </select>
+<button class="settings-btn" id="clearChatBtn">Chat löschen</button>
 </div>
 
 <div class="main">
@@ -109,7 +110,7 @@ body{background:var(--c1);color:var(--t1);height:100vh;display:flex;overflow:hid
 <div class="input-box">
 <button class="upload-btn" id="uploadBtn">📎</button>
 <input id="fileInput" type="file" style="display:none">
-<input id="userInput" type="text" placeholder="Nachricht eingeben…">
+<input id="userInput" type="text" placeholder="Nachricht eingeben…" id="input_placeholder">
 <button class="send-btn" id="sendBtn">➤</button>
 </div>
 </div>
@@ -124,6 +125,53 @@ let lang="de";
 let chats=[];
 let activeChat=0;
 
+const ui={
+de:{
+home:"🏠",
+about:"👤",
+support:"💬",
+newchat:"➕",
+settings:"⚙️",
+header:"Febl KI",
+settings_title:"Einstellungen",
+placeholder:"Nachricht eingeben…",
+clear:"Chat löschen"
+},
+en:{
+home:"🏠",
+about:"👤",
+support:"💬",
+newchat:"➕",
+settings:"⚙️",
+header:"Febl AI",
+settings_title:"Settings",
+placeholder:"Type a message…",
+clear:"Clear chat"
+}
+};
+
+function applyLanguage(){
+document.getElementById("btn_home").textContent=ui[lang].home;
+document.getElementById("btn_about").textContent=ui[lang].about;
+document.getElementById("btn_support").textContent=ui[lang].support;
+document.getElementById("btn_newchat").textContent=ui[lang].newchat;
+document.getElementById("btn_settings").textContent=ui[lang].settings;
+document.getElementById("txt_header").textContent=ui[lang].header;
+document.getElementById("txt_settings_title").textContent=ui[lang].settings_title;
+document.getElementById("userInput").placeholder=ui[lang].placeholder;
+document.getElementById("clearChatBtn").textContent=ui[lang].clear;
+renderTabs();
+renderChat();
+}
+
+function applyTheme(t){
+if(t==="purple"){document.body.className="theme-purple"}
+if(t==="blue"){document.body.className="theme-blue"}
+if(t==="red"){document.body.className="theme-red"}
+if(t==="green"){document.body.className="theme-green"}
+if(t==="black"){document.body.className="theme-black"}
+}
+
 function newChat(){
 chats.push([]);
 activeChat=chats.length-1;
@@ -137,7 +185,7 @@ tabs.innerHTML="";
 chats.forEach((c,i)=>{
 const t=document.createElement("div");
 t.className="chat-tab"+(i===activeChat?" active":"");
-t.textContent="Chat "+(i+1);
+t.textContent=(lang==="de"?"Chat ":"Chat ")+(i+1);
 t.onclick=()=>{activeChat=i;renderTabs();renderChat()};
 tabs.appendChild(t);
 });
@@ -196,7 +244,7 @@ body:JSON.stringify({model:MODEL,messages:history,temperature:0.7,max_tokens:102
 });
 const data=await res.json();
 removeLoading();
-if(data.error){addMessage("assistant","⚠️ Fehler: "+data.error.message);return;}
+if(data.error){addMessage("assistant","⚠️ "+data.error.message);return;}
 addMessage("assistant",data.choices[0].message.content);
 }catch(err){
 removeLoading();
@@ -223,7 +271,7 @@ document.getElementById("fileInput").click();
 document.getElementById("fileInput").onchange=e=>{
 const file=e.target.files[0];
 if(!file)return;
-addMessage("user","📎 Datei: "+file.name);
+addMessage("user","📎 "+file.name);
 sendToAI("Analysiere diese Datei: "+file.name);
 };
 
@@ -231,7 +279,7 @@ document.getElementById("chat").ondrop=e=>{
 e.preventDefault();
 const file=e.dataTransfer.files[0];
 if(!file)return;
-addMessage("user","📎 Datei: "+file.name);
+addMessage("user","📎 "+file.name);
 sendToAI("Analysiere dieses Bild: "+file.name);
 };
 document.getElementById("chat").ondragover=e=>e.preventDefault();
@@ -247,14 +295,9 @@ if(a==="settings")document.getElementById("settingsPanel").classList.toggle("ope
 };
 });
 
-document.getElementById("themeSelect").onchange=e=>{
-document.body.className="theme-"+e.target.value;
-};
-
-document.getElementById("langSelect").onchange=e=>{
-lang=e.target.value;
-document.getElementById("txt_header").textContent=lang==="de"?"Febl KI":"Febl AI";
-};
+document.getElementById("themeSelect").onchange=e=>applyTheme(e.target.value);
+document.getElementById("langSelect").onchange=e=>{lang=e.target.value;applyLanguage()};
+document.getElementById("clearChatBtn").onclick=()=>{chats[activeChat]=[];renderChat()};
 
 setTimeout(()=>{document.getElementById("intro").style.opacity="0"},1200);
 setTimeout(()=>{document.getElementById("intro").style.display="none"},2200);
@@ -284,6 +327,7 @@ animate();
 
 newChat();
 addMessage("assistant",lang==="de"?"Hallo Felix! Wie kann ich dir helfen?":"Hello Felix! How can I help you?");
+applyLanguage();
 </script>
 
 </body>
