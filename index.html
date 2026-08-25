@@ -2,540 +2,271 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Febl KI</title>
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial}
+
+/* COLORS */
 :root{
   --c1:#0a0b1f;--c2:#13143a;--c3:#1a1b4a;--c4:#1e1f4d;
   --assistant:#1e1f4d;--user:#7c3aed;--accent:#7c3aed;
   --t1:#fff;--t2:#e9d5ff;
   --vh:1vh;
 }
+
+/* LAYOUT */
 html,body{height:100%}
 body{
-  background:linear-gradient(180deg,var(--c1) 0%,#070717 100%);
+  background:linear-gradient(180deg,var(--c1),#070717);
   color:var(--t1);
   height:calc(var(--vh)*100);
   display:flex;
   flex-direction:column;
   overflow:hidden;
-  -webkit-font-smoothing:antialiased;
 }
-#intro{
-  position:fixed;inset:0;background:#000;display:flex;
-  justify-content:center;align-items:center;flex-direction:column;
-  z-index:9999;transition:opacity .6s ease,transform .6s ease;
-}
-#intro.hidden{opacity:0;transform:scale(.98);pointer-events:none}
-#intro h1{font-size:44px;color:#fff;letter-spacing:1px}
-#particles{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.6;transition:opacity .4s ease}
+
+/* HEADER */
 .header{
-  height:60px;background:linear-gradient(90deg,var(--c3),rgba(30,31,77,.9));
-  display:flex;align-items:center;justify-content:space-between;padding:0 16px;color:var(--t2);
-  font-size:20px;font-weight:600;flex-shrink:0;z-index:2;backdrop-filter:blur(6px);
-  box-shadow:0 1px 0 rgba(255,255,255,.02) inset;
+  height:60px;background:var(--c3);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;color:var(--t2);font-size:20px;font-weight:600;
 }
-.header-btn{
-  width:44px;height:44px;border-radius:12px;background:var(--c4);
-  display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;cursor:pointer;
-  transition:transform .18s cubic-bezier(.2,.9,.2,1),box-shadow .18s;
-}
-.header-btn:active{transform:scale(.96)}
-.header-btn:hover{box-shadow:0 6px 18px rgba(0,0,0,.45)}
+
+/* CHAT */
 .chat{
-  flex:1;overflow-y:auto;padding:18px;z-index:1;-webkit-overflow-scrolling:touch;
-  display:flex;flex-direction:column;gap:8px;
+  flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:12px;
 }
-.msg-row{display:flex;animation:bubbleIn .22s ease}
-@keyframes bubbleIn{0%{transform:translateY(6px);opacity:0}100%{transform:translateY(0);opacity:1}}
-.msg-bubble{
-  max-width:86%;padding:12px 16px;border-radius:16px;font-size:15px;line-height:1.45;white-space:pre-wrap;
-  box-shadow:0 6px 18px rgba(2,6,23,.35);
-}
+
+/* BUBBLES */
+.msg-row{display:flex}
 .user-row{justify-content:flex-end}
-.user-row .msg-bubble{
-  background:linear-gradient(180deg,var(--user),#5b2bd6);
-  color:#fff;
+.msg-bubble{
+  max-width:80%;padding:12px 16px;border-radius:16px;font-size:15px;
 }
-.assistant-row .msg-bubble{
-  background:linear-gradient(180deg,var(--assistant),#23244a);
-  color:#fff;
-}
+.user-row .msg-bubble{background:var(--user)}
+.assistant-row .msg-bubble{background:var(--assistant)}
+
+/* IMAGE BUBBLE */
 .msg-bubble img{
-  display:block;max-width:100%;height:auto;border-radius:12px;
-  box-shadow:0 8px 24px rgba(0,0,0,.45);
+  max-width:100%;border-radius:12px;cursor:pointer;
+  transition:transform .2s ease;
 }
-.input-bar{padding:12px;background:transparent;display:flex;justify-content:center;flex-shrink:0;z-index:2}
+.msg-bubble img:hover{transform:scale(1.02)}
+
+/* INPUT BAR */
+.input-bar{
+  padding:12px;background:transparent;display:flex;justify-content:center;
+}
 .input-box{
-  width:96%;max-width:980px;background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));
-  border-radius:999px;padding:10px 12px;display:flex;gap:10px;align-items:center;border:1px solid rgba(255,255,255,.03);
-  box-shadow:0 6px 20px rgba(2,6,23,.45);
+  width:96%;background:var(--c4);border-radius:999px;padding:10px 12px;
+  display:flex;gap:10px;align-items:center;
 }
-#userInput{flex:1;background:transparent;border:none;outline:none;color:var(--t1);font-size:16px;padding:8px}
-.send-btn,.img-btn{
-  width:44px;height:44px;border:none;border-radius:12px;color:#fff;font-size:20px;cursor:pointer;
-  display:inline-flex;align-items:center;justify-content:center;
-  transition:transform .22s cubic-bezier(.2,.9,.2,1),box-shadow .22s,background .22s;
-  box-shadow:0 8px 18px rgba(0,0,0,.35);
+#userInput{
+  flex:1;background:transparent;border:none;outline:none;color:#fff;font-size:16px;
 }
-.send-btn{background:var(--accent)}
-.img-btn{background:#444}
-.send-btn:hover,.img-btn:hover{transform:translateY(-4px) scale(1.03);box-shadow:0 14px 30px rgba(0,0,0,.45)}
-.send-btn:active,.img-btn:active{transform:translateY(-1px) scale(.99)}
-.bottom-sheet,.tabs-sheet{
-  position:fixed;left:0;right:0;bottom:-100%;background:var(--c2);padding:18px;border-radius:18px 18px 0 0;
-  transition:transform .28s ease,opacity .28s;z-index:999;
-  transform:translateY(8px);opacity:0;
+
+/* ANIMATED IMAGE BUTTON */
+.img-btn{
+  width:48px;height:48px;border:none;border-radius:14px;
+  background:#7c3aed;color:#fff;font-size:22px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .25s cubic-bezier(.2,.9,.2,1), box-shadow .25s;
+  box-shadow:0 6px 18px rgba(0,0,0,.45);
 }
-.bottom-sheet.open,.tabs-sheet.open{transform:translateY(0);opacity:1}
-.sheet-btn,.tab-item{
-  width:100%;padding:12px;background:var(--c4);border-radius:12px;color:#fff;font-size:16px;margin-bottom:10px;text-align:center;
+.img-btn:hover{
+  transform:translateY(-4px) scale(1.05);
+  box-shadow:0 14px 30px rgba(0,0,0,.55);
 }
-@media(min-width:700px){
-  .bottom-sheet{width:320px;height:100%;right:-320px;left:auto;top:0;bottom:0;border-radius:0}
-  .bottom-sheet.open{right:0}
-  .tabs-sheet{width:320px;height:100%;left:-320px;top:0;bottom:0;border-radius:0}
-  .tabs-sheet.open{left:0}
+.img-btn:active{
+  transform:scale(.95);
+}
+
+/* LOADING SPINNER */
+.spinner{
+  width:32px;height:32px;border:4px solid rgba(255,255,255,.2);
+  border-top-color:#fff;border-radius:50%;
+  animation:spin 0.8s linear infinite;margin:auto;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* FULLSCREEN VIEWER */
+#viewer{
+  position:fixed;inset:0;background:rgba(0,0,0,.9);
+  display:none;justify-content:center;align-items:center;
+  z-index:9999;
+}
+#viewer img{
+  max-width:90%;max-height:90%;border-radius:12px;
+}
+#viewerClose{
+  position:absolute;top:20px;right:20px;font-size:32px;color:#fff;cursor:pointer;
 }
 </style>
 </head>
+
 <body>
-<div id="intro"><h1>Febl KI</h1></div>
-<canvas id="particles"></canvas>
 
 <div class="header">
-  <button class="header-btn" id="menuBtn">☰</button>
-  <div id="txt_header">Febl KI</div>
-  <button class="header-btn" id="tabsBtn">⋮</button>
+  <div>Febl KI</div>
 </div>
 
 <div class="chat" id="chat"></div>
 
 <div class="input-bar">
   <div class="input-box">
-    <button class="img-btn" id="imgBtn" title="Bild generieren">🖼</button>
-    <input id="userInput" type="text" placeholder="Nachricht eingeben…">
-    <button class="send-btn" id="sendBtn" title="Senden">➤</button>
+    <input id="userInput" type="text" placeholder="Bild‑Prompt eingeben…">
+    <button class="img-btn" id="imgBtn">🖼</button>
   </div>
 </div>
 
-<div class="bottom-sheet" id="menuSheet">
-  <div class="sheet-btn" id="btn_newchat">Neuer Chat</div>
-  <div class="sheet-btn" id="btn_deletechat">Chat löschen</div>
-  <div class="sheet-btn" id="btn_lang">Sprache</div>
-  <div class="sheet-btn" id="btn_theme">Theme</div>
-  <div class="sheet-btn" id="btn_home">Home</div>
-  <div class="sheet-btn" id="btn_about">Über Febl</div>
-  <div class="sheet-btn" id="btn_support">Support</div>
-  <div class="sheet-btn">Version 1.0</div>
-</div>
-
-<div class="tabs-sheet" id="tabsSheet">
-  <div id="tabsList"></div>
-  <div class="sheet-btn" id="tabs_newchat">Neuer Chat</div>
+<!-- FULLSCREEN VIEWER -->
+<div id="viewer">
+  <div id="viewerClose">✕</div>
+  <img id="viewerImg">
 </div>
 
 <script>
 (() => {
   "use strict";
 
-  const API_KEY   = "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";
-  const MODEL_TEXT  = "groq/compound";
+  const API_KEY = "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";
   const MODEL_IMAGE = "groq/flux-schnell";
-  const API_CHAT  = "https://api.groq.com/openai/v1/chat/completions";
-  const API_IMG   = "https://api.groq.com/openai/v1/images/generations";
+  const API_IMG = "https://api.groq.com/openai/v1/images/generations";
 
-  let lang = "de";
-  let theme = "purple";
-  let chats = [];
+  let chats = [[]];
   let activeChat = 0;
 
-  const ui = {
-    de:{header:"Febl KI",placeholder:"Nachricht eingeben…",chat:"Chat ",newchat:"Neuer Chat",delete:"Chat löschen",lang:"Sprache",theme:"Theme",home:"Home",about:"Über Febl",support:"Support"},
-    en:{header:"Febl AI",placeholder:"Type a message…",chat:"Chat ",newchat:"New chat",delete:"Delete chat",lang:"Language",theme:"Theme",home:"Home",about:"About Febl",support:"Support"}
-  };
+  const $ = id => document.getElementById(id);
 
-  const $ = id => document.getElementById(id) || null;
-  const safeJSON = (s,f)=>{try{return JSON.parse(s);}catch(e){return f;}};
-
-  function safeInit(){
-    if(!Array.isArray(chats)) chats=[[]];
-    if(chats.length===0) chats=[[]];
-    if(typeof activeChat!=="number"||isNaN(activeChat)) activeChat=0;
-    if(activeChat<0) activeChat=0;
-    if(activeChat>=chats.length) activeChat=chats.length-1;
-    if(!Array.isArray(chats[activeChat])) chats[activeChat]=[];
-  }
-
-  function fixVH(){
-    const vh = window.innerHeight*0.01;
-    document.documentElement.style.setProperty("--vh",vh+"px");
-  }
-  window.addEventListener("resize",fixVH);
-
-  function saveAll(){
-    try{localStorage.setItem("febl_chats",JSON.stringify(chats));}catch(e){}
-    try{localStorage.setItem("febl_lang",lang);}catch(e){}
-    try{localStorage.setItem("febl_theme",theme);}catch(e){}
-    try{localStorage.setItem("febl_activeChat",String(activeChat));}catch(e){}
-  }
-  function loadAll(){
-    try{
-      const raw=localStorage.getItem("febl_chats");
-      if(raw){
-        const p=safeJSON(raw,null);
-        if(Array.isArray(p)) chats=p;
-      }
-    }catch(e){chats=[[]];}
-    try{lang=localStorage.getItem("febl_lang")||"de";}catch(e){lang="de";}
-    try{theme=localStorage.getItem("febl_theme")||"purple";}catch(e){theme="purple";}
-    try{activeChat=parseInt(localStorage.getItem("febl_activeChat")||"0",10);}catch(e){activeChat=0;}
-    safeInit();
-  }
-
-  function setVar(k,v){document.documentElement.style.setProperty(k,v);}
-  function applyTheme(t){
-    theme=t||"purple";
-    if(theme==="purple"){
-      setVar("--c1","#0a0b1f");setVar("--c2","#13143a");setVar("--c3","#1a1b4a");setVar("--c4","#1e1f4d");
-      setVar("--assistant","#1e1f4d");setVar("--user","#7c3aed");setVar("--accent","#7c3aed");
-    }else if(theme==="blue"){
-      setVar("--c1","#001a33");setVar("--c2","#00264d");setVar("--c3","#003366");setVar("--c4","#004080");
-      setVar("--assistant","#004080");setVar("--user","#3399ff");setVar("--accent","#3399ff");
-    }
-    saveAll();
-  }
-
-  function applyLanguage(){
-    safeInit();
-    const header=$("txt_header");
-    const input=$("userInput");
-    if(header) header.textContent=ui[lang]?.header||"Febl";
-    if(input) input.placeholder=ui[lang]?.placeholder||"";
-    const map=[
-      ["btn_newchat","newchat"],["btn_deletechat","delete"],["btn_lang","lang"],
-      ["btn_theme","theme"],["btn_home","home"],["btn_about","about"],["btn_support","support"],
-      ["tabs_newchat","newchat"]
-    ];
-    map.forEach(([id,key])=>{
-      const el=$(id);
-      if(el) el.textContent=ui[lang]?.[key]||el.textContent;
-    });
-  }
-
-  function renderTabs(){
-    safeInit();
-    const list=$("tabsList");
-    if(!list) return;
-    list.innerHTML="";
-    chats.forEach((c,i)=>{
-      const div=document.createElement("div");
-      div.className="tab-item";
-      div.textContent=(ui[lang]?.chat||"Chat ")+(i+1);
-      div.onclick=()=>{activeChat=i;closeSheet("tabsSheet");renderTabs();renderChat();saveAll();};
-      list.appendChild(div);
-    });
-  }
-
+  /* RENDER CHAT */
   function renderChat(){
-    safeInit();
-    const chatEl=$("chat");
-    if(!chatEl) return;
-    chatEl.innerHTML="";
-    const current=chats[activeChat]||[];
-    current.forEach(m=>{
-      if(!m) return;
-      const row=document.createElement("div");
-      row.className="msg-row "+(m.role==="user"?"user-row":"assistant-row");
-      const bubble=document.createElement("div");
-      bubble.className="msg-bubble";
-      if(m.type==="image"&&m.url){
-        const img=document.createElement("img");
-        img.src=m.url;
-        img.alt="Generiertes Bild";
-        img.loading="lazy";
+    const chat = $("chat");
+    chat.innerHTML = "";
+    chats[activeChat].forEach(m=>{
+      const row = document.createElement("div");
+      row.className = "msg-row assistant-row";
+
+      const bubble = document.createElement("div");
+      bubble.className = "msg-bubble";
+
+      if(m.type === "image"){
+        const img = document.createElement("img");
+        img.src = m.url;
+        img.onclick = ()=>openViewer(m.url);
         bubble.appendChild(img);
-      }else{
-        bubble.textContent=String(m.content||"");
+      } else {
+        bubble.textContent = m.content;
       }
+
       row.appendChild(bubble);
-      chatEl.appendChild(row);
+      chat.appendChild(row);
     });
-    chatEl.scrollTop=chatEl.scrollHeight;
+
+    chat.scrollTop = chat.scrollHeight;
   }
 
-  function addMessage(role,text){
-    safeInit();
-    chats[activeChat].push({role:role||"assistant",content:String(text||"")});
-    renderChat();
-    saveAll();
-  }
   function addImage(url){
-    safeInit();
-    chats[activeChat].push({role:"assistant",type:"image",url:String(url)});
+    chats[activeChat].push({type:"image",url});
     renderChat();
-    saveAll();
   }
 
-  function loading(){
-    removeLoading();
-    const chatEl=$("chat");
-    if(!chatEl) return;
-    const row=document.createElement("div");
-    row.className="msg-row assistant-row";
-    row.id="loadingBubble";
-    const bubble=document.createElement("div");
-    bubble.className="msg-bubble";
-    bubble.textContent="…";
+  /* FULLSCREEN VIEWER */
+  function openViewer(url){
+    $("viewerImg").src = url;
+    $("viewer").style.display = "flex";
+  }
+  $("viewerClose").onclick = ()=> $("viewer").style.display = "none";
+
+  /* LOADING SPINNER */
+  function showSpinner(){
+    const chat = $("chat");
+    const row = document.createElement("div");
+    row.className = "msg-row assistant-row";
+    row.id = "spinnerRow";
+
+    const bubble = document.createElement("div");
+    bubble.className = "msg-bubble";
+
+    const sp = document.createElement("div");
+    sp.className = "spinner";
+
+    bubble.appendChild(sp);
     row.appendChild(bubble);
-    chatEl.appendChild(row);
-    chatEl.scrollTop=chatEl.scrollHeight;
+    chat.appendChild(row);
+    chat.scrollTop = chat.scrollHeight;
   }
-  function removeLoading(){
-    const el=$("loadingBubble");
-    if(el) el.remove();
-  }
-
-  function prepareHistory(prompt){
-    safeInit();
-    const MAX_MESSAGES=8;
-    const MAX_CHARS=1000;
-    const history=[{role:"system",content:lang==="de"?"Du antwortest freundlich.":"You respond friendly."}];
-    const current=Array.isArray(chats[activeChat])?chats[activeChat]:[];
-    const tail=current.slice(-MAX_MESSAGES).map(m=>{
-      const c=String(m.content||"");
-      return{role:m.role||"assistant",content:c.length>MAX_CHARS?c.slice(-MAX_CHARS):c};
-    });
-    history.push(...tail);
-    history.push({role:"user",content:String(prompt).slice(0,2000)});
-    return history;
+  function hideSpinner(){
+    const s = $("spinnerRow");
+    if(s) s.remove();
   }
 
-  async function sendTextToAI(text){
-    loading();
+  /* IMAGE GENERATION */
+  async function generateImage(prompt){
+    showSpinner();
+
     try{
-      const history=prepareHistory(text);
-      const payload={model:MODEL_TEXT,messages:history,temperature:0.7,max_tokens:512,top_p:1};
-      const res=await fetch(API_CHAT,{
+      const res = await fetch(API_IMG,{
         method:"POST",
-        headers:{"Content-Type":"application/json","Authorization":"Bearer "+API_KEY},
-        body:JSON.stringify(payload)
+        headers:{
+          "Content-Type":"application/json",
+          "Authorization":"Bearer "+API_KEY
+        },
+        body:JSON.stringify({
+          model:MODEL_IMAGE,
+          prompt:String(prompt),
+          size:"1024x1024"
+        })
       });
-      if(res.status===413){
-        removeLoading();
-        addMessage("assistant","⚠️ Anfrage zu groß, ich habe gekürzt. Bitte nochmal senden.");
-        return;
-      }
-      const data=await res.json();
-      removeLoading();
-      let reply=null;
-      if(Array.isArray(data.choices)&&data.choices.length>0){
-        const c=data.choices[0];
-        reply=c?.message?.content??c?.text??null;
-      }
-      if(!reply){
-        reply=data?.error?.message?"⚠️ "+data.error.message:"⚠️ Keine Antwort vom Server.";
-      }
-      addMessage("assistant",reply);
-    }catch(e){
-      removeLoading();
-      addMessage("assistant","Fehler: "+(e?.message||String(e)));
-    }
-  }
 
-  function b64ToBlob(b64,contentType="image/png"){
-    try{
-      const byteChars=atob(b64);
-      const byteArrays=[];
-      for(let offset=0;offset<byteChars.length;offset+=512){
-        const slice=byteChars.slice(offset,offset+512);
-        const byteNumbers=new Array(slice.length);
-        for(let i=0;i<slice.length;i++) byteNumbers[i]=slice.charCodeAt(i);
-        byteArrays.push(new Uint8Array(byteNumbers));
-      }
-      return new Blob(byteArrays,{type:contentType});
-    }catch(e){return new Blob();}
-  }
+      const data = await res.json();
+      hideSpinner();
 
-  async function generateImageOnly(prompt){
-    loading();
-    try{
-      const safePrompt=String(prompt).slice(0,1200);
-      const payload={model:MODEL_IMAGE,prompt:safePrompt,size:"1024x1024"};
-      const res=await fetch(API_IMG,{
-        method:"POST",
-        headers:{"Content-Type":"application/json","Authorization":"Bearer "+API_KEY},
-        body:JSON.stringify(payload)
-      });
-      if(res.status===413){
-        removeLoading();
-        addMessage("assistant","⚠️ Bild‑Prompt zu groß, bitte kürzen.");
-        return;
-      }
-      const data=await res.json();
-      removeLoading();
-      const url=data?.data?.[0]?.url||null;
-      const b64=data?.data?.[0]?.b64_json||null;
+      const url = data?.data?.[0]?.url || null;
+      const b64 = data?.data?.[0]?.b64_json || null;
+
       if(b64){
-        const blob=b64ToBlob(b64);
-        const objUrl=URL.createObjectURL(blob);
+        const blob = b64ToBlob(b64);
+        const objUrl = URL.createObjectURL(blob);
         addImage(objUrl);
         return;
       }
-      if(!url){
-        addMessage("assistant","⚠️ Fehler beim Bildgenerieren.");
-        return;
+
+      if(url){
+        addImage(url);
       }
-      addImage(url);
+
     }catch(e){
-      removeLoading();
-      addMessage("assistant","Fehler: "+(e?.message||String(e)));
+      hideSpinner();
+      chats[activeChat].push({content:"Fehler: "+e.message});
+      renderChat();
     }
   }
 
-  function toggleSheet(id){const el=$(id);if(el)el.classList.toggle("open");}
-  function closeSheet(id){const el=$(id);if(el)el.classList.remove("open");}
-
-  function newChat(){
-    safeInit();
-    chats.push([]);
-    activeChat=chats.length-1;
-    safeInit();
-    renderTabs();
-    renderChat();
-    saveAll();
-  }
-  function deleteChat(){
-    safeInit();
-    if(chats.length>1){
-      chats.splice(activeChat,1);
-      activeChat=Math.max(0,activeChat-1);
-    }else{
-      chats[0]=[];
+  function b64ToBlob(b64){
+    const byteChars = atob(b64);
+    const byteArrays = [];
+    for(let offset=0;offset<byteChars.length;offset+=512){
+      const slice = byteChars.slice(offset,offset+512);
+      const nums = new Array(slice.length);
+      for(let i=0;i<slice.length;i++) nums[i]=slice.charCodeAt(i);
+      byteArrays.push(new Uint8Array(nums));
     }
-    safeInit();
-    renderTabs();
-    renderChat();
-    saveAll();
+    return new Blob(byteArrays,{type:"image/png"});
   }
 
-  function hideIntro(){
-    const intro=$("intro");
-    if(!intro) return;
-    intro.classList.add("hidden");
-    setTimeout(()=>{intro.style.display="none";},700);
-  }
-
-  function startParticles(){
-    const canvas=$("particles");
-    if(!canvas) return;
-    const ctx=canvas.getContext("2d");
-    function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
-    resize();
-    window.addEventListener("resize",resize);
-    const count=Math.max(20,Math.min(60,Math.floor(window.innerWidth/20)));
-    const particles=[];
-    for(let i=0;i<count;i++){
-      particles.push({
-        x:Math.random()*canvas.width,
-        y:Math.random()*canvas.height,
-        r:Math.random()*2+0.6,
-        dx:(Math.random()-0.5)*0.5,
-        dy:(Math.random()-0.5)*0.5
-      });
+  /* BUTTON EVENT */
+  $("imgBtn").onclick = ()=>{
+    const prompt = $("userInput").value.trim();
+    if(!prompt){
+      chats[activeChat].push({content:"Bitte gib einen Bild‑Prompt ein."});
+      renderChat();
+      return;
     }
-    function anim(){
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      particles.forEach(p=>{
-        ctx.beginPath();
-        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-        ctx.fillStyle="rgba(255,255,255,0.12)";
-        ctx.fill();
-        p.x+=p.dx;p.y+=p.dy;
-        if(p.x<0||p.x>canvas.width)p.dx*=-1;
-        if(p.y<0||p.y>canvas.height)p.dy*=-1;
-      });
-      requestAnimationFrame(anim);
-    }
-    anim();
-  }
-
-  function registerEvents(){
-    const sendBtn=$("sendBtn");
-    const imgBtn=$("imgBtn");
-    const userInput=$("userInput");
-    const menuBtn=$("menuBtn");
-    const tabsBtn=$("tabsBtn");
-    const btnNewChat=$("btn_newchat");
-    const btnDelete=$("btn_deletechat");
-    const btnLang=$("btn_lang");
-    const btnTheme=$("btn_theme");
-    const btnHome=$("btn_home");
-    const btnAbout=$("btn_about");
-    const btnSupport=$("btn_support");
-    const tabsNewChat=$("tabs_newchat");
-
-    if(sendBtn&&userInput){
-      sendBtn.addEventListener("click",()=>{
-        const t=String(userInput.value||"").trim();
-        if(!t) return;
-        userInput.value="";
-        addMessage("user",t);
-        sendTextToAI(t);
-      });
-      userInput.addEventListener("keydown",e=>{
-        if(e.key==="Enter"){
-          e.preventDefault();
-          sendBtn.click();
-        }
-      });
-    }
-    if(imgBtn&&userInput){
-      imgBtn.addEventListener("click",()=>{
-        const prompt=String(userInput.value||"").trim();
-        if(!prompt){
-          addMessage("assistant","Bitte gib einen Bild‑Prompt ein.");
-          return;
-        }
-        userInput.value="";
-        generateImageOnly(prompt);
-      });
-    }
-    if(menuBtn) menuBtn.addEventListener("click",()=>toggleSheet("menuSheet"));
-    if(tabsBtn) tabsBtn.addEventListener("click",()=>toggleSheet("tabsSheet"));
-    if(btnNewChat) btnNewChat.addEventListener("click",()=>{newChat();closeSheet("menuSheet");});
-    if(btnDelete) btnDelete.addEventListener("click",()=>{deleteChat();closeSheet("menuSheet");});
-    if(btnLang) btnLang.addEventListener("click",()=>{lang=lang==="de"?"en":"de";applyLanguage();closeSheet("menuSheet");});
-    if(btnTheme) btnTheme.addEventListener("click",()=>{theme=theme==="purple"?"blue":"purple";applyTheme(theme);closeSheet("menuSheet");});
-    if(btnHome) btnHome.addEventListener("click",()=>{location.href="https://febl-industry-3.jimdosite.com/";});
-    if(btnAbout) btnAbout.addEventListener("click",()=>{location.href="https://febl-industry-3.jimdosite.com/ueber-mich/";});
-    if(btnSupport) btnSupport.addEventListener("click",()=>{location.href="https://febl-industry-3.jimdosite.com/kontakt/";});
-    if(tabsNewChat) tabsNewChat.addEventListener("click",()=>{newChat();closeSheet("tabsSheet");});
-
-    document.addEventListener("click",e=>{
-      const menu=$("menuSheet");
-      const tabs=$("tabsSheet");
-      if(menu && !menu.contains(e.target) && e.target!==menuBtn) menu.classList.remove("open");
-      if(tabs && !tabs.contains(e.target) && e.target!==tabsBtn) tabs.classList.remove("open");
-    });
-  }
-
-  document.addEventListener("DOMContentLoaded",()=>{
-    fixVH();
-    loadAll();
-    applyTheme(theme);
-    applyLanguage();
-    renderTabs();
-    renderChat();
-    registerEvents();
-    startParticles();
-    setTimeout(hideIntro,900);
-    safeInit();
-    if(!chats[activeChat].length){
-      addMessage("assistant",lang==="de"?"Hallo Felix! Wie kann ich dir helfen?":"Hello Felix! How can I help you?");
-    }
-  });
+    $("userInput").value = "";
+    generateImage(prompt);
+  };
 
 })();
 </script>
