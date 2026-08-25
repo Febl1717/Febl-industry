@@ -455,9 +455,22 @@ document.getElementById("btn_about").onclick=()=>location.href="https://febl-ind
 document.getElementById("btn_support").onclick=()=>location.href="https://febl-industry-3.jimdosite.com/kontakt/";
 document.getElementById("tabs_newchat").onclick=()=>{newChat();closeTabs()};
 
-/* INTRO */
-setTimeout(()=>document.getElementById("intro").style.opacity="0",1200);
-setTimeout(()=>document.getElementById("intro").style.display="none",2200);
+/* INTRO FIX — garantiertes Entfernen */
+function hideIntro(){
+  const intro = document.getElementById("intro");
+  if(!intro) return;
+
+  intro.style.transition = "opacity 0.8s ease";
+  intro.style.opacity = "0";
+
+  setTimeout(()=>{
+    intro.style.pointerEvents = "none";
+    intro.style.display = "none";
+  }, 900);
+}
+
+/* Intro starten */
+setTimeout(hideIntro, 1200);
 
 /* PARTICLES */
 const canvas=document.getElementById("particles");
