@@ -61,6 +61,7 @@ body{
 .chat{
   flex:1;overflow-y:auto;padding:18px;z-index:1;-webkit-overflow-scrolling:touch;
   display:flex;flex-direction:column;gap:8px;
+  align-items:stretch;
 }
 .msg-row{display:flex;animation:bubbleIn .22s ease}
 @keyframes bubbleIn{0%{transform:translateY(6px);opacity:0}100%{transform:translateY(0);opacity:1}}
@@ -122,7 +123,7 @@ body{
   width:100%;padding:12px;background:var(--c4);border-radius:12px;color:#fff;font-size:16px;margin-bottom:10px;text-align:center;
 }
 
-/* DESKTOP ADJUST */
+/* DESKTOP: keep same visual scale as mobile */
 @media(min-width:700px){
   .bottom-sheet{width:320px;height:100%;right:-320px;left:auto;top:0;bottom:0;border-radius:0}
   .bottom-sheet.open{right:0}
@@ -176,20 +177,20 @@ body{
 (() => {
   "use strict";
 
-  /* CONFIG */
+  /* === CONFIG === */
   const API_KEY = "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";
   const MODEL_TEXT = "groq/compound";
   const MODEL_IMAGE = "groq/flux-schnell";
   const API_CHAT = "https://api.groq.com/openai/v1/chat/completions";
   const API_IMG = "https://api.groq.com/openai/v1/images/generations";
 
-  /* STATE */
+  /* === STATE === */
   let lang = "de";
   let theme = "purple";
   let chats = [];
   let activeChat = 0;
 
-  /* HELPERS */
+  /* === HELPERS === */
   const safeGet = id => document.getElementById(id) || null;
   const safeParseJSON = (s, fallback) => { try { return JSON.parse(s); } catch(e){ return fallback; } };
 
@@ -202,7 +203,7 @@ body{
     if(!Array.isArray(chats[activeChat])) chats[activeChat] = [];
   }
 
-  /* VIEWPORT FIX */
+  /* === VIEWPORT FIX === */
   function fixVH(){
     try {
       const vh = window.innerHeight * 0.01;
@@ -211,13 +212,13 @@ body{
   }
   window.addEventListener("resize", fixVH);
 
-  /* UI TEXT */
+  /* === UI TEXT === */
   const ui = {
     de:{header:"Febl KI",placeholder:"Nachricht eingeben…",chat:"Chat ",newchat:"Neuer Chat",delete:"Chat löschen",lang:"Sprache",theme:"Theme",home:"Home",about:"Über Febl",support:"Support"},
     en:{header:"Febl AI",placeholder:"Type a message…",chat:"Chat ",newchat:"New chat",delete:"Delete chat",lang:"Language",theme:"Theme",home:"Home",about:"About Febl",support:"Support"}
   };
 
-  /* STORAGE */
+  /* === STORAGE === */
   function saveAll(){
     try{ localStorage.setItem("febl_chats", JSON.stringify(chats)); }catch(e){}
     try{ localStorage.setItem("febl_lang", lang); }catch(e){}
@@ -241,7 +242,7 @@ body{
     safeInit();
   }
 
-  /* LANGUAGE & THEME */
+  /* === LANGUAGE & THEME === */
   function applyLanguage(){
     safeInit();
     const header = safeGet("txt_header");
@@ -273,7 +274,7 @@ body{
     saveAll();
   }
 
-  /* CHAT RENDERING */
+  /* === CHAT RENDERING === */
   function renderTabs(){
     safeInit();
     const list = safeGet("tabsList");
@@ -333,7 +334,7 @@ body{
     saveAll();
   }
 
-  /* LOADING */
+  /* === LOADING === */
   function loading(){
     removeLoading();
     const chatEl = safeGet("chat");
@@ -350,11 +351,11 @@ body{
   }
   function removeLoading(){ const el = safeGet("loadingBubble"); if(el) el.remove(); }
 
-  /* HISTORY TRUNCATION (verhindert 413) */
+  /* === HISTORY TRUNCATION (verhindert 413) === */
   function prepareHistoryForAPI(userPrompt){
     safeInit();
-    const MAX_MESSAGES = 10; // nur letzte N Nachrichten
-    const MAX_CHARS_PER_MESSAGE = 1200; // kürzen, um Payload klein zu halten
+    const MAX_MESSAGES = 8;
+    const MAX_CHARS_PER_MESSAGE = 1000;
 
     const history = [{ role: "system", content: lang === "de" ? "Du antwortest freundlich." : "You respond friendly." }];
 
@@ -365,16 +366,15 @@ body{
     });
 
     history.push(...tail);
-    history.push({ role: "user", content: String(userPrompt).slice(0, 2000) }); // prompt begrenzen
+    history.push({ role: "user", content: String(userPrompt).slice(0, 2000) });
     return history;
   }
 
-  /* API: TEXT (mit Truncation + 413 Handling) */
+  /* === API: TEXT === */
   async function sendTextToAI(text){
     loading();
     try{
       const history = prepareHistoryForAPI(text);
-
       const payload = { model: MODEL_TEXT, messages: history, temperature: 0.7, max_tokens: 512, top_p: 1 };
 
       const res = await fetch(API_CHAT, {
@@ -408,11 +408,14 @@ body{
     }
   }
 
-  /* API: IMAGE ONLY (kleiner Payload, Prompt begrenzen) */
+  /* === API: IMAGE ONLY ===
+     - prompt wird begrenzt
+     - nur Bild wird in Chat eingefügt (keine User-Bubble)
+  */
   async function generateImageOnly(prompt){
     loading();
     try{
-      const safePrompt = String(prompt).slice(0, 1200); // prompt begrenzen
+      const safePrompt = String(prompt).slice(0, 1200);
       const payload = { model: MODEL_IMAGE, prompt: safePrompt, size: "1024x1024" };
 
       const res = await fetch(API_IMG, {
@@ -471,7 +474,7 @@ body{
     }
   }
 
-  /* UI EVENTS */
+  /* === UI EVENTS === */
   function registerEvents(){
     const sendBtn = safeGet("sendBtn");
     const imgBtn = safeGet("imgBtn");
@@ -511,7 +514,7 @@ body{
           return;
         }
         userInput.value = "";
-        // kein User-Bubble hier — nur Bild
+        // WICHTIG: keine User-Bubble, nur Bild
         generateImageOnly(prompt);
       });
     }
@@ -541,11 +544,11 @@ body{
   function toggleSheet(id){ const el = safeGet(id); if(!el) return; el.classList.toggle("open"); }
   function closeSheet(id){ const el = safeGet(id); if(!el) return; el.classList.remove("open"); }
 
-  /* CHAT MANAGEMENT */
+  /* === CHAT MANAGEMENT === */
   function newChat(){ chats.push([]); activeChat = chats.length - 1; safeInit(); renderTabs(); renderChat(); saveAll(); }
   function deleteChat(){ if(chats.length>1){ chats.splice(activeChat,1); activeChat = Math.max(0, activeChat-1); } else chats[0]=[]; safeInit(); renderTabs(); renderChat(); saveAll(); }
 
-  /* INTRO */
+  /* === INTRO === */
   function hideIntro(){
     const intro = safeGet("intro");
     if(!intro) return;
@@ -555,7 +558,7 @@ body{
     }catch(e){ try{ intro.style.display = "none"; }catch(e){} }
   }
 
-  /* PARTICLES (reduced for mobile) */
+  /* === PARTICLES (reduced for mobile) === */
   function startParticles(){
     const canvas = safeGet("particles");
     if(!canvas) return;
@@ -597,7 +600,7 @@ body{
     animate();
   }
 
-  /* STARTUP */
+  /* === STARTUP === */
   document.addEventListener("DOMContentLoaded", ()=>{
     try{
       fixVH();
