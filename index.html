@@ -101,10 +101,40 @@ body{
 #viewerClose{
   position:absolute;top:20px;right:20px;font-size:32px;color:#fff;cursor:pointer;
 }
+
+/* KEY POPUP */
+#keyPopup{
+  position:fixed;inset:0;background:rgba(0,0,0,.85);
+  display:flex;justify-content:center;align-items:center;
+  z-index:99999;
+}
+.key-box{
+  background:#1a1b4a;padding:24px;border-radius:16px;width:90%;max-width:380px;
+  display:flex;flex-direction:column;gap:14px;color:#fff;
+}
+.key-box input{
+  width:100%;padding:12px;border-radius:10px;border:none;font-size:16px;
+  background:#0a0b1f;color:#fff;
+}
+.key-box button{
+  padding:12px;border:none;border-radius:10px;background:#7c3aed;color:#fff;
+  font-size:16px;cursor:pointer;
+  transition:transform .2s ease;
+}
+.key-box button:hover{transform:scale(1.05)}
 </style>
 </head>
 
 <body>
+
+<!-- KEY POPUP -->
+<div id="keyPopup">
+  <div class="key-box">
+    <h2>DeepSeek API‑Key eingeben</h2>
+    <input id="keyInput" placeholder="API‑Key hier einfügen">
+    <button id="saveKeyBtn">Speichern</button>
+  </div>
+</div>
 
 <div class="header">
   <div>Febl KI</div>
@@ -129,8 +159,29 @@ body{
 (() => {
   "use strict";
 
+  /* KEY MANAGEMENT */
+  let API_KEY = localStorage.getItem("sk-ee1d4dec8b4f4372bbbf694cd6c436b2") || "";
+
+  const keyPopup = document.getElementById("keyPopup");
+  const keyInput = document.getElementById("keyInput");
+  const saveKeyBtn = document.getElementById("saveKeyBtn");
+
+  if(API_KEY){
+    keyPopup.style.display = "none";
+  }
+
+  saveKeyBtn.onclick = () => {
+    const key = keyInput.value.trim();
+    if(!key){
+      alert("Bitte einen gültigen API‑Key eingeben.");
+      return;
+    }
+    API_KEY = key;
+    localStorage.setItem("deepseek_key", key);
+    keyPopup.style.display = "none";
+  };
+
   /* DEEPSEEK API */
-  const API_KEY = "sk-ee1d4dec8b4f4372bbbf694cd6c436b2";
   const API_IMG = "https://api.deepseek.com/v1/images/generations";
   const MODEL_IMAGE = "deepseek-ai/flux-pro";
 
@@ -165,6 +216,11 @@ body{
     });
 
     chat.scrollTop = chat.scrollHeight;
+  }
+
+  function addMessage(text){
+    chats[activeChat].push({content:text});
+    renderChat();
   }
 
   function addImage(url){
@@ -204,6 +260,12 @@ body{
 
   /* DEEPSEEK IMAGE GENERATION */
   async function generateImage(prompt){
+    if(!API_KEY){
+      addMessage("⚠️ Kein API‑Key gespeichert.");
+      keyPopup.style.display = "flex";
+      return;
+    }
+
     showSpinner();
 
     try{
@@ -219,6 +281,13 @@ body{
           size:"1024x1024"
         })
       });
+
+      if(res.status === 401){
+        hideSpinner();
+        addMessage("❌ API‑Key ungültig oder abgelaufen.");
+        keyPopup.style.display = "flex";
+        return;
+      }
 
       const data = await res.json();
       hideSpinner();
@@ -239,8 +308,7 @@ body{
 
     }catch(e){
       hideSpinner();
-      chats[activeChat].push({content:"Fehler: "+e.message});
-      renderChat();
+      addMessage("Fehler: "+e.message);
     }
   }
 
@@ -260,8 +328,7 @@ body{
   $("imgBtn").onclick = ()=>{
     const prompt = $("userInput").value.trim();
     if(!prompt){
-      chats[activeChat].push({content:"Bitte gib einen Bild‑Prompt ein."});
-      renderChat();
+      addMessage("Bitte gib einen Bild‑Prompt ein.");
       return;
     }
     $("userInput").value = "";
