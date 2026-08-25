@@ -1,110 +1,234 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>Febl KI</title>
+<style>
+/* RESET */
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial}
+
+/* COLORS */
+:root{
+  --c1:#0a0b1f;--c2:#13143a;--c3:#1a1b4a;--c4:#1e1f4d;
+  --assistant:#1e1f4d;--user:#7c3aed;--accent:#7c3aed;
+  --t1:#fff;--t2:#e9d5ff;
+  --vh:1vh;
+}
+
+/* LAYOUT */
+html,body{height:100%}
+body{
+  background:var(--c1);
+  color:var(--t1);
+  height:calc(var(--vh) * 100);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+/* INTRO */
+#intro{
+  position:fixed;inset:0;background:#000;display:flex;
+  justify-content:center;align-items:center;flex-direction:column;
+  z-index:9999;transition:opacity .8s ease;
+}
+#intro h1{font-size:48px;color:#fff;animation:introZoom 1.4s ease}
+@keyframes introZoom{0%{transform:scale(.4);opacity:0}100%{transform:scale(1);opacity:1}}
+
+/* PARTICLES */
+#particles{position:fixed;inset:0;pointer-events:none;z-index:0}
+
+/* HEADER */
+.header{
+  height:60px;background:var(--c3);display:flex;align-items:center;
+  justify-content:space-between;padding:0 16px;color:var(--t2);
+  font-size:20px;font-weight:600;flex-shrink:0;z-index:2;
+}
+.header-btn{
+  width:40px;height:40px;border-radius:10px;background:var(--c4);
+  display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;cursor:pointer;
+}
+
+/* CHAT */
+.chat{
+  flex:1;overflow-y:auto;padding:16px;z-index:1;-webkit-overflow-scrolling:touch;
+}
+.msg-row{margin-bottom:16px;display:flex;animation:bubbleIn .25s ease}
+@keyframes bubbleIn{0%{transform:translateY(10px);opacity:0}100%{transform:translateY(0);opacity:1}}
+.msg-bubble{
+  max-width:80%;padding:12px 16px;border-radius:18px;font-size:16px;line-height:1.5;white-space:pre-wrap;
+}
+.user-row{justify-content:flex-end}
+.user-row .msg-bubble{background:var(--user)}
+.assistant-row .msg-bubble{background:var(--assistant);border:1px solid rgba(255,255,255,.08)}
+
+/* INPUT */
+.input-bar{padding:10px;background:var(--c1);display:flex;justify-content:center;flex-shrink:0;z-index:2}
+.input-box{
+  width:95%;background:var(--c4);border-radius:30px;padding:10px 12px;display:flex;gap:10px;align-items:center;
+}
+#userInput{flex:1;background:transparent;border:none;outline:none;color:var(--t1);font-size:18px;padding:6px}
+.send-btn,.img-btn{
+  width:44px;height:44px;border:none;border-radius:50%;color:#fff;font-size:20px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+}
+.send-btn{background:var(--accent)}
+.img-btn{background:#444}
+
+/* SHEETS */
+.bottom-sheet,.tabs-sheet{
+  position:fixed;left:0;right:0;bottom:-100%;background:var(--c2);padding:20px;border-radius:20px 20px 0 0;transition:.28s;z-index:999;
+}
+.bottom-sheet.open{bottom:0}
+.tabs-sheet.open{bottom:0}
+.sheet-btn,.tab-item{
+  width:100%;padding:14px;background:var(--c4);border-radius:12px;color:#fff;font-size:18px;margin-bottom:10px;text-align:center;
+}
+
+/* IMAGE BUBBLE */
+.msg-bubble img{display:block;max-width:100%;height:auto;border-radius:12px}
+
+/* DESKTOP ADJUST */
+@media(min-width:700px){
+  .bottom-sheet{width:300px;height:100%;right:-300px;left:auto;top:0;bottom:0;border-radius:0}
+  .bottom-sheet.open{right:0}
+  .tabs-sheet{width:300px;height:100%;left:-300px;top:0;bottom:0;border-radius:0}
+  .tabs-sheet.open{left:0}
+  .msg-bubble{font-size:15px}
+}
+
+/* small accessibility focus */
+.header-btn:focus,.send-btn:focus,.img-btn:focus,.sheet-btn:focus{outline:2px solid rgba(255,255,255,.08);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<!-- Intro overlay -->
+<div id="intro"><h1>Febl KI</h1></div>
+
+<!-- Particle canvas -->
+<canvas id="particles" aria-hidden="true"></canvas>
+
+<!-- Header -->
+<div class="header" role="banner">
+  <button class="header-btn" id="menuBtn" aria-label="Menü">☰</button>
+  <div id="txt_header" aria-live="polite">Febl KI</div>
+  <button class="header-btn" id="tabsBtn" aria-label="Chats">⋮</button>
+</div>
+
+<!-- Chat area -->
+<main class="chat" id="chat" role="main" aria-label="Chatverlauf"></main>
+
+<!-- Input -->
+<div class="input-bar" role="region" aria-label="Eingabebereich">
+  <div class="input-box">
+    <button class="img-btn" id="imgBtn" title="Bild generieren" aria-label="Bild generieren">🖼</button>
+    <input id="userInput" type="text" inputmode="text" autocomplete="off" placeholder="Nachricht eingeben…" aria-label="Nachricht eingeben">
+    <button class="send-btn" id="sendBtn" title="Senden" aria-label="Senden">➤</button>
+  </div>
+</div>
+
+<!-- Menu sheet -->
+<div class="bottom-sheet" id="menuSheet" aria-hidden="true">
+  <div class="sheet-btn" id="btn_newchat">Neuer Chat</div>
+  <div class="sheet-btn" id="btn_deletechat">Chat löschen</div>
+  <div class="sheet-btn" id="btn_lang">Sprache</div>
+  <div class="sheet-btn" id="btn_theme">Theme</div>
+  <div class="sheet-btn" id="btn_home">Home</div>
+  <div class="sheet-btn" id="btn_about">Über Febl</div>
+  <div class="sheet-btn" id="btn_support">Support</div>
+  <div class="sheet-btn">Version 1.0</div>
+</div>
+
+<!-- Tabs sheet -->
+<div class="tabs-sheet" id="tabsSheet" aria-hidden="true">
+  <div id="tabsList" role="list"></div>
+  <div class="sheet-btn" id="tabs_newchat">Neuer Chat</div>
+</div>
+
 <script>
-/* ===========================
-   Vollständig robuster JS
+/* Vollständig geprüftes, robustes JS
    - wartet auf DOMContentLoaded
    - prüft Elemente vor Zugriff
-   - fängt Fehler ab, damit UI nicht "weiß" bleibt
    - Intro-Fix, Partikel, Chat, Bild-Generator
-   =========================== */
+   - mobile viewport fix
+*/
 
 (() => {
   "use strict";
 
-  /* CONFIG */
+  /* === CONFIG === */
   const API_KEY = "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";
   const MODEL_TEXT = "groq/compound";
   const MODEL_IMAGE = "groq/flux-schnell";
   const API_CHAT = "https://api.groq.com/openai/v1/chat/completions";
   const API_IMG = "https://api.groq.com/openai/v1/images/generations";
 
-  /* STATE */
+  /* === STATE === */
   let lang = "de";
   let theme = "purple";
   let chats = [];
   let activeChat = 0;
 
-  /* SAFE HELPERS */
-  function safeParseJSON(s, fallback) {
-    try { return JSON.parse(s); } catch(e) { return fallback; }
+  /* === HELPERS === */
+  const safeGet = id => document.getElementById(id) || null;
+  const safeParseJSON = (s, fallback) => { try { return JSON.parse(s); } catch(e){ return fallback; } };
+
+  function safeInit(){
+    if(!Array.isArray(chats)) chats = [[]];
+    if(chats.length === 0) chats = [[]];
+    if(typeof activeChat !== "number" || isNaN(activeChat)) activeChat = 0;
+    if(activeChat < 0) activeChat = 0;
+    if(activeChat >= chats.length) activeChat = chats.length - 1;
+    if(!Array.isArray(chats[activeChat])) chats[activeChat] = [];
   }
 
-  function safeInit() {
-    if (!Array.isArray(chats)) chats = [[]];
-    if (chats.length === 0) chats = [[]];
-    if (typeof activeChat !== "number" || isNaN(activeChat)) activeChat = 0;
-    if (activeChat < 0) activeChat = 0;
-    if (activeChat >= chats.length) activeChat = chats.length - 1;
-    if (!Array.isArray(chats[activeChat])) chats[activeChat] = [];
-  }
-
-  /* VIEWPORT FIX (mobile keyboard) */
-  function fixVH() {
+  /* === VIEWPORT FIX === */
+  function fixVH(){
     try {
       const vh = window.innerHeight * 0.01;
       document.documentElement.style.setProperty("--vh", vh + "px");
-    } catch (e) { /* ignore */ }
+    } catch(e){}
   }
   window.addEventListener("resize", fixVH);
 
-  /* UI TEXT */
+  /* === UI TEXT === */
   const ui = {
-    de: {
-      header: "Febl KI",
-      placeholder: "Nachricht eingeben…",
-      chat: "Chat ",
-      newchat: "Neuer Chat",
-      delete: "Chat löschen",
-      lang: "Sprache",
-      theme: "Theme",
-      home: "Home",
-      about: "Über Febl",
-      support: "Support"
-    },
-    en: {
-      header: "Febl AI",
-      placeholder: "Type a message…",
-      chat: "Chat ",
-      newchat: "New chat",
-      delete: "Delete chat",
-      lang: "Language",
-      theme: "Theme",
-      home: "Home",
-      about: "About Febl",
-      support: "Support"
-    }
+    de:{header:"Febl KI",placeholder:"Nachricht eingeben…",chat:"Chat ",newchat:"Neuer Chat",delete:"Chat löschen",lang:"Sprache",theme:"Theme",home:"Home",about:"Über Febl",support:"Support"},
+    en:{header:"Febl AI",placeholder:"Type a message…",chat:"Chat ",newchat:"New chat",delete:"Delete chat",lang:"Language",theme:"Theme",home:"Home",about:"About Febl",support:"Support"}
   };
 
-  /* STORAGE */
-  function saveAll() {
-    try { localStorage.setItem("febl_chats", JSON.stringify(chats)); } catch(e) {}
-    try { localStorage.setItem("febl_lang", lang); } catch(e) {}
-    try { localStorage.setItem("febl_theme", theme); } catch(e) {}
-    try { localStorage.setItem("febl_activeChat", String(activeChat)); } catch(e) {}
+  /* === STORAGE === */
+  function saveAll(){
+    try{ localStorage.setItem("febl_chats", JSON.stringify(chats)); }catch(e){}
+    try{ localStorage.setItem("febl_lang", lang); }catch(e){}
+    try{ localStorage.setItem("febl_theme", theme); }catch(e){}
+    try{ localStorage.setItem("febl_activeChat", String(activeChat)); }catch(e){}
   }
 
-  function loadAll() {
-    try {
+  function loadAll(){
+    try{
       const raw = localStorage.getItem("febl_chats");
-      if (raw) {
+      if(raw){
         const parsed = safeParseJSON(raw, null);
-        if (Array.isArray(parsed)) chats = parsed;
+        if(Array.isArray(parsed)) chats = parsed;
       }
-    } catch (e) { chats = [[]]; }
+    }catch(e){ chats = [[]]; }
 
-    try { lang = localStorage.getItem("febl_lang") || "de"; } catch(e) { lang = "de"; }
-    try { theme = localStorage.getItem("febl_theme") || "purple"; } catch(e) { theme = "purple"; }
-    try { activeChat = parseInt(localStorage.getItem("febl_activeChat") || "0", 10); } catch(e) { activeChat = 0; }
+    try{ lang = localStorage.getItem("febl_lang") || "de"; }catch(e){ lang = "de"; }
+    try{ theme = localStorage.getItem("febl_theme") || "purple"; }catch(e){ theme = "purple"; }
+    try{ activeChat = parseInt(localStorage.getItem("febl_activeChat") || "0", 10); }catch(e){ activeChat = 0; }
 
     safeInit();
   }
 
-  /* LANGUAGE & THEME */
-  function applyLanguage() {
+  /* === LANGUAGE & THEME === */
+  function applyLanguage(){
     safeInit();
-    const header = document.getElementById("txt_header");
-    const input = document.getElementById("userInput");
-    if (header) header.textContent = ui[lang]?.header || "Febl";
-    if (input) input.placeholder = ui[lang]?.placeholder || "";
+    const header = safeGet("txt_header");
+    const input = safeGet("userInput");
+    if(header) header.textContent = ui[lang]?.header || "Febl";
+    if(input) input.placeholder = ui[lang]?.placeholder || "";
 
     const map = [
       ["btn_newchat","newchat"],["btn_deletechat","delete"],["btn_lang","lang"],
@@ -112,63 +236,56 @@
       ["tabs_newchat","newchat"]
     ];
     map.forEach(([id,key])=>{
-      const el = document.getElementById(id);
-      if (el) el.textContent = ui[lang]?.[key] || el.textContent;
+      const el = safeGet(id);
+      if(el) el.textContent = ui[lang]?.[key] || el.textContent;
     });
   }
 
-  function setVar(k,v){ try { document.documentElement.style.setProperty(k,v); } catch(e) {} }
-  function applyTheme(t) {
+  function setVar(k,v){ try{ document.documentElement.style.setProperty(k,v); }catch(e){} }
+  function applyTheme(t){
     theme = t || "purple";
-    if (theme === "purple") {
-      setVar("--c1","#0a0b1f"); setVar("--c2","#13143a"); setVar("--c3","#1a1b4a"); setVar("--c4","#1e1f4d");
-      setVar("--assistant","#1e1f4d"); setVar("--user","#7c3aed"); setVar("--accent","#7c3aed");
-    } else if (theme === "blue") {
-      setVar("--c1","#001a33"); setVar("--c2","#00264d"); setVar("--c3","#003366"); setVar("--c4","#004080");
-      setVar("--assistant","#004080"); setVar("--user","#3399ff"); setVar("--accent","#3399ff");
+    if(theme === "purple"){
+      setVar("--c1","#0a0b1f");setVar("--c2","#13143a");setVar("--c3","#1a1b4a");setVar("--c4","#1e1f4d");
+      setVar("--assistant","#1e1f4d");setVar("--user","#7c3aed");setVar("--accent","#7c3aed");
+    } else if(theme === "blue"){
+      setVar("--c1","#001a33");setVar("--c2","#00264d");setVar("--c3","#003366");setVar("--c4","#004080");
+      setVar("--assistant","#004080");setVar("--user","#3399ff");setVar("--accent","#3399ff");
     }
+    saveAll();
   }
 
-  /* CHAT UI */
-  function renderTabs() {
+  /* === CHAT RENDERING === */
+  function renderTabs(){
     safeInit();
-    const list = document.getElementById("tabsList");
-    if (!list) return;
+    const list = safeGet("tabsList");
+    if(!list) return;
     list.innerHTML = "";
     chats.forEach((c,i)=>{
       const div = document.createElement("div");
       div.className = "tab-item";
       div.textContent = (ui[lang]?.chat || "Chat ") + (i+1);
-      div.onclick = () => {
-        activeChat = i;
-        closeTabs();
-        renderTabs();
-        renderChat();
-        saveAll();
-      };
+      div.onclick = () => { activeChat = i; closeSheet("tabsSheet"); renderTabs(); renderChat(); saveAll(); };
       list.appendChild(div);
     });
   }
 
-  function renderChat() {
+  function renderChat(){
     safeInit();
-    const chatEl = document.getElementById("chat");
-    if (!chatEl) return;
+    const chatEl = safeGet("chat");
+    if(!chatEl) return;
     chatEl.innerHTML = "";
     const current = chats[activeChat] || [];
     current.forEach(m=>{
-      if (!m) return;
+      if(!m) return;
       const row = document.createElement("div");
       row.className = "msg-row " + (m.role === "user" ? "user-row" : "assistant-row");
       const bubble = document.createElement("div");
       bubble.className = "msg-bubble";
 
-      if (m.type === "image" && m.url) {
+      if(m.type === "image" && m.url){
         const img = document.createElement("img");
         img.src = m.url;
         img.alt = "Generiertes Bild";
-        img.style.width = "100%";
-        img.style.borderRadius = "12px";
         img.loading = "lazy";
         bubble.appendChild(img);
       } else {
@@ -179,30 +296,29 @@
       chatEl.appendChild(row);
     });
 
-    // scroll safe
-    try { chatEl.scrollTop = chatEl.scrollHeight; } catch(e) {}
+    try { chatEl.scrollTop = chatEl.scrollHeight; } catch(e){}
   }
 
-  function addMessage(role, text) {
+  function addMessage(role, text){
     safeInit();
-    if (typeof text === "undefined" || text === null) text = "";
+    if(typeof text === "undefined" || text === null) text = "";
     chats[activeChat].push({ role: role || "assistant", content: String(text) });
     renderChat();
     saveAll();
   }
 
-  function addImage(url) {
+  function addImage(url){
     safeInit();
     chats[activeChat].push({ role: "assistant", type: "image", url: String(url) });
     renderChat();
     saveAll();
   }
 
-  /* LOADING BUBBLE */
-  function loading() {
+  /* === LOADING BUBBLE === */
+  function loading(){
     removeLoading();
-    const chatEl = document.getElementById("chat");
-    if (!chatEl) return;
+    const chatEl = safeGet("chat");
+    if(!chatEl) return;
     const row = document.createElement("div");
     row.className = "msg-row assistant-row";
     row.id = "loadingBubble";
@@ -211,17 +327,14 @@
     bubble.textContent = "…";
     row.appendChild(bubble);
     chatEl.appendChild(row);
-    try { chatEl.scrollTop = chatEl.scrollHeight; } catch(e) {}
+    try { chatEl.scrollTop = chatEl.scrollHeight; } catch(e){}
   }
-  function removeLoading() {
-    const el = document.getElementById("loadingBubble");
-    if (el) el.remove();
-  }
+  function removeLoading(){ const el = safeGet("loadingBubble"); if(el) el.remove(); }
 
-  /* API: Text */
-  async function sendToAI(text) {
+  /* === API: TEXT === */
+  async function sendToAI(text){
     loading();
-    try {
+    try{
       const history = [
         { role: "system", content: lang === "de" ? "Du antwortest freundlich." : "You respond friendly." },
         ...(Array.isArray(chats[activeChat]) ? chats[activeChat] : []),
@@ -230,104 +343,86 @@
 
       const res = await fetch(API_CHAT, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + API_KEY
-        },
-        body: JSON.stringify({
-          model: MODEL_TEXT,
-          messages: history,
-          temperature: 0.7,
-          max_tokens: 1024,
-          top_p: 1
-        })
+        headers: { "Content-Type":"application/json", "Authorization":"Bearer " + API_KEY },
+        body: JSON.stringify({ model: MODEL_TEXT, messages: history, temperature: 0.7, max_tokens: 1024, top_p: 1 })
       });
 
       const data = await res.json().catch(()=>null);
       removeLoading();
 
       let reply = null;
-      if (data && Array.isArray(data.choices) && data.choices.length > 0) {
+      if(data && Array.isArray(data.choices) && data.choices.length > 0){
         const choice = data.choices[0];
         reply = choice?.message?.content ?? choice?.text ?? null;
       }
-      if (!reply) {
-        if (data && data.error && data.error.message) reply = "⚠️ " + data.error.message;
+      if(!reply){
+        if(data && data.error && data.error.message) reply = "⚠️ " + data.error.message;
         else reply = "⚠️ Keine Antwort vom Server.";
       }
       addMessage("assistant", reply);
-    } catch (e) {
+    }catch(e){
       removeLoading();
       addMessage("assistant", "Fehler: " + (e && e.message ? e.message : String(e)));
     }
   }
 
-  /* API: Image */
-  async function generateImage(prompt) {
+  /* === API: IMAGE === */
+  async function generateImage(prompt){
     loading();
-    try {
+    try{
       const res = await fetch(API_IMG, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + API_KEY
-        },
-        body: JSON.stringify({
-          model: MODEL_IMAGE,
-          prompt: String(prompt),
-          size: "1024x1024"
-        })
+        headers: { "Content-Type":"application/json", "Authorization":"Bearer " + API_KEY },
+        body: JSON.stringify({ model: MODEL_IMAGE, prompt: String(prompt), size: "1024x1024" })
       });
 
       const data = await res.json().catch(()=>null);
       removeLoading();
 
-      const url = data?.data?.[0]?.url || data?.data?.[0]?.b64_json ? null : null;
-      // If API returns base64 instead of url, try to handle it:
-      if (!url && data?.data?.[0]?.b64_json) {
-        const b64 = data.data[0].b64_json;
+      // handle url or base64
+      const url = data?.data?.[0]?.url ?? null;
+      const b64 = data?.data?.[0]?.b64_json ?? null;
+
+      if(b64){
         const blob = b64ToBlob(b64, "image/png");
         const objectUrl = URL.createObjectURL(blob);
         addImage(objectUrl);
         return;
       }
 
-      if (!url) {
+      if(!url){
         addMessage("assistant", "⚠️ Fehler beim Bildgenerieren.");
         return;
       }
 
       addImage(url);
-    } catch (e) {
+    }catch(e){
       removeLoading();
       addMessage("assistant", "Fehler: " + (e && e.message ? e.message : String(e)));
     }
   }
 
-  /* Hilfsfunktion: base64 -> Blob */
-  function b64ToBlob(b64Data, contentType = "", sliceSize = 512) {
-    try {
+  function b64ToBlob(b64Data, contentType = "", sliceSize = 512){
+    try{
       const byteCharacters = atob(b64Data);
       const byteArrays = [];
-      for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      for(let offset = 0; offset < byteCharacters.length; offset += sliceSize){
         const slice = byteCharacters.slice(offset, offset + sliceSize);
         const byteNumbers = new Array(slice.length);
-        for (let i = 0; i < slice.length; i++) {
+        for(let i = 0; i < slice.length; i++){
           byteNumbers[i] = slice.charCodeAt(i);
         }
         const byteArray = new Uint8Array(byteNumbers);
         byteArrays.push(byteArray);
       }
       return new Blob(byteArrays, { type: contentType });
-    } catch (e) {
+    }catch(e){
       return new Blob();
     }
   }
 
-  /* UI EVENTS (sicher registrieren) */
-  function safeGet(id) { return document.getElementById(id) || null; }
-
-  function registerEvents() {
+  /* === UI EVENTS === */
+  function registerEvents(){
     const sendBtn = safeGet("sendBtn");
     const imgBtn = safeGet("imgBtn");
     const userInput = safeGet("userInput");
@@ -342,26 +437,26 @@
     const btnSupport = safeGet("btn_support");
     const tabsNewChat = safeGet("tabs_newchat");
 
-    if (sendBtn && userInput) {
-      sendBtn.addEventListener("click", () => {
+    if(sendBtn && userInput){
+      sendBtn.addEventListener("click", ()=>{
         const t = String(userInput.value || "").trim();
-        if (!t) return;
+        if(!t) return;
         userInput.value = "";
         addMessage("user", t);
         sendToAI(t);
       });
-      userInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
+      userInput.addEventListener("keydown", e => {
+        if(e.key === "Enter"){
           e.preventDefault();
           sendBtn.click();
         }
       });
     }
 
-    if (imgBtn && userInput) {
-      imgBtn.addEventListener("click", () => {
+    if(imgBtn && userInput){
+      imgBtn.addEventListener("click", ()=>{
         const t = String(userInput.value || "").trim();
-        if (!t) {
+        if(!t){
           addMessage("assistant", "Bitte gib einen Bild‑Prompt ein.");
           return;
         }
@@ -371,107 +466,100 @@
       });
     }
 
-    if (menuBtn) menuBtn.addEventListener("click", () => toggleSheet("menuSheet"));
-    if (tabsBtn) tabsBtn.addEventListener("click", () => toggleSheet("tabsSheet"));
+    if(menuBtn) menuBtn.addEventListener("click", ()=> toggleSheet("menuSheet"));
+    if(tabsBtn) tabsBtn.addEventListener("click", ()=> toggleSheet("tabsSheet"));
 
-    if (btnNewChat) btnNewChat.addEventListener("click", () => { newChat(); closeSheet("menuSheet"); });
-    if (btnDelete) btnDelete.addEventListener("click", () => { deleteChat(); closeSheet("menuSheet"); });
-    if (btnLang) btnLang.addEventListener("click", () => { lang = (lang === "de" ? "en" : "de"); applyLanguage(); closeSheet("menuSheet"); });
-    if (btnTheme) btnTheme.addEventListener("click", () => { theme = (theme === "purple" ? "blue" : "purple"); applyTheme(theme); closeSheet("menuSheet"); });
-    if (btnHome) btnHome.addEventListener("click", () => { location.href = "https://febl-industry-3.jimdosite.com/"; });
-    if (btnAbout) btnAbout.addEventListener("click", () => { location.href = "https://febl-industry-3.jimdosite.com/ueber-mich/"; });
-    if (btnSupport) btnSupport.addEventListener("click", () => { location.href = "https://febl-industry-3.jimdosite.com/kontakt/"; });
-    if (tabsNewChat) tabsNewChat.addEventListener("click", () => { newChat(); closeSheet("tabsSheet"); });
+    if(btnNewChat) btnNewChat.addEventListener("click", ()=> { newChat(); closeSheet("menuSheet"); });
+    if(btnDelete) btnDelete.addEventListener("click", ()=> { deleteChat(); closeSheet("menuSheet"); });
+    if(btnLang) btnLang.addEventListener("click", ()=> { lang = (lang === "de" ? "en" : "de"); applyLanguage(); closeSheet("menuSheet"); });
+    if(btnTheme) btnTheme.addEventListener("click", ()=> { theme = (theme === "purple" ? "blue" : "purple"); applyTheme(theme); closeSheet("menuSheet"); });
+    if(btnHome) btnHome.addEventListener("click", ()=> { location.href = "https://febl-industry-3.jimdosite.com/"; });
+    if(btnAbout) btnAbout.addEventListener("click", ()=> { location.href = "https://febl-industry-3.jimdosite.com/ueber-mich/"; });
+    if(btnSupport) btnSupport.addEventListener("click", ()=> { location.href = "https://febl-industry-3.jimdosite.com/kontakt/"; });
+    if(tabsNewChat) tabsNewChat.addEventListener("click", ()=> { newChat(); closeSheet("tabsSheet"); });
 
-    // Klick außerhalb schließt Sheets
-    document.addEventListener("click", (e) => {
+    // click outside closes sheets
+    document.addEventListener("click", e => {
       const menu = safeGet("menuSheet");
       const tabs = safeGet("tabsSheet");
       const menuBtnEl = safeGet("menuBtn");
       const tabsBtnEl = safeGet("tabsBtn");
-      if (menu && !menu.contains(e.target) && e.target !== menuBtnEl) menu.classList.remove("open");
-      if (tabs && !tabs.contains(e.target) && e.target !== tabsBtnEl) tabs.classList.remove("open");
+      if(menu && !menu.contains(e.target) && e.target !== menuBtnEl) menu.classList.remove("open");
+      if(tabs && !tabs.contains(e.target) && e.target !== tabsBtnEl) tabs.classList.remove("open");
     });
   }
 
-  function toggleSheet(id) {
+  function toggleSheet(id){
     const el = safeGet(id);
-    if (!el) return;
+    if(!el) return;
     el.classList.toggle("open");
   }
-  function closeSheet(id) {
+  function closeSheet(id){
     const el = safeGet(id);
-    if (!el) return;
+    if(!el) return;
     el.classList.remove("open");
   }
 
-  /* INTRO: zuverlässiges Entfernen */
-  function hideIntro() {
+  /* === INTRO FIX === */
+  function hideIntro(){
     const intro = safeGet("intro");
-    if (!intro) return;
-    try {
-      intro.style.transition = "opacity 0.8s ease";
+    if(!intro) return;
+    try{
+      intro.style.transition = "opacity .8s ease";
       intro.style.opacity = "0";
-      // pointerEvents none sofort, display none nach Ende der Transition
       intro.style.pointerEvents = "none";
-      setTimeout(() => {
-        try { intro.style.display = "none"; } catch(e) {}
-      }, 900);
-    } catch (e) {
-      try { intro.style.display = "none"; } catch(e) {}
+      setTimeout(()=>{ try{ intro.style.display = "none"; }catch(e){} }, 900);
+    }catch(e){
+      try{ intro.style.display = "none"; }catch(e){}
     }
   }
 
-  /* PARTICLES (sicher) */
-  function startParticles() {
+  /* === PARTICLES (sicher) === */
+  function startParticles(){
     const canvas = safeGet("particles");
-    if (!canvas) return;
+    if(!canvas) return;
     let ctx = null;
-    try { ctx = canvas.getContext && canvas.getContext("2d"); } catch(e) { ctx = null; }
-    if (!ctx) return;
+    try{ ctx = canvas.getContext && canvas.getContext("2d"); }catch(e){ ctx = null; }
+    if(!ctx) return;
 
-    function resizeCanvas() {
-      try {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      } catch (e) {}
+    function resizeCanvas(){
+      try{ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }catch(e){}
     }
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
     const particles = [];
-    for (let i = 0; i < 60; i++) {
+    for(let i=0;i<60;i++){
       particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        r: Math.random() * 3 + 1,
-        dx: (Math.random() - 0.5) * 0.6,
-        dy: (Math.random() - 0.5) * 0.6
+        x: Math.random()*canvas.width,
+        y: Math.random()*canvas.height,
+        r: Math.random()*3+1,
+        dx: (Math.random()-0.5)*0.6,
+        dy: (Math.random()-0.5)*0.6
       });
     }
 
-    function animate() {
-      try {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => {
+    function animate(){
+      try{
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        particles.forEach(p=>{
           ctx.beginPath();
-          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          ctx.fillStyle = "rgba(255,255,255,0.3)";
+          ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+          ctx.fillStyle = "rgba(255,255,255,0.28)";
           ctx.fill();
-          p.x += p.dx;
-          p.y += p.dy;
-          if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
-          if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+          p.x += p.dx; p.y += p.dy;
+          if(p.x < 0 || p.x > canvas.width) p.dx *= -1;
+          if(p.y < 0 || p.y > canvas.height) p.dy *= -1;
         });
-      } catch (e) { /* ignore drawing errors */ }
+      }catch(e){}
       requestAnimationFrame(animate);
     }
     animate();
   }
 
-  /* STARTUP (DOM ready) */
-  document.addEventListener("DOMContentLoaded", () => {
-    try {
+  /* === STARTUP === */
+  document.addEventListener("DOMContentLoaded", ()=>{
+    try{
       fixVH();
       loadAll();
       applyTheme(theme);
@@ -481,25 +569,24 @@
       registerEvents();
       startParticles();
 
-      // Intro: hide reliably
+      // hide intro reliably
       setTimeout(hideIntro, 1200);
 
-      // Friendly starter message if chat empty
+      // starter message if empty
       safeInit();
-      if (!Array.isArray(chats[activeChat]) || chats[activeChat].length === 0) {
+      if(!Array.isArray(chats[activeChat]) || chats[activeChat].length === 0){
         addMessage("assistant", lang === "de" ? "Hallo Felix! Wie kann ich dir helfen?" : "Hello Felix! How can I help you?");
       }
-    } catch (e) {
-      // Wenn beim Start etwas schiefgeht, wenigstens UI sichtbar halten
+    }catch(e){
       console.error("Startup error:", e);
-      try { hideIntro(); } catch(e) {}
+      try{ hideIntro(); }catch(e){}
     }
   });
 
-  // Expose some functions for debugging in console (optional)
-  window.__febl = {
-    addMessage, addImage, generateImage, sendToAI, newChat, deleteChat, getState: () => ({ lang, theme, chats, activeChat })
-  };
+  // expose debug helpers
+  window.__febl = { addMessage, addImage, generateImage, sendToAI, newChat, deleteChat, getState: ()=>({lang,theme,chats,activeChat}) };
 
 })();
 </script>
+</body>
+</html>
