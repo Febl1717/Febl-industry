@@ -147,13 +147,6 @@ body{
 </div>
 
 <script>
-/* Vollständig geprüftes, robustes JS
-   - wartet auf DOMContentLoaded
-   - prüft Elemente vor Zugriff
-   - Intro-Fix, Partikel, Chat, Bild-Generator
-   - mobile viewport fix
-*/
-
 (() => {
   "use strict";
 
@@ -331,43 +324,11 @@ body{
   }
   function removeLoading(){ const el = safeGet("loadingBubble"); if(el) el.remove(); }
 
-  /* === API: TEXT === */
-  async function sendToAI(text){
-    loading();
-    try{
-      const history = [
-        { role: "system", content: lang === "de" ? "Du antwortest freundlich." : "You respond friendly." },
-        ...(Array.isArray(chats[activeChat]) ? chats[activeChat] : []),
-        { role: "user", content: String(text) }
-      ];
-
-      const res = await fetch(API_CHAT, {
-        method: "POST",
-        headers: { "Content-Type":"application/json", "Authorization":"Bearer " + API_KEY },
-        body: JSON.stringify({ model: MODEL_TEXT, messages: history, temperature: 0.7, max_tokens: 1024, top_p: 1 })
-      });
-
-      const data = await res.json().catch(()=>null);
-      removeLoading();
-
-      let reply = null;
-      if(data && Array.isArray(data.choices) && data.choices.length > 0){
-        const choice = data.choices[0];
-        reply = choice?.message?.content ?? choice?.text ?? null;
-      }
-      if(!reply){
-        if(data && data.error && data.error.message) reply = "⚠️ " + data.error.message;
-        else reply = "⚠️ Keine Antwort vom Server.";
-      }
-      addMessage("assistant", reply);
-    }catch(e){
-      removeLoading();
-      addMessage("assistant", "Fehler: " + (e && e.message ? e.message : String(e)));
-    }
-  }
-
-  /* === API: IMAGE === */
-  async function generateImage(prompt){
+  /* === API: IMAGE ONLY ===
+     This function calls the image endpoint and only inserts the generated image into the chat.
+     It does NOT add any user text bubble or assistant text bubble — only the image result.
+  */
+  async function generateImageOnly(prompt){
     loading();
     try{
       const res = await fetch(API_IMG, {
@@ -391,6 +352,7 @@ body{
       }
 
       if(!url){
+        // Only minimal feedback if generation failed
         addMessage("assistant", "⚠️ Fehler beim Bildgenerieren.");
         return;
       }
@@ -443,7 +405,8 @@ body{
         if(!t) return;
         userInput.value = "";
         addMessage("user", t);
-        sendToAI(t);
+        // text chat still works as before
+        sendTextToAI(t);
       });
       userInput.addEventListener("keydown", e => {
         if(e.key === "Enter"){
@@ -453,16 +416,19 @@ body{
       });
     }
 
+    /* IMAGE BUTTON: only generate image via AI, do NOT add a user bubble.
+       If no prompt is provided, show a minimal assistant hint.
+    */
     if(imgBtn && userInput){
       imgBtn.addEventListener("click", ()=>{
-        const t = String(userInput.value || "").trim();
-        if(!t){
+        const prompt = String(userInput.value || "").trim();
+        if(!prompt){
           addMessage("assistant", "Bitte gib einen Bild‑Prompt ein.");
           return;
         }
         userInput.value = "";
-        addMessage("user", "🖼 " + t);
-        generateImage(t);
+        // IMPORTANT: do NOT add a user bubble here — only generate image
+        generateImageOnly(prompt);
       });
     }
 
@@ -489,15 +455,42 @@ body{
     });
   }
 
-  function toggleSheet(id){
-    const el = safeGet(id);
-    if(!el) return;
-    el.classList.toggle("open");
-  }
-  function closeSheet(id){
-    const el = safeGet(id);
-    if(!el) return;
-    el.classList.remove("open");
+  function toggleSheet(id){ const el = safeGet(id); if(!el) return; el.classList.toggle("open"); }
+  function closeSheet(id){ const el = safeGet(id); if(!el) return; el.classList.remove("open"); }
+
+  /* === TEXT AI (kept separate) === */
+  async function sendTextToAI(text){
+    loading();
+    try{
+      const history = [
+        { role: "system", content: lang === "de" ? "Du antwortest freundlich." : "You respond friendly." },
+        ...(Array.isArray(chats[activeChat]) ? chats[activeChat] : []),
+        { role: "user", content: String(text) }
+      ];
+
+      const res = await fetch(API_CHAT, {
+        method: "POST",
+        headers: { "Content-Type":"application/json", "Authorization":"Bearer " + API_KEY },
+        body: JSON.stringify({ model: MODEL_TEXT, messages: history, temperature: 0.7, max_tokens: 1024, top_p: 1 })
+      });
+
+      const data = await res.json().catch(()=>null);
+      removeLoading();
+
+      let reply = null;
+      if(data && Array.isArray(data.choices) && data.choices.length > 0){
+        const choice = data.choices[0];
+        reply = choice?.message?.content ?? choice?.text ?? null;
+      }
+      if(!reply){
+        if(data && data.error && data.error.message) reply = "⚠️ " + data.error.message;
+        else reply = "⚠️ Keine Antwort vom Server.";
+      }
+      addMessage("assistant", reply);
+    }catch(e){
+      removeLoading();
+      addMessage("assistant", "Fehler: " + (e && e.message ? e.message : String(e)));
+    }
   }
 
   /* === INTRO FIX === */
@@ -514,7 +507,7 @@ body{
     }
   }
 
-  /* === PARTICLES (sicher) === */
+  /* === PARTICLES === */
   function startParticles(){
     const canvas = safeGet("particles");
     if(!canvas) return;
@@ -522,9 +515,7 @@ body{
     try{ ctx = canvas.getContext && canvas.getContext("2d"); }catch(e){ ctx = null; }
     if(!ctx) return;
 
-    function resizeCanvas(){
-      try{ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }catch(e){}
-    }
+    function resizeCanvas(){ try{ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }catch(e){} }
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
@@ -569,10 +560,8 @@ body{
       registerEvents();
       startParticles();
 
-      // hide intro reliably
       setTimeout(hideIntro, 1200);
 
-      // starter message if empty
       safeInit();
       if(!Array.isArray(chats[activeChat]) || chats[activeChat].length === 0){
         addMessage("assistant", lang === "de" ? "Hallo Felix! Wie kann ich dir helfen?" : "Hello Felix! How can I help you?");
@@ -584,9 +573,10 @@ body{
   });
 
   // expose debug helpers
-  window.__febl = { addMessage, addImage, generateImage, sendToAI, newChat, deleteChat, getState: ()=>({lang,theme,chats,activeChat}) };
+  window.__febl = { addMessage, addImage, generateImageOnly, sendTextToAI, newChat, deleteChat, getState: ()=>({lang,theme,chats,activeChat}) };
 
 })();
 </script>
+
 </body>
 </html>
