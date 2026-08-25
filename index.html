@@ -8,7 +8,6 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial}
 
-/* COLORS */
 :root{
   --c1:#0a0b1f;--c2:#13143a;--c3:#1a1b4a;--c4:#1e1f4d;
   --assistant:#1e1f4d;--user:#7c3aed;--accent:#7c3aed;
@@ -16,7 +15,6 @@
   --vh:1vh;
 }
 
-/* LAYOUT */
 html,body{height:100%}
 body{
   background:linear-gradient(180deg,var(--c1),#070717);
@@ -131,19 +129,21 @@ body{
 (() => {
   "use strict";
 
-  const API_KEY = "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";
-  const MODEL_IMAGE = "groq/flux-schnell";
-  const API_IMG = "https://api.groq.com/openai/v1/images/generations";
+  /* DEEPSEEK API */
+  const API_KEY = "sk-ee1d4dec8b4f4372bbbf694cd6c436b2";
+  const API_IMG = "https://api.deepseek.com/v1/images/generations";
+  const MODEL_IMAGE = "deepseek-ai/flux-pro";
 
   let chats = [[]];
   let activeChat = 0;
 
   const $ = id => document.getElementById(id);
 
-  /* RENDER CHAT */
+  /* CHAT RENDER */
   function renderChat(){
     const chat = $("chat");
     chat.innerHTML = "";
+
     chats[activeChat].forEach(m=>{
       const row = document.createElement("div");
       row.className = "msg-row assistant-row";
@@ -179,7 +179,7 @@ body{
   }
   $("viewerClose").onclick = ()=> $("viewer").style.display = "none";
 
-  /* LOADING SPINNER */
+  /* SPINNER */
   function showSpinner(){
     const chat = $("chat");
     const row = document.createElement("div");
@@ -202,7 +202,7 @@ body{
     if(s) s.remove();
   }
 
-  /* IMAGE GENERATION */
+  /* DEEPSEEK IMAGE GENERATION */
   async function generateImage(prompt){
     showSpinner();
 
