@@ -2,730 +2,1388 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Febl KI</title>
 
 <style>
-/* RESET */
 *{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:system-ui,sans-serif;
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
 }
 
-/* COLORS */
 :root{
-  --c1:#0a0b1f;
-  --c2:#13143a;
-  --c3:#1a1b4a;
-  --c4:#1e1f4d;
-  --assistant:#1e1f4d;
-  --user:#7c3aed;
-  --accent:#7c3aed;
-  --t1:#fff;
-  --t2:#e9d5ff;
+    --bg:#0b0d12;
+    --panel:#11141b;
+    --panel2:#171b24;
+    --border:#272c38;
+    --text:#f4f5f7;
+    --muted:#9ca3af;
+    --accent:#7c5cff;
+    --accent2:#6244e8;
 }
 
-/* BODY */
 body{
-  background:var(--c1);
-  color:var(--t1);
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
+    font-family:Arial,Helvetica,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    height:100vh;
+    overflow:hidden;
+}
+
+button,
+textarea,
+input{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
 }
 
 /* INTRO */
+
 #intro{
-  position:fixed;
-  inset:0;
-  background:#000;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
-  z-index:9999;
-  transition:opacity 1s ease;
-}
-#intro h1{
-  font-size:48px;
-  color:#fff;
-  animation:introZoom 1.4s ease;
-}
-@keyframes introZoom{
-  0%{transform:scale(0.4);opacity:0}
-  100%{transform:scale(1);opacity:1}
+    position:fixed;
+    inset:0;
+    background:#08090d;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+    transition:.7s;
 }
 
-/* PARTICLES */
-#particles{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:0;
+#intro.hide{
+    opacity:0;
+    pointer-events:none;
+}
+
+.intro-logo{
+    text-align:center;
+}
+
+.intro-logo h1{
+    font-size:58px;
+    font-weight:800;
+    letter-spacing:-3px;
+}
+
+.intro-logo p{
+    color:#9ca3af;
+    margin-top:10px;
+}
+
+/* APP */
+
+.app{
+    height:100vh;
+    display:flex;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+    width:260px;
+    background:#0e1016;
+    border-right:1px solid var(--border);
+    display:flex;
+    flex-direction:column;
+    padding:14px;
+}
+
+.logo{
+    font-size:24px;
+    font-weight:800;
+    padding:12px;
+    margin-bottom:12px;
+}
+
+.new-chat{
+    width:100%;
+    border:1px solid var(--border);
+    background:var(--panel);
+    color:white;
+    padding:12px;
+    border-radius:10px;
+    margin-bottom:15px;
+}
+
+.new-chat:hover{
+    background:var(--panel2);
+}
+
+.history-title{
+    color:var(--muted);
+    font-size:12px;
+    margin:8px 10px;
+}
+
+.history{
+    flex:1;
+    overflow-y:auto;
+}
+
+.history-item{
+    padding:10px;
+    border-radius:8px;
+    color:#d1d5db;
+    cursor:pointer;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    margin-bottom:3px;
+}
+
+.history-item:hover{
+    background:#181c25;
+}
+
+.history-item.active{
+    background:#1c202b;
+    color:white;
+}
+
+.sidebar-bottom{
+    border-top:1px solid var(--border);
+    padding-top:12px;
+}
+
+.sidebar-button{
+    width:100%;
+    background:none;
+    color:#d1d5db;
+    border:0;
+    padding:10px;
+    text-align:left;
+    border-radius:8px;
+}
+
+.sidebar-button:hover{
+    background:#181c25;
+}
+
+/* MAIN */
+
+.main{
+    flex:1;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
 }
 
 /* HEADER */
+
 .header{
-  height:60px;
-  background:var(--c3);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 16px;
-  color:var(--t2);
-  font-size:20px;
-  font-weight:600;
-  flex-shrink:0;
+    height:64px;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 20px;
+    background:#0d0f14;
 }
-.header-btn{
-  width:40px;
-  height:40px;
-  border-radius:10px;
-  background:var(--c4);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:22px;
-  color:#fff;
-  cursor:pointer;
+
+.header-title{
+    font-weight:700;
+}
+
+.header-right{
+    display:flex;
+    gap:8px;
+}
+
+.header-button{
+    border:1px solid var(--border);
+    background:var(--panel);
+    color:#ddd;
+    border-radius:8px;
+    padding:8px 10px;
+}
+
+.header-button:hover{
+    background:#1a1e27;
 }
 
 /* CHAT */
+
 .chat{
-  flex:1;
-  overflow-y:auto;
-  padding:16px;
-  z-index:1;
-  -webkit-overflow-scrolling:touch;
+    flex:1;
+    overflow-y:auto;
+    padding:30px 20px 130px;
 }
-.msg-row{
-  margin-bottom:16px;
-  display:flex;
-  animation:bubbleIn .25s ease;
+
+.chat-inner{
+    max-width:900px;
+    margin:auto;
 }
-@keyframes bubbleIn{
-  0%{transform:translateY(10px);opacity:0}
-  100%{transform:translateY(0);opacity:1}
+
+.welcome{
+    text-align:center;
+    margin-top:12vh;
 }
-.msg-bubble{
-  max-width:80%;
-  padding:12px 16px;
-  border-radius:18px;
-  font-size:16px;
-  line-height:1.5;
-  white-space:pre-wrap;
+
+.welcome h2{
+    font-size:38px;
+    margin-bottom:12px;
 }
-.user-row{justify-content:flex-end}
-.user-row .msg-bubble{background:var(--user)}
-.assistant-row .msg-bubble{
-  background:var(--assistant);
-  border:1px solid rgba(255,255,255,.1);
+
+.welcome p{
+    color:var(--muted);
+}
+
+.message{
+    display:flex;
+    gap:12px;
+    margin:25px 0;
+    line-height:1.65;
+}
+
+.avatar{
+    width:34px;
+    height:34px;
+    min-width:34px;
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#202431;
+    font-size:14px;
+}
+
+.message.user .avatar{
+    background:var(--accent);
+}
+
+.message-content{
+    flex:1;
+    min-width:0;
+}
+
+.message-name{
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:5px;
+}
+
+.message-text{
+    white-space:pre-wrap;
+    word-break:break-word;
+    color:#e5e7eb;
+}
+
+.loading{
+    display:flex;
+    gap:5px;
+    align-items:center;
+}
+
+.dot{
+    width:7px;
+    height:7px;
+    background:#999;
+    border-radius:50%;
+    animation:bounce 1s infinite;
+}
+
+.dot:nth-child(2){
+    animation-delay:.15s;
+}
+
+.dot:nth-child(3){
+    animation-delay:.3s;
+}
+
+@keyframes bounce{
+    0%,80%,100%{
+        transform:translateY(0);
+        opacity:.4;
+    }
+    40%{
+        transform:translateY(-5px);
+        opacity:1;
+    }
 }
 
 /* INPUT */
-.input-bar{
-  padding:10px;
-  background:var(--c1);
-  display:flex;
-  justify-content:center;
-  flex-shrink:0;
+
+.input-area{
+    position:fixed;
+    bottom:0;
+    left:260px;
+    right:0;
+    background:linear-gradient(
+        transparent,
+        #0b0d12 35%
+    );
+    padding:25px 20px 18px;
 }
+
 .input-box{
-  width:95%;
-  background:var(--c4);
-  border-radius:30px;
-  padding:10px 16px;
-  display:flex;
-  gap:10px;
-  align-items:center;
-}
-#userInput{
-  flex:1;
-  background:transparent;
-  border:none;
-  outline:none;
-  color:var(--t1);
-  font-size:18px;
-}
-.send-btn,.upload-btn{
-  width:44px;
-  height:44px;
-  border:none;
-  border-radius:50%;
-  color:#fff;
-  font-size:22px;
-  cursor:pointer;
-}
-.send-btn{background:var(--accent)}
-.upload-btn{background:#444}
-
-/* SHEETS */
-.bottom-sheet,
-.tabs-sheet{
-  position:fixed;
-  left:0;
-  right:0;
-  bottom:-100%;
-  background:var(--c2);
-  padding:20px;
-  border-radius:20px 20px 0 0;
-  transition:.3s;
-  z-index:999;
-}
-.bottom-sheet.open{bottom:0}
-.tabs-sheet.open{bottom:0}
-
-.sheet-btn,.tab-item{
-  width:100%;
-  padding:14px;
-  background:var(--c4);
-  border-radius:12px;
-  color:#fff;
-  font-size:18px;
-  margin-bottom:10px;
-  text-align:center;
+    max-width:900px;
+    margin:auto;
+    background:#151821;
+    border:1px solid #2b303c;
+    border-radius:16px;
+    padding:10px;
+    display:flex;
+    align-items:flex-end;
+    gap:8px;
+    box-shadow:0 8px 30px rgba(0,0,0,.25);
 }
 
-/* DESKTOP */
-@media(min-width:700px){
-  .bottom-sheet{
-    width:300px;
-    height:100%;
-    right:-300px;
-    left:auto;
-    top:0;
-    bottom:0;
-    border-radius:0;
-  }
-  .bottom-sheet.open{right:0}
+#messageInput{
+    flex:1;
+    background:none;
+    border:0;
+    outline:0;
+    color:white;
+    resize:none;
+    min-height:42px;
+    max-height:180px;
+    padding:10px;
+}
 
-  .tabs-sheet{
-    width:300px;
-    height:100%;
-    left:-300px;
-    top:0;
-    bottom:0;
-    border-radius:0;
-  }
-  .tabs-sheet.open{left:0}
+#messageInput::placeholder{
+    color:#777d88;
+}
+
+.send-button{
+    width:42px;
+    height:42px;
+    border:0;
+    border-radius:10px;
+    background:var(--accent);
+    color:white;
+    font-size:18px;
+}
+
+.send-button:hover{
+    background:var(--accent2);
+}
+
+.send-button:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+}
+
+.bottom-info{
+    max-width:900px;
+    margin:7px auto 0;
+    text-align:center;
+    color:#666d79;
+    font-size:11px;
+}
+
+/* MOBILE */
+
+.mobile-menu{
+    display:none;
+}
+
+@media(max-width:700px){
+
+    .sidebar{
+        display:none;
+    }
+
+    .mobile-menu{
+        display:block;
+    }
+
+    .header{
+        padding:0 12px;
+    }
+
+    .header-title{
+        font-size:15px;
+    }
+
+    .chat{
+        padding:20px 12px 125px;
+    }
+
+    .welcome h2{
+        font-size:30px;
+    }
+
+    .input-area{
+        left:0;
+        padding:18px 10px 12px;
+    }
+
+    .message{
+        gap:8px;
+    }
+}
+
+/* LIGHT */
+
+body.light{
+    --bg:#f6f7f9;
+    --panel:#ffffff;
+    --panel2:#eeeeF2;
+    --border:#dfe2e8;
+    --text:#111318;
+    --muted:#6b7280;
+}
+
+body.light .sidebar,
+body.light .header{
+    background:#fff;
+}
+
+body.light .message-text{
+    color:#222;
+}
+
+body.light .input-box{
+    background:#fff;
 }
 </style>
 </head>
 
 <body>
 
-<div id="intro"><h1>Febl KI</h1></div>
-<canvas id="particles"></canvas>
+<!-- INTRO -->
 
-<div class="header">
-  <div class="header-btn" id="menuBtn">☰</div>
-  <div id="txt_header">Febl KI</div>
-  <div class="header-btn" id="tabsBtn">⋮</div>
+<div id="intro">
+    <div class="intro-logo">
+        <h1>Febl KI</h1>
+        <p>Dein persönlicher KI-Assistent</p>
+    </div>
 </div>
 
-<div class="chat" id="chat"></div>
+<!-- APP -->
 
-<div class="input-bar">
-  <div class="input-box">
-    <button class="upload-btn" id="uploadBtn">📎</button>
-    <input id="fileInput" type="file" style="display:none">
-    <input id="userInput" type="text" placeholder="Nachricht eingeben…">
-    <button class="send-btn" id="sendBtn">➤</button>
-  </div>
+<div class="app">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            Febl KI
+        </div>
+
+        <button class="new-chat" onclick="newChat()">
+            + Neuer Chat
+        </button>
+
+        <div class="history-title">
+            CHATVERLAUF
+        </div>
+
+        <div id="history" class="history"></div>
+
+        <div class="sidebar-bottom">
+
+            <button class="sidebar-button" onclick="toggleTheme()">
+                🌓 Design ändern
+            </button>
+
+            <button class="sidebar-button" onclick="clearHistory()">
+                🗑 Chatverlauf löschen
+            </button>
+
+            <button class="sidebar-button"
+                onclick="window.location.href='https://febl-industry-3.jimdosite.com/'">
+                🌐 Website
+            </button>
+
+        </div>
+
+    </aside>
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+        <header class="header">
+
+            <div class="header-title">
+                <span class="mobile-menu">☰</span>
+                Febl KI
+            </div>
+
+            <div class="header-right">
+
+                <button class="header-button" onclick="toggleLanguage()">
+                    DE
+                </button>
+
+                <button class="header-button" onclick="toggleTheme()">
+                    ☾
+                </button>
+
+            </div>
+
+        </header>
+
+        <!-- CHAT -->
+
+        <section id="chat" class="chat">
+
+            <div class="chat-inner">
+
+                <div id="welcome" class="welcome">
+
+                    <h2>Wie kann ich dir helfen?</h2>
+
+                    <p>
+                        Frag Febl KI alles, was du wissen möchtest.
+                    </p>
+
+                </div>
+
+                <div id="messages"></div>
+
+            </div>
+
+        </section>
+
+        <!-- INPUT -->
+
+        <div class="input-area">
+
+            <div class="input-box">
+
+                <textarea
+                    id="messageInput"
+                    placeholder="Nachricht an Febl KI..."
+                    rows="1"
+                    onkeydown="handleKeyDown(event)"
+                ></textarea>
+
+                <button
+                    id="sendButton"
+                    class="send-button"
+                    onclick="sendMessage()"
+                >
+                    ➤
+                </button>
+
+            </div>
+
+            <div class="bottom-info">
+                Febl KI kann Fehler machen. Überprüfe wichtige Informationen.
+            </div>
+
+        </div>
+
+    </main>
+
 </div>
 
-<div class="bottom-sheet" id="menuSheet">
-  <div class="sheet-btn" id="btn_newchat">Neuer Chat</div>
-  <div class="sheet-btn" id="btn_deletechat">Chat löschen</div>
-  <div class="sheet-btn" id="btn_lang">Sprache</div>
-  <div class="sheet-btn" id="btn_theme">Theme</div>
-  <div class="sheet-btn" id="btn_home">Home</div>
-  <div class="sheet-btn" id="btn_about">Über Febl</div>
-  <div class="sheet-btn" id="btn_support">Support</div>
-  <div class="sheet-btn">Version 1.0</div>
-</div>
-
-<div class="tabs-sheet" id="tabsSheet">
-  <div id="tabsList"></div>
-  <div class="sheet-btn" id="tabs_newchat">Neuer Chat</div>
-</div>
 <script>
-/* === CONFIG === */
+
+/* =========================================================
+   GEMINI KONFIGURATION
+   ========================================================= */
+
+/*
+   WICHTIG:
+
+   Für einen öffentlichen Webauftritt solltest du den API-Key
+   NICHT direkt hier eintragen.
+
+   Diese Version ist für TESTS gedacht.
+
+   Erstelle einen NEUEN Gemini API-Key und trage ihn hier ein.
+*/
+
 const API_KEY = "AQ.Ab8RN6Jvd-e66MRhvNqxyZrrLsUw3uPBVqS5bbqTh7DZ6b1MuQ";
-const MODEL   = "gemini-2.5-flash";
-const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
 
-let lang       = "de";
-let theme      = "purple";
-let chats      = [];
-let activeChat = 0;
+const MODEL = "gemini-2.5-flash";
 
-/* === MOBILE VIEWPORT FIX (für Handy) === */
-function fixViewportHeight(){
-  const vh = window.innerHeight * 0.01;
-  document.documentElement.style.setProperty("--vh", vh + "px");
-  document.body.style.height = `calc(var(--vh, 1vh) * 100)`;
-}
-window.addEventListener("resize", fixViewportHeight);
+const API_URL =
+    "https://generativelanguage.googleapis.com/v1beta/models/" +
+    MODEL +
+    ":generateContent";
 
-/* === SAFETY INIT === */
-function safeInit(){
-  if(!Array.isArray(chats)) chats = [[]];
-  if(chats.length === 0) chats = [[]];
-  if(typeof activeChat !== "number" || isNaN(activeChat)) activeChat = 0;
-  if(activeChat < 0) activeChat = 0;
-  if(activeChat >= chats.length) activeChat = chats.length - 1;
-  if(!Array.isArray(chats[activeChat])) chats[activeChat] = [];
-}
 
-/* === UI TEXTE === */
-const ui = {
-  de:{
-    header:"Febl KI",
-    placeholder:"Nachricht eingeben…",
-    chat:"Chat ",
-    newchat:"Neuer Chat",
-    delete:"Chat löschen",
-    lang:"Sprache",
-    theme:"Theme",
-    home:"Home",
-    about:"Über Febl",
-    support:"Support"
-  },
-  en:{
-    header:"Febl AI",
-    placeholder:"Type a message…",
-    chat:"Chat ",
-    newchat:"New chat",
-    delete:"Delete chat",
-    lang:"Language",
-    theme:"Theme",
-    home:"Home",
-    about:"About Febl",
-    support:"Support"
-  }
-};
+/* =========================================================
+   APP DATEN
+   ========================================================= */
 
-/* === STORAGE === */
-function saveAll(){
-  try{ localStorage.setItem("febl_chats", JSON.stringify(chats)); }catch(e){}
-  try{ localStorage.setItem("febl_lang", lang); }catch(e){}
-  try{ localStorage.setItem("febl_theme", theme); }catch(e){}
-  try{ localStorage.setItem("febl_activeChat", String(activeChat)); }catch(e){}
-}
+let chats =
+    JSON.parse(localStorage.getItem("febl_chats") || "{}");
 
-function loadAll(){
-  try{
-    const raw = localStorage.getItem("febl_chats");
-    if(raw){
-      const parsed = JSON.parse(raw);
-      if(Array.isArray(parsed)) chats = parsed;
-    }
-  }catch(e){ chats = [[]]; }
+let activeChat =
+    localStorage.getItem("febl_active_chat");
 
-  try{
-    const l = localStorage.getItem("febl_lang");
-    if(l) lang = l;
-  }catch(e){}
+let language =
+    localStorage.getItem("febl_language") || "de";
 
-  try{
-    const t = localStorage.getItem("febl_theme");
-    if(t) theme = t;
-  }catch(e){}
+let isLoading = false;
 
-  try{
-    const a = localStorage.getItem("febl_activeChat");
-    if(a !== null) activeChat = parseInt(a,10);
-  }catch(e){}
 
-  safeInit();
-  applyTheme(theme);
-  applyLanguage();
-  renderTabs();
-  renderChat();
-}
+/* =========================================================
+   START
+   ========================================================= */
 
-/* === LANGUAGE / THEME === */
-function applyLanguage(){
-  safeInit();
-  const header = document.getElementById("txt_header");
-  const input  = document.getElementById("userInput");
-  if(header) header.textContent = ui[lang]?.header || "Febl";
-  if(input)  input.placeholder  = ui[lang]?.placeholder || "";
+window.addEventListener("load", () => {
 
-  const map = [
-    ["btn_newchat","newchat"],
-    ["btn_deletechat","delete"],
-    ["btn_lang","lang"],
-    ["btn_theme","theme"],
-    ["btn_home","home"],
-    ["btn_about","about"],
-    ["btn_support","support"],
-    ["tabs_newchat","newchat"]
-  ];
-  map.forEach(([id,key])=>{
-    const el = document.getElementById(id);
-    if(el) el.textContent = ui[lang]?.[key] || el.textContent;
-  });
+    setTimeout(() => {
+        document.getElementById("intro").classList.add("hide");
+    }, 900);
 
-  renderTabs();
-  saveAll();
-}
+    if (!activeChat) {
+        newChat();
+    } else {
 
-function setVar(k,v){
-  document.documentElement.style.setProperty(k,v);
-}
+        if (!chats[activeChat]) {
+            chats[activeChat] = [];
+        }
 
-function applyTheme(t){
-  theme = t;
-  if(t === "purple"){
-    setVar("--c1","#0a0b1f");
-    setVar("--c2","#13143a");
-    setVar("--c3","#1a1b4a");
-    setVar("--c4","#1e1f4d");
-    setVar("--assistant","#1e1f4d");
-    setVar("--user","#7c3aed");
-    setVar("--accent","#7c3aed");
-  }else if(t === "blue"){
-    setVar("--c1","#001a33");
-    setVar("--c2","#00264d");
-    setVar("--c3","#003366");
-    setVar("--c4","#004080");
-    setVar("--assistant","#004080");
-    setVar("--user","#3399ff");
-    setVar("--accent","#3399ff");
-  }else if(t === "red"){
-    setVar("--c1","#330000");
-    setVar("--c2","#4d0000");
-    setVar("--c3","#660000");
-    setVar("--c4","#800000");
-    setVar("--assistant","#800000");
-    setVar("--user","#ff3333");
-    setVar("--accent","#ff3333");
-  }else if(t === "green"){
-    setVar("--c1","#00261a");
-    setVar("--c2","#003322");
-    setVar("--c3","#004d33");
-    setVar("--c4","#006644");
-    setVar("--assistant","#006644");
-    setVar("--user","#33cc99");
-    setVar("--accent","#33cc99");
-  }else if(t === "black"){
-    setVar("--c1","#000");
-    setVar("--c2","#0d0d0d");
-    setVar("--c3","#1a1a1a");
-    setVar("--c4","#262626");
-    setVar("--assistant","#262626");
-    setVar("--user","#3b82f6");
-    setVar("--accent","#3b82f6");
-  }
-  saveAll();
-}
-
-/* === CHAT MANAGEMENT === */
-function newChat(){
-  safeInit();
-  chats.push([]);
-  activeChat = chats.length - 1;
-  safeInit();
-  renderTabs();
-  renderChat();
-  saveAll();
-}
-
-function deleteChat(){
-  safeInit();
-  if(chats.length > 1){
-    chats.splice(activeChat,1);
-    activeChat = Math.max(0, activeChat - 1);
-  }else{
-    chats[0] = [];
-  }
-  safeInit();
-  renderTabs();
-  renderChat();
-  saveAll();
-}
-
-function renderTabs(){
-  safeInit();
-  const list = document.getElementById("tabsList");
-  if(!list) return;
-  list.innerHTML = "";
-  chats.forEach((c,i)=>{
-    const div = document.createElement("div");
-    div.className = "tab-item";
-    div.textContent = (ui[lang]?.chat || "Chat ") + (i+1);
-    div.onclick = ()=>{
-      activeChat = i;
-      closeTabs();
-      renderTabs();
-      renderChat();
-      saveAll();
-    };
-    list.appendChild(div);
-  });
-}
-
-function renderChat(){
-  safeInit();
-  const chatEl = document.getElementById("chat");
-  if(!chatEl) return;
-  chatEl.innerHTML = "";
-  const current = chats[activeChat] || [];
-  current.forEach(m=>{
-    if(!m || typeof m.content === "undefined") return;
-    const row = document.createElement("div");
-    row.className = "msg-row " + (m.role === "user" ? "user-row" : "assistant-row");
-    const bubble = document.createElement("div");
-    bubble.className = "msg-bubble";
-    bubble.textContent = String(m.content);
-    row.appendChild(bubble);
-    chatEl.appendChild(row);
-  });
-  chatEl.scrollTop = chatEl.scrollHeight;
-}
-
-function addMessage(role,text){
-  safeInit();
-  if(typeof text === "undefined" || text === null) text = "";
-  chats[activeChat].push({role: role || "assistant", content: String(text)});
-  renderChat();
-  saveAll();
-}
-
-/* === LOADING BUBBLE === */
-function loading(){
-  const chatEl = document.getElementById("chat");
-  if(!chatEl) return;
-  removeLoading();
-  const row = document.createElement("div");
-  row.className = "msg-row assistant-row";
-  row.id = "loadingBubble";
-  const bubble = document.createElement("div");
-  bubble.className = "msg-bubble";
-  bubble.textContent = "…";
-  row.appendChild(bubble);
-  chatEl.appendChild(row);
-  chatEl.scrollTop = chatEl.scrollHeight;
-}
-
-function removeLoading(){
-  const el = document.getElementById("loadingBubble");
-  if(el) el.remove();
-}
-
-/* === API CALL === */
-async function sendToAI(text){
-  loading();
-  try{
-    const history = [
-      {
-        role:"system",
-        content: lang === "de"
-          ? "Du antwortest freundlich und hilfst."
-          : "You respond friendly and helpful."
-      },
-      ...(Array.isArray(chats[activeChat]) ? chats[activeChat] : []),
-      {role:"user",content:String(text)}
-    ];
-
-    const res = await fetch(API_URL,{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json",
-        "Authorization":"Bearer " + API_KEY
-      },
-      body:JSON.stringify({
-        model:MODEL,
-        messages:history,
-        temperature:0.7,
-        max_tokens:1024,
-        top_p:1
-      })
-    });
-
-    const data = await res.json();
-    removeLoading();
-
-    let reply = null;
-    if(data && Array.isArray(data.choices) && data.choices.length > 0){
-      const choice = data.choices[0];
-      if(choice && choice.message && typeof choice.message.content !== "undefined"){
-        reply = String(choice.message.content);
-      }else if(typeof choice.text !== "undefined"){
-        reply = String(choice.text);
-      }
+        renderHistory();
+        renderMessages();
     }
 
-    if(!reply){
-      if(data && typeof data.error === "object" && data.error.message){
-        reply = "⚠️ " + data.error.message;
-      }else{
-        reply = "⚠️ Keine Antwort vom Server.";
-      }
-    }
-
-    addMessage("assistant", reply);
-  }catch(e){
-    removeLoading();
-    addMessage("assistant","Fehler: " + (e && e.message ? e.message : String(e)));
-  }
-}
-
-/* === EVENTS === */
-const sendBtn   = document.getElementById("sendBtn");
-const userInput = document.getElementById("userInput");
-const uploadBtn = document.getElementById("uploadBtn");
-const fileInput = document.getElementById("fileInput");
-
-if(sendBtn && userInput){
-  sendBtn.addEventListener("click",()=>{
-    const t = String(userInput.value || "").trim();
-    if(!t) return;
-    userInput.value = "";
-    addMessage("user", t);
-    sendToAI(t);
-  });
-
-  userInput.addEventListener("keydown",e=>{
-    if(e.key === "Enter"){
-      e.preventDefault();
-      sendBtn.click();
-    }
-  });
-}
-
-if(uploadBtn && fileInput){
-  uploadBtn.addEventListener("click",()=>fileInput.click());
-  fileInput.addEventListener("change",e=>{
-    const f = e.target.files && e.target.files[0];
-    if(!f) return;
-    addMessage("user","📎 " + f.name);
-    sendToAI("Analysiere Datei: " + f.name);
-  });
-}
-
-/* === SHEETS === */
-function openMenu(){
-  const sheet = document.getElementById("menuSheet");
-  if(sheet) sheet.classList.toggle("open");
-}
-function closeMenu(){
-  const sheet = document.getElementById("menuSheet");
-  if(sheet) sheet.classList.remove("open");
-}
-function openTabs(){
-  const sheet = document.getElementById("tabsSheet");
-  if(sheet) sheet.classList.toggle("open");
-}
-function closeTabs(){
-  const sheet = document.getElementById("tabsSheet");
-  if(sheet) sheet.classList.remove("open");
-}
-
-const menuBtn = document.getElementById("menuBtn");
-const tabsBtn = document.getElementById("tabsBtn");
-
-if(menuBtn) menuBtn.addEventListener("click",openMenu);
-if(tabsBtn) tabsBtn.addEventListener("click",openTabs);
-
-/* Klick außerhalb schließt Sheets (mobilfreundlich) */
-document.addEventListener("click",e=>{
-  const menu   = document.getElementById("menuSheet");
-  const tabs   = document.getElementById("tabsSheet");
-  const menuBt = document.getElementById("menuBtn");
-  const tabsBt = document.getElementById("tabsBtn");
-
-  if(menu && !menu.contains(e.target) && e.target !== menuBt){
-    menu.classList.remove("open");
-  }
-  if(tabs && !tabs.contains(e.target) && e.target !== tabsBt){
-    tabs.classList.remove("open");
-  }
 });
 
-/* MENU BUTTONS */
-const btnNewChat   = document.getElementById("btn_newchat");
-const btnDelete    = document.getElementById("btn_deletechat");
-const btnLang      = document.getElementById("btn_lang");
-const btnTheme     = document.getElementById("btn_theme");
-const btnHome      = document.getElementById("btn_home");
-const btnAbout     = document.getElementById("btn_about");
-const btnSupport   = document.getElementById("btn_support");
-const tabsNewChat  = document.getElementById("tabs_newchat");
 
-if(btnNewChat)  btnNewChat.addEventListener("click",()=>{ newChat(); closeMenu(); });
-if(btnDelete)   btnDelete.addEventListener("click",()=>{ deleteChat(); closeMenu(); });
-if(btnLang)     btnLang.addEventListener("click",()=>{ lang = (lang === "de" ? "en" : "de"); applyLanguage(); closeMenu(); });
-if(btnTheme)    btnTheme.addEventListener("click",()=>{ theme = (theme === "purple" ? "blue" : "purple"); applyTheme(theme); closeMenu(); });
-if(btnHome)     btnHome.addEventListener("click",()=>{ window.location.href = "https://febl-industry-3.jimdosite.com/"; });
-if(btnAbout)    btnAbout.addEventListener("click",()=>{ window.location.href = "https://febl-industry-3.jimdosite.com/ueber-mich/"; });
-if(btnSupport)  btnSupport.addEventListener("click",()=>{ window.location.href = "https://febl-industry-3.jimdosite.com/kontakt/"; });
-if(tabsNewChat) tabsNewChat.addEventListener("click",()=>{ newChat(); closeTabs(); });
+/* =========================================================
+   NEUER CHAT
+   ========================================================= */
 
-/* INTRO FADE (sauber, blockiert nichts) */
-setTimeout(()=>{
-  const intro = document.getElementById("intro");
-  if(intro) intro.style.opacity = "0";
-},1200);
+function newChat(){
 
-setTimeout(()=>{
-  const intro = document.getElementById("intro");
-  if(intro) intro.style.display = "none";
-},2200);
+    const id =
+        "chat_" +
+        Date.now() +
+        "_" +
+        Math.random()
+            .toString(36)
+            .substring(2,8);
 
-/* PARTICLES */
-const canvas = document.getElementById("particles");
-const ctx    = canvas ? canvas.getContext("2d") : null;
+    chats[id] = [];
 
-function resizeCanvas(){
-  if(!canvas) return;
-  canvas.width  = window.innerWidth;
-  canvas.height = window.innerHeight;
+    activeChat = id;
+
+    saveChats();
+
+    renderHistory();
+    renderMessages();
+
+    document.getElementById("messageInput").focus();
 }
 
-if(canvas && ctx){
-  window.addEventListener("resize",resizeCanvas);
-  resizeCanvas();
 
-  let particles = [];
-  for(let i=0;i<60;i++){
-    particles.push({
-      x:Math.random()*canvas.width,
-      y:Math.random()*canvas.height,
-      r:Math.random()*3+1,
-      dx:(Math.random()-0.5)*0.6,
-      dy:(Math.random()-0.5)*0.6
-    });
-  }
+/* =========================================================
+   SPEICHERN
+   ========================================================= */
 
-  function animate(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    particles.forEach(p=>{
-      ctx.beginPath();
-      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle = "rgba(255,255,255,0.3)";
-      ctx.fill();
-      p.x += p.dx;
-      p.y += p.dy;
-      if(p.x < 0 || p.x > canvas.width)  p.dx *= -1;
-      if(p.y < 0 || p.y > canvas.height) p.dy *= -1;
-    });
-    requestAnimationFrame(animate);
-  }
-  animate();
+function saveChats(){
+
+    localStorage.setItem(
+        "febl_chats",
+        JSON.stringify(chats)
+    );
+
+    localStorage.setItem(
+        "febl_active_chat",
+        activeChat
+    );
+
 }
 
-/* === STARTUP === */
-fixViewportHeight();
-loadAll();
-addMessage("assistant", lang === "de"
-  ? "Hallo ! Wie kann ich dir helfen?"
-  : "Hello ! How can I help you?");
+
+/* =========================================================
+   CHATVERLAUF
+   ========================================================= */
+
+function renderHistory(){
+
+    const history =
+        document.getElementById("history");
+
+    history.innerHTML = "";
+
+    Object.keys(chats)
+        .reverse()
+        .forEach(id => {
+
+            const item =
+                document.createElement("div");
+
+            item.className =
+                "history-item" +
+                (id === activeChat ? " active" : "");
+
+            const messages = chats[id] || [];
+
+            const firstUserMessage =
+                messages.find(
+                    message => message.role === "user"
+                );
+
+            item.textContent =
+                firstUserMessage
+                    ? firstUserMessage.content.substring(0, 35)
+                    : "Neuer Chat";
+
+            item.onclick = () => {
+
+                activeChat = id;
+
+                saveChats();
+
+                renderHistory();
+                renderMessages();
+
+            };
+
+            history.appendChild(item);
+
+        });
+
+}
+
+
+/* =========================================================
+   NACHRICHTEN DARSTELLEN
+   ========================================================= */
+
+function renderMessages(){
+
+    const container =
+        document.getElementById("messages");
+
+    const welcome =
+        document.getElementById("welcome");
+
+    container.innerHTML = "";
+
+    const messages =
+        chats[activeChat] || [];
+
+    if(messages.length === 0){
+
+        welcome.style.display = "block";
+
+        return;
+
+    }
+
+    welcome.style.display = "none";
+
+    messages.forEach(message => {
+
+        addMessageToScreen(
+            message.role,
+            message.content
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   NACHRICHT AUF SCREEN
+   ========================================================= */
+
+function addMessageToScreen(role, text){
+
+    const container =
+        document.getElementById("messages");
+
+    const message =
+        document.createElement("div");
+
+    message.className =
+        "message " +
+        (role === "user" ? "user" : "assistant");
+
+    const avatar =
+        document.createElement("div");
+
+    avatar.className = "avatar";
+
+    avatar.textContent =
+        role === "user"
+            ? "Du"
+            : "F";
+
+    const content =
+        document.createElement("div");
+
+    content.className =
+        "message-content";
+
+    const name =
+        document.createElement("div");
+
+    name.className =
+        "message-name";
+
+    name.textContent =
+        role === "user"
+            ? "Du"
+            : "Febl KI";
+
+    const textElement =
+        document.createElement("div");
+
+    textElement.className =
+        "message-text";
+
+    textElement.textContent = text;
+
+    content.appendChild(name);
+    content.appendChild(textElement);
+
+    message.appendChild(avatar);
+    message.appendChild(content);
+
+    container.appendChild(message);
+
+    scrollToBottom();
+}
+
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+function showLoading(){
+
+    const container =
+        document.getElementById("messages");
+
+    const message =
+        document.createElement("div");
+
+    message.id = "loadingMessage";
+
+    message.className =
+        "message assistant";
+
+    message.innerHTML = `
+        <div class="avatar">F</div>
+
+        <div class="message-content">
+
+            <div class="message-name">
+                Febl KI
+            </div>
+
+            <div class="loading">
+
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+
+            </div>
+
+        </div>
+    `;
+
+    container.appendChild(message);
+
+    scrollToBottom();
+}
+
+
+function removeLoading(){
+
+    const loading =
+        document.getElementById("loadingMessage");
+
+    if(loading){
+        loading.remove();
+    }
+
+}
+
+
+/* =========================================================
+   SENDEN
+   ========================================================= */
+
+async function sendMessage(){
+
+    if(isLoading){
+        return;
+    }
+
+    const input =
+        document.getElementById("messageInput");
+
+    const sendButton =
+        document.getElementById("sendButton");
+
+    const text =
+        input.value.trim();
+
+    if(!text){
+        return;
+    }
+
+    if(
+        API_KEY === "DEIN_NEUER_GEMINI_API_KEY"
+        || !API_KEY
+    ){
+
+        alert(
+            "Bitte trage zuerst deinen neuen Gemini API-Key in API_KEY ein."
+        );
+
+        return;
+    }
+
+    isLoading = true;
+
+    sendButton.disabled = true;
+
+    input.value = "";
+
+    autoResize(input);
+
+    document.getElementById("welcome").style.display =
+        "none";
+
+
+    /* USER NACHRICHT */
+
+    chats[activeChat].push({
+        role: "user",
+        content: text
+    });
+
+    addMessageToScreen(
+        "user",
+        text
+    );
+
+    saveChats();
+
+    showLoading();
+
+
+    try{
+
+        const answer =
+            await sendToAI(text);
+
+        removeLoading();
+
+        chats[activeChat].push({
+            role: "assistant",
+            content: answer
+        });
+
+        addMessageToScreen(
+            "assistant",
+            answer
+        );
+
+        saveChats();
+
+        renderHistory();
+
+    }
+    catch(error){
+
+        removeLoading();
+
+        console.error(error);
+
+        const errorMessage =
+            "Fehler bei der Verbindung mit der KI.\n\n" +
+            error.message;
+
+        addMessageToScreen(
+            "assistant",
+            errorMessage
+        );
+
+    }
+    finally{
+
+        isLoading = false;
+
+        sendButton.disabled = false;
+
+        input.focus();
+
+    }
+
+}
+
+
+/* =========================================================
+   GEMINI API
+   ========================================================= */
+
+async function sendToAI(text){
+
+    /*
+       Gemini erwartet NICHT:
+
+       Authorization: Bearer ...
+
+       sondern:
+
+       x-goog-api-key
+    */
+
+
+    const contents = [];
+
+
+    /* System-Anweisung */
+
+    contents.push({
+
+        role: "user",
+
+        parts: [
+
+            {
+                text:
+                    "Du bist Febl KI, ein hilfreicher, " +
+                    "freundlicher und intelligenter " +
+                    "KI-Assistent. Antworte auf Deutsch, " +
+                    "wenn der Benutzer Deutsch schreibt. " +
+                    "Antworte klar und verständlich."
+            }
+
+        ]
+
+    });
+
+    contents.push({
+
+        role: "model",
+
+        parts: [
+
+            {
+                text:
+                    "Verstanden. Ich bin Febl KI und " +
+                    "helfe dem Benutzer so gut wie möglich."
+            }
+
+        ]
+
+    });
+
+
+    /* Alten Chatverlauf hinzufügen */
+
+    const messages =
+        chats[activeChat] || [];
+
+    messages.forEach(message => {
+
+        if(
+            message.role !== "user" &&
+            message.role !== "assistant"
+        ){
+            return;
+        }
+
+        contents.push({
+
+            role:
+                message.role === "assistant"
+                    ? "model"
+                    : "user",
+
+            parts: [
+
+                {
+                    text: String(
+                        message.content || ""
+                    )
+                }
+
+            ]
+
+        });
+
+    });
+
+
+    /* Aktuelle Nachricht */
+
+    /*
+       Die aktuelle Nachricht befindet sich bereits
+       in chats[activeChat], deshalb muss sie hier
+       NICHT noch einmal hinzugefügt werden.
+    */
+
+
+    const response =
+        await fetch(
+            API_URL,
+            {
+
+                method: "POST",
+
+                headers: {
+
+                    "Content-Type":
+                        "application/json",
+
+                    "x-goog-api-key":
+                        API_KEY
+
+                },
+
+                body: JSON.stringify({
+
+                    contents: contents,
+
+                    generationConfig: {
+
+                        temperature: 0.7,
+
+                        maxOutputTokens: 2048
+
+                    }
+
+                })
+
+            }
+        );
+
+
+    let data;
+
+    try{
+
+        data =
+            await response.json();
+
+    }
+    catch{
+
+        throw new Error(
+            "Die API hat keine gültige Antwort geliefert."
+        );
+
+    }
+
+
+    /* API FEHLER */
+
+    if(!response.ok){
+
+        const apiMessage =
+            data?.error?.message ||
+            "Unbekannter Gemini API Fehler.";
+
+        throw new Error(
+            "Gemini API Fehler (" +
+            response.status +
+            "): " +
+            apiMessage
+        );
+
+    }
+
+
+    /* ANTWORT */
+
+    const parts =
+        data?.candidates?.[0]?.content?.parts;
+
+    if(!Array.isArray(parts)){
+
+        throw new Error(
+            "Gemini hat keinen Text zurückgegeben."
+        );
+
+    }
+
+
+    const answer =
+        parts
+            .map(part => part.text || "")
+            .join("")
+            .trim();
+
+
+    if(!answer){
+
+        throw new Error(
+            "Gemini hat eine leere Antwort zurückgegeben."
+        );
+
+    }
+
+
+    return answer;
+
+}
+
+
+/* =========================================================
+   ENTER / SHIFT+ENTER
+   ========================================================= */
+
+function handleKeyDown(event){
+
+    if(
+        event.key === "Enter" &&
+        !event.shiftKey
+    ){
+
+        event.preventDefault();
+
+        sendMessage();
+
+    }
+
+}
+
+
+/* =========================================================
+   TEXTAREA GRÖSSE
+   ========================================================= */
+
+document
+    .getElementById("messageInput")
+    .addEventListener(
+        "input",
+        function(){
+
+            autoResize(this);
+
+        }
+    );
+
+
+function autoResize(element){
+
+    element.style.height = "auto";
+
+    element.style.height =
+        Math.min(
+            element.scrollHeight,
+            180
+        ) + "px";
+
+}
+
+
+/* =========================================================
+   SCROLL
+   ========================================================= */
+
+function scrollToBottom(){
+
+    const chat =
+        document.getElementById("chat");
+
+    setTimeout(() => {
+
+        chat.scrollTop =
+            chat.scrollHeight;
+
+    }, 50);
+
+}
+
+
+/* =========================================================
+   CHATVERLAUF LÖSCHEN
+   ========================================================= */
+
+function clearHistory(){
+
+    const confirmDelete =
+        confirm(
+            "Möchtest du wirklich deinen gesamten Chatverlauf löschen?"
+        );
+
+    if(!confirmDelete){
+        return;
+    }
+
+    chats = {};
+
+    localStorage.removeItem("febl_chats");
+    localStorage.removeItem("febl_active_chat");
+
+    newChat();
+
+}
+
+
+/* =========================================================
+   DESIGN
+   ========================================================= */
+
+function toggleTheme(){
+
+    document.body.classList.toggle("light");
+
+    localStorage.setItem(
+        "febl_theme",
+        document.body.classList.contains("light")
+            ? "light"
+            : "dark"
+    );
+
+}
+
+
+/* gespeichertes Design */
+
+if(
+    localStorage.getItem("febl_theme") === "light"
+){
+
+    document.body.classList.add("light");
+
+}
+
+
+/* =========================================================
+   SPRACHE
+   ========================================================= */
+
+function toggleLanguage(){
+
+    language =
+        language === "de"
+            ? "en"
+            : "de";
+
+    localStorage.setItem(
+        "febl_language",
+        language
+    );
+
+    const input =
+        document.getElementById("messageInput");
+
+    if(language === "en"){
+
+        input.placeholder =
+            "Message Febl AI...";
+
+    }
+    else{
+
+        input.placeholder =
+            "Nachricht an Febl KI...";
+
+    }
+
+}
+
+
+/* =========================================================
+   ENDE
+   ========================================================= */
+
 </script>
+
+</body>
+</html>
