@@ -87,4 +87,5 @@ def chat():
         return jsonify({"error": "Fehler bei der KI-Anfrage.", "details": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=3000, debug=False)
+    # Geändert auf 0.0.0.0, damit der Server über das Internet erreichbar ist
+    app.run(host="0.0.0.0", port=3000, debug=False)
