@@ -7,20 +7,19 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-# Holt den API-Key aus der Umgebungsvariable "GEMINI_API_KEY"
-# Setzen in PowerShell: $env:GEMINI_API_KEY="DEIN_KEY"
-API_KEY = os.getenv("GEMINI_API_KEY")
+# Dein API-Key direkt im Code hinterlegt:
+API_KEY = "AQ.Ab8RN6KrA9g4dAGHoEar_AjzlAeafEW7kMbZbk3OvohFTmP6qA"
 
 if not API_KEY:
-    print("WARNUNG: GEMINI_API_KEY wurde nicht gefunden.")
+    print("WARNUNG: API_KEY wurde nicht gefunden.")
 
 client = genai.Client(api_key=API_KEY)
 
 MODEL = "gemini-2.5-flash"
 
-# Der System-Prompt wurde um strikte Zensur-Anweisungen erweitert
+# Der System-Prompt wurde auf "febl ki" angepasst und enthält strikte Zensur-Anweisungen
 SYSTEM_PROMPT = """
-Du bist NOVA AI, ein sehr leistungsfähiger, absolut jugendfreier KI-Assistent.
+Du bist febl ki, ein sehr leistungsfähiger, absolut jugendfreier KI-Assistent.
 
 WICHTIGE SICHERHEITSREGEL: 
 Du darfst unter keinen Umständen unzensierte, sexuelle, gewalttätige, illegale oder jugendgefährdende Inhalte generieren oder diskutieren. Weise solche Anfragen höflich, aber strikt ab.
@@ -36,8 +35,8 @@ Verwende Markdown, wenn es die Antwort übersichtlicher macht.
 def home():
     return jsonify({
         "status": "online",
-        "name": "NOVA AI",
-        "message": "NOVA AI läuft!"
+        "name": "febl ki",
+        "message": "febl ki läuft!"
     })
 
 
@@ -115,7 +114,7 @@ def chat():
 
         # Falls die API aufgrund der Filter blockiert hat, fangen wir das hier ab
         if not reply:
-            reply = "Ich kann diese Anfrage leider nicht beantworten, da sie gegen meine Sicherheitsrichtlinien verstößt."
+            reply = "Ich kann diese Anfrage leider nicht beantworten, da sie gegen meine Sicherheitsrichtlinien verstoßt."
 
         return jsonify({
             "reply": reply
@@ -132,7 +131,7 @@ def chat():
 if __name__ == "__main__":
     print("")
     print("=" * 50)
-    print("             NOVA AI")
+    print("             FEBL KI")
     print("=" * 50)
     print("Server läuft auf:")
     print("http://localhost:3000")
