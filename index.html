@@ -593,15 +593,7 @@ body.light .input-box{
    Erstelle einen NEUEN Gemini API-Key und trage ihn hier ein.
 */
 
-const API_KEY = "AQ.Ab8RN6IGF1V9uaZ2MvC563Xh7YZMTCn5Q0I2YAKmHAKIQPEZvA";
-
-const MODEL = "gemini-3.8-flash";
-
-const API_URL =
-    "https://generativelanguage.googleapis.com/v1beta/models/" +
-    MODEL +
-    ":generateContent";
-
+const API_URL = "/api/chat";
 
 /* =========================================================
    APP DATEN
@@ -922,16 +914,7 @@ async function sendMessage(){
         return;
     }
 
-    if(
-        API_KEY === "DEIN_NEUER_GEMINI_API_KEY"
-        || !API_KEY
-    ){
-
-        alert(
-            "Bitte trage zuerst deinen neuen Gemini API-Key in API_KEY ein."
-        );
-
-        return;
+    /* Ollama benötigt keinen API-Key */
     }
 
     isLoading = true;
@@ -1020,36 +1003,37 @@ async function sendMessage(){
 
 async function sendToAI(text){
 
-    /*
-       Gemini erwartet NICHT:
+    const response = await fetch(
+        API_URL,
+        {
+            method: "POST",
 
-       Authorization: Bearer ...
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
 
-       sondern:
+            body: JSON.stringify({
+                messages:
+                    chats[activeChat]
+            })
+        }
+    );
 
-       x-goog-api-key
-    */
+    const data =
+        await response.json();
 
+    if(!response.ok){
 
-    const contents = [];
+        throw new Error(
+            data.error ||
+            "Serverfehler"
+        );
 
+    }
 
-    /* System-Anweisung */
-
-    contents.push({
-
-        role: "user",
-
-        parts: [
-
-            {
-                text:
-                    "Du bist Febl KI, ein hilfreicher, " +
-                    "freundlicher und intelligenter " +
-                    "KI-Assistent. Antworte auf Deutsch, " +
-                    "wenn der Benutzer Deutsch schreibt. " +
-                    "Antworte klar und verständlich."
-            }
+    return data.reply;
+}
 
         ]
 
