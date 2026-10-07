@@ -13,11 +13,13 @@ API_KEY = "AQ.Ab8RN6KrA9g4dAGHoEar_AjzlAeafEW7kMbZbk3OvohFTmP6qA"
 if not API_KEY:
     print("WARNUNG: API_KEY wurde nicht gefunden.")
 
+# Client initialisieren (übergibt den Key intern an das SDK)
 client = genai.Client(api_key=API_KEY)
 
-MODEL = "gemini-2.5-flash"
+# Aktualisiert auf das neueste empfohlene Modell
+MODEL = "gemini-3.8-flash"
 
-# Der System-Prompt wurde auf "febl ki" angepasst und enthält strikte Zensur-Anweisungen
+# Der System-Prompt für febl ki mit strikten Zensur-Anweisungen
 SYSTEM_PROMPT = """
 Du bist febl ki, ein sehr leistungsfähiger, absolut jugendfreier KI-Assistent.
 
@@ -76,6 +78,7 @@ def chat():
             elif role == "assistant":
                 conversation.append(f"Assistant: {content}")
 
+        # Text-Input für die Interactions-API zusammenbauen
         prompt = SYSTEM_PROMPT + "\n\n"
         prompt += "\n".join(conversation)
         prompt += "\n\nAssistant:"
@@ -101,20 +104,21 @@ def chat():
             ),
         ]
 
-        # Anfrage an Gemini mit den Sicherheitsfiltern senden
-        response = client.models.generate_content(
+        # Umgestellt auf die neue Google Interactions API
+        interaction = client.interactions.create(
             model=MODEL,
-            contents=prompt,
+            input=prompt,
             config=types.GenerateContentConfig(
                 safety_settings=safety_settings
             )
         )
 
-        reply = response.text
+        # Die Interactions API liefert den Text über 'output_text'
+        reply = interaction.output_text
 
-        # Falls die API aufgrund der Filter blockiert hat, fangen wir das hier ab
+        # Falls die API aufgrund der Filter blockiert hat, fangen wir das ab
         if not reply:
-            reply = "Ich kann diese Anfrage leider nicht beantworten, da sie gegen meine Sicherheitsrichtlinien verstoßt."
+            reply = "Ich kann diese Anfrage leider nicht beantworten, da sie gegen meine Sicherheitsrichtlinien verstößt."
 
         return jsonify({
             "reply": reply
